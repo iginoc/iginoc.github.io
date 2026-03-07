@@ -8,6 +8,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .site-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
 <body>
     <div class="background-blobs">
@@ -16,12 +37,13 @@
         <div class="blob blob-3"></div>
     </div>
     
-    <main class="container">
-        <div class="clock-card">
-            <h1 id="time" class="time-display">00:00:00</h1>
-            <p id="date" class="date-display">Caricamento data...</p>
+    <header class="top-bar">
+        <div class="site-title">iginoc</div>
+        <div class="clock-card" style="padding: 10px 20px; min-width: auto;">
+            <h1 id="time" class="time-display" style="font-size: 1.5rem; margin: 0;">00:00:00</h1>
+            <p id="date" class="date-display" style="font-size: 0.8rem; margin: 0;">Caricamento data...</p>
         </div>
-    </main>
+    </header>
 
     <script src="script.js"></script>
 </body>
