@@ -93,10 +93,6 @@
         .day-city { font-size: 1.8rem; color: var(--accent-3); margin-bottom: 0.2rem; font-weight: 700; }
         .day-info { font-size: 1.1rem; color: var(--accent-2); margin-bottom: 1.5rem; font-weight: 600; }
         .day-text { line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 1.2rem; font-size: 1.05rem; }
-        .not-to-miss { margin-top: 2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 1rem; }
-        .not-to-miss ul { list-style: none; padding: 0; margin-top: 0.5rem; }
-        .not-to-miss li { padding: 4px 0; color: rgba(255,255,255,0.7); display: flex; align-items: flex-start; }
-        .not-to-miss li::before { content: "•"; color: var(--accent-1); margin-right: 10px; font-weight: bold; }
 
         /* Stili per la mappa interattiva */
         .map-container {
@@ -179,21 +175,6 @@
             0%, 100% { transform: translate(-50%, -100%) translateY(0); }
             50% { transform: translate(-50%, -100%) translateY(-6px); }
         }
-
-        /* Stile pulsante torna alla mappa */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 2rem;
-            color: var(--accent-3);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        .back-link:hover { opacity: 1; }
-        .back-link svg { margin-right: 8px; }
 
         /* Navigazione rapida laterale */
         .side-nav {
@@ -329,17 +310,6 @@
                 <h2 class="day-header">Giorno 1 - Giovedì 02 Aprile 2026</h2>
                 <div class="day-city">Savona</div>
                 <div class="day-info">Giorno d'imbarco, Partenza 17:30</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>La fortezza Priamar</li>
-                        <li>La cattedrale dell’Assunta</li>
-                        <li>La via Paleocapa</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 2 -->
@@ -347,26 +317,12 @@
                 <h2 class="day-header">Giorno 2 - Venerdì 03 Aprile 2026</h2>
                 <div class="day-city">Marsiglia</div>
                 <div class="day-info">Arrivo 09:00 / Partenza 18:00</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>Aix-en-Provence</li>
-                        <li>Avignone, la città dei papi</li>
-                        <li>La scoperta di Marsiglia in bicicletta</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 3 -->
             <div class="day-card" id="day-3">
                 <h2 class="day-header">Giorno 3 - Sabato 04 Aprile 2026</h2>
                 <div class="day-city">In navigazione...</div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 4 -->
@@ -374,17 +330,6 @@
                 <h2 class="day-header">Giorno 4 - Domenica 05 Aprile 2026</h2>
                 <div class="day-city">Valencia</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>L'incredibile Bioparco di Valencia</li>
-                        <li>Il museo oceanografico di Valencia</li>
-                        <li>Il parco naturale dell'Albufera</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 5 -->
@@ -392,17 +337,6 @@
                 <h2 class="day-header">Giorno 5 - Lunedì 06 Aprile 2026</h2>
                 <div class="day-city">Cartagena</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>Giornata di mare a La Manga</li>
-                        <li>Giro della città di Murcia</li>
-                        <li>Cartagena e i fasti del suo passato</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 6 -->
@@ -410,9 +344,6 @@
                 <h2 class="day-header">Giorno 6 - Martedì 07 Aprile 2026</h2>
                 <div class="day-city">Malaga</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 7 -->
@@ -420,17 +351,6 @@
                 <h2 class="day-header">Giorno 7 - Mercoledì 08 Aprile 2026</h2>
                 <div class="day-city">Cadice</div>
                 <div class="day-info">Arrivo 07:00 / Partenza 16:00</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>Le cittadine bianche dell’Andalusia</li>
-                        <li>Giro panoramico di Cadice</li>
-                        <li>in bici alla scoperta di Cadice</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 8 -->
@@ -438,26 +358,12 @@
                 <h2 class="day-header">Giorno 8 - Giovedì 09 Aprile 2026</h2>
                 <div class="day-city">Lisbona</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 16:00</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>Assaggiare il vino verde</li>
-                        <li>Il museo nazionale di arte antica</li>
-                        <li>La vecchia linea di tram</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 9 -->
             <div class="day-card" id="day-9">
                 <h2 class="day-header">Giorno 9 - Venerdì 10 Aprile 2026</h2>
                 <div class="day-city">In navigazione...</div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 10 -->
@@ -465,17 +371,6 @@
                 <h2 class="day-header">Giorno 10 - Sabato 11 Aprile 2026</h2>
                 <div class="day-city">Alicante</div>
                 <div class="day-info">Arrivo 09:30 / Partenza 16:30</div>
-                <div class="not-to-miss">
-                    <strong>Da non perdere:</strong>
-                    <ul>
-                        <li>L’affascinante villaggio di montagna Guadalest</li>
-                        <li>Alicante e Elche</li>
-                        <li>Murcia, la città dai mille volti</li>
-                    </ul>
-                </div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 11 -->
@@ -483,9 +378,6 @@
                 <h2 class="day-header">Giorno 11 - Domenica 12 Aprile 2026</h2>
                 <div class="day-city">Barcellona</div>
                 <div class="day-info">Arrivo 07:00 / Partenza 13:00</div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
 
             <!-- Giorno 12 -->
@@ -493,9 +385,6 @@
                 <h2 class="day-header">Giorno 12 - Lunedì 13 Aprile 2026</h2>
                 <div class="day-city">Savona</div>
                 <div class="day-info">Giorno di sbarco, Arrivo 09:00</div>
-                <a href="#map-section" class="back-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Torna alla mappa
-                </a>
             </div>
         </section>
     </main>
