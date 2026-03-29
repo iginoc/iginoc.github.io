@@ -110,7 +110,7 @@
             background: rgba(5, 5, 5, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 15px;
+            padding: 8px 18px;
             border-radius: 30px;
             font-size: 0.75rem;
             font-weight: 600;
@@ -118,6 +118,28 @@
             z-index: 25;
             text-transform: capitalize;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .countdown-timer {
+            font-size: 0.65rem;
+            color: var(--accent-2);
+            margin-top: 3px;
+        }
+        .ship-marker {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            z-index: 30;
+            pointer-events: none;
+            transform: translate(-50%, -100%);
+            filter: drop-shadow(0 0 8px var(--accent-3));
+            animation: shipFloat 2s ease-in-out infinite;
+        }
+        @keyframes shipFloat {
+            0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+            50% { transform: translate(-50%, -100%) translateY(-6px); }
         }
 
         /* Stile pulsante torna alla mappa */
@@ -190,7 +212,10 @@
         </div>
 
         <div class="map-container" id="map-section">
-            <div id="today-date" class="current-date-display"></div>
+            <div class="current-date-display">
+                <span id="date-text"></span>
+                <span id="countdown-text" class="countdown-timer"></span>
+            </div>
             <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block;">
             <!-- Hotspots posizionati sui puntini gialli -->
             <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
@@ -453,12 +478,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             const dots = document.querySelectorAll('.nav-dot');
             const sections = document.querySelectorAll('.day-card[id]');
-            const dateDisplay = document.getElementById('today-date');
+            const dateText = document.getElementById('date-text');
+            const countdownText = document.getElementById('countdown-text');
 
             // Gestione Data Odierna
             const now = new Date();
             const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-            dateDisplay.textContent = now.toLocaleDateString('it-IT', dateOptions);
+            dateText.textContent = now.toLocaleDateString('it-IT', dateOptions);
 
             // Mappatura date crociera 2026 -> ID sezioni
             const cruiseSchedule = {
@@ -476,10 +502,53 @@
                 "2026-04-13": "day-12"
             };
 
+            // Coordinate per l'icona della nave
+            const portCoords = {
+                "savona": { l: "85%", t: "18%" },
+                "marsiglia": { l: "73%", t: "25.5%" },
+                "barcellona": { l: "60.5%", t: "41.5%" },
+                "valencia": { l: "51%", t: "55.5%" },
+                "alicante": { l: "50.3%", t: "64%" },
+                "cartagena": { l: "47.5%", t: "69.5%" },
+                "malaga": { l: "34.5%", t: "76.5%" },
+                "cadice": { l: "27%", t: "78%" },
+                "lisbona": { l: "15.5%", t: "61.5%" }
+            };
+
+            // Countdown alla partenza (2 Aprile 2026)
+            const startDate = new Date("2026-04-02");
+            const diffTime = startDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 0) {
+                countdownText.textContent = `Partenza tra ${diffDays} giorni`;
+            } else if (diffDays === 0) {
+                countdownText.textContent = "Si parte oggi! 🚢";
+            } else if (now < new Date("2026-04-14")) {
+                countdownText.textContent = "Crociera in corso";
+            }
+
             const todayKey = now.toISOString().split('T')[0];
-            if (cruiseSchedule[todayKey]) {
-                const targetDot = document.querySelector(`.nav-dot[href="#${cruiseSchedule[todayKey]}"]`);
+            const currentPortId = cruiseSchedule[todayKey];
+
+            if (currentPortId) {
+                // Evidenzia pulsante navigazione
+                const targetDot = document.querySelector(`.nav-dot[href="#${currentPortId}"]`);
                 if (targetDot) targetDot.classList.add('active');
+
+                // Aggiungi icona nave sulla mappa se siamo in un porto
+                if (portCoords[currentPortId]) {
+                    const mapContainer = document.getElementById('map-section');
+                    const ship = document.createElement('div');
+                    ship.className = 'ship-marker';
+                    ship.style.left = portCoords[currentPortId].l;
+                    ship.style.top = portCoords[currentPortId].t;
+                    ship.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 17L3 20H21L22 17H2ZM18 10L17 14H7L6 10H18ZM15 4V7H9V4H15Z" fill="#06b6d4" stroke="white" stroke-width="1"/>
+                        </svg>`;
+                    mapContainer.appendChild(ship);
+                }
             }
 
             const observerOptions = {
