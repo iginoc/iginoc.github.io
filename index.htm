@@ -102,6 +102,24 @@
             }
         }
 
+        /* Box data sulla mappa */
+        .current-date-display {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-3);
+            z-index: 25;
+            text-transform: capitalize;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
         /* Stile pulsante torna alla mappa */
         .back-link {
             display: inline-flex;
@@ -168,12 +186,11 @@
 
     <header class="sticky-header">
         <div class="top-bar">
-            <a href="#" title="Torna all'inizio">
-                <img src="1.jpg" alt="Logo" class="logo-img">
-            </a>
+            <a href="#" style="text-decoration: none; font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.6rem; color: white; text-shadow: 0 0 15px rgba(6, 182, 212, 0.4);">Costa Favolosa</a>
         </div>
 
         <div class="map-container" id="map-section">
+            <div id="today-date" class="current-date-display"></div>
             <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block;">
             <!-- Hotspots posizionati sui puntini gialli -->
             <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
@@ -205,6 +222,11 @@
 
     <main style="margin-top: 20px; position: relative; z-index: 10;">
         <div style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+            <!-- Card con l'immagine della nave -->
+            <div class="day-card" style="padding: 0; overflow: hidden; margin-bottom: 2rem; border-color: rgba(6, 182, 212, 0.3);">
+                <img src="1.jpg" alt="Costa Favolosa" style="width: 100%; height: auto; display: block;">
+            </div>
+
             <div class="day-card" style="padding: 0; overflow: hidden; height: 500px;">
                 <script type="text/javascript">
                     // Map appearance
@@ -431,6 +453,34 @@
         document.addEventListener('DOMContentLoaded', () => {
             const dots = document.querySelectorAll('.nav-dot');
             const sections = document.querySelectorAll('.day-card[id]');
+            const dateDisplay = document.getElementById('today-date');
+
+            // Gestione Data Odierna
+            const now = new Date();
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+            dateDisplay.textContent = now.toLocaleDateString('it-IT', dateOptions);
+
+            // Mappatura date crociera 2026 -> ID sezioni
+            const cruiseSchedule = {
+                "2026-04-02": "savona",
+                "2026-04-03": "marsiglia",
+                "2026-04-04": "day-3",
+                "2026-04-05": "valencia",
+                "2026-04-06": "cartagena",
+                "2026-04-07": "malaga",
+                "2026-04-08": "cadice",
+                "2026-04-09": "lisbona",
+                "2026-04-10": "day-9",
+                "2026-04-11": "alicante",
+                "2026-04-12": "barcellona",
+                "2026-04-13": "day-12"
+            };
+
+            const todayKey = now.toISOString().split('T')[0];
+            if (cruiseSchedule[todayKey]) {
+                const targetDot = document.querySelector(`.nav-dot[href="#${cruiseSchedule[todayKey]}"]`);
+                if (targetDot) targetDot.classList.add('active');
+            }
 
             const observerOptions = {
                 root: null,
