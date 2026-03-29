@@ -81,6 +81,71 @@
             z-index: 20;
             cursor: pointer;
         }
+        .hotspot:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Animazione evidenziazione scheda */
+        @keyframes highlight-glow {
+            0% { border-color: var(--accent-3); box-shadow: 0 0 30px rgba(6, 182, 212, 0.4); transform: scale(1.02); }
+            100% { border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(1); }
+        }
+        .day-card:target {
+            animation: highlight-glow 2s ease-out;
+        }
+
+        /* Stile pulsante torna alla mappa */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 2rem;
+            color: var(--accent-3);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .back-link:hover { opacity: 1; }
+        .back-link svg { margin-right: 8px; }
+
+        /* Navigazione rapida laterale */
+        .side-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .nav-dot {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .nav-dot:hover {
+            background: var(--accent-3);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+        @media (max-width: 1100px) {
+            .side-nav { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -89,6 +154,21 @@
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
+
+    <nav class="side-nav">
+        <a href="#savona" class="nav-dot" title="Giorno 1">1</a>
+        <a href="#marsiglia" class="nav-dot" title="Giorno 2">2</a>
+        <a href="#day-3" class="nav-dot" title="Giorno 3">3</a>
+        <a href="#valencia" class="nav-dot" title="Giorno 4">4</a>
+        <a href="#cartagena" class="nav-dot" title="Giorno 5">5</a>
+        <a href="#malaga" class="nav-dot" title="Giorno 6">6</a>
+        <a href="#cadice" class="nav-dot" title="Giorno 7">7</a>
+        <a href="#lisbona" class="nav-dot" title="Giorno 8">8</a>
+        <a href="#day-9" class="nav-dot" title="Giorno 9">9</a>
+        <a href="#alicante" class="nav-dot" title="Giorno 10">10</a>
+        <a href="#barcellona" class="nav-dot" title="Giorno 11">11</a>
+        <a href="#day-12" class="nav-dot" title="Giorno 12">12</a>
+    </nav>
     
     <header class="top-bar">
         <div class="site-title">Costa Favolosa</div>
@@ -122,7 +202,7 @@
                     latitude = '40.0';
                     longitude = '30.0';
                     zoom = '3';
-                    maptype = '2';
+                    maptype = '3';
                     trackvessel = '247311100';
                 </script>
                 <script type="text/javascript" src="https://www.marinetraffic.com/js/embed.js"></script>
@@ -186,7 +266,7 @@
             </div>
 
             <!-- Giorno 3 -->
-            <div class="day-card">
+            <div class="day-card" id="day-3">
                 <h2 class="day-header">Giorno 3 - Sabato 04 Aprile 2026</h2>
                 <div class="day-city">In navigazione...</div>
                 <p class="day-text">Immergiti nella vita di bordo: la giornata di navigazione è pensata apposta per farti divertire, rilassare e provare cose nuove da mattina a sera.</p>
@@ -283,7 +363,7 @@
             </div>
 
             <!-- Giorno 9 -->
-            <div class="day-card">
+            <div class="day-card" id="day-9">
                 <h2 class="day-header">Giorno 9 - Venerdì 10 Aprile 2026</h2>
                 <div class="day-city">In navigazione...</div>
                 <p class="day-text">Immergiti nella vita di bordo: la giornata di navigazione è pensata apposta per farti divertire, rilassare e provare cose nuove da mattina a sera.</p>
@@ -323,7 +403,7 @@
             </div>
 
             <!-- Giorno 12 -->
-            <div class="day-card">
+            <div class="day-card" id="day-12">
                 <h2 class="day-header">Giorno 12 - Lunedì 13 Aprile 2026</h2>
                 <div class="day-city">Savona</div>
                 <div class="day-info">Giorno di sbarco, Arrivo 09:00</div>
