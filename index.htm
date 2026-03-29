@@ -32,6 +32,38 @@
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        .diary-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+        }
+        .day-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .day-header {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .day-city { font-size: 1.8rem; color: var(--accent-3); margin-bottom: 0.2rem; font-weight: 700; }
+        .day-info { font-size: 1.1rem; color: var(--accent-2); margin-bottom: 1.5rem; font-weight: 600; }
+        .day-text { line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 1.2rem; font-size: 1.05rem; }
+        .not-to-miss { margin-top: 2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 1rem; }
+        .not-to-miss ul { list-style: none; padding: 0; margin-top: 0.5rem; }
+        .not-to-miss li { padding: 4px 0; color: rgba(255,255,255,0.7); display: flex; align-items: flex-start; }
+        .not-to-miss li::before { content: "•"; color: var(--accent-1); margin-right: 10px; font-weight: bold; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 2rem; }
+        .photo-placeholder { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); border-radius: 1rem; height: 180px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.2); font-style: italic; font-size: 0.9rem; text-align: center; padding: 10px; }
     </style>
 </head>
 <body>
@@ -70,6 +102,210 @@
         <div style="padding: 40px 20px; display: flex; justify-content: center;">
             <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
         </div>
+
+        <section class="diary-section">
+            <!-- Giorno 1 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 1 - Giovedì 02 Aprile 2026</h2>
+                <div class="day-city">Savona</div>
+                <div class="day-info">Giorno d'imbarco, Partenza 17:30</div>
+                <p class="day-text">Il bel clima, con estati mai afose e inverni miti, nonché l'eccezionale bellezza del mare vicino alla città, fanno di Savona un ottimo punto di partenza per scoprire la Liguria.</p>
+                <p class="day-text">Savona si distingue per la fortezza di Priamar, che la domina dal XVI secolo, ma anche per il suo centro storico dove potrai visitare la cattedrale dell’Assunta.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>La fortezza Priamar</li>
+                        <li>La cattedrale dell’Assunta</li>
+                        <li>La via Paleocapa</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 2 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 2 - Venerdì 03 Aprile 2026</h2>
+                <div class="day-city">Marsiglia</div>
+                <div class="day-info">Arrivo 09:00 / Partenza 18:00</div>
+                <p class="day-text">Chiamata anche la "città focena", Marsiglia è la città più soleggiata della Francia, affascinante con i suoi calanchi dove si può fare il bagno, i suoi musei di storia e di cultura.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>Aix-en-Provence</li>
+                        <li>Avignone, la città dei papi</li>
+                        <li>La scoperta di Marsiglia in bicicletta</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">coppia al ristorante</div>
+                    <div class="photo-placeholder">massaggio di coppia</div>
+                    <div class="photo-placeholder">foto di coppia</div>
+                    <div class="photo-placeholder">coppia al ristorante</div>
+                    <div class="photo-placeholder">massaggio di coppia</div>
+                    <div class="photo-placeholder">foto di coppia</div>
+                </div>
+            </div>
+
+            <!-- Giorno 3 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 3 - Sabato 04 Aprile 2026</h2>
+                <div class="day-city">In navigazione...</div>
+                <p class="day-text">Immergiti nella vita di bordo: la giornata di navigazione è pensata apposta per farti divertire, rilassare e provare cose nuove da mattina a sera.</p>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 4 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 4 - Domenica 05 Aprile 2026</h2>
+                <div class="day-city">Valencia</div>
+                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
+                <p class="day-text">Il porto di Valencia è il quinto più attivo d’Europa. Osservando l'architettura medievale e le costruzioni futuriste della città, gli amanti della storia non faticheranno a distingure le influenze barocche, gotiche e arabe.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>L'incredibile Bioparco di Valencia</li>
+                        <li>Il museo oceanografico di Valencia</li>
+                        <li>Il parco naturale dell'Albufera</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 5 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 5 - Lunedì 06 Aprile 2026</h2>
+                <div class="day-city">Cartagena</div>
+                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
+                <p class="day-text">Una sosta a Cartagena implica la scoperta di vestigia romane e sapori caratteristici. Da sempre il porto di Cartagena è un crocevia commerciale fra la regione di Murcia e il resto del mondo.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>Giornata di mare a La Manga</li>
+                        <li>Giro della città di Murcia</li>
+                        <li>Cartagena e i fasti del suo passato</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 6 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 6 - Martedì 07 Aprile 2026</h2>
+                <div class="day-city">Malaga</div>
+                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
+                <p class="day-text">Il porto di Malaga è uno dei porti di accesso alla omonima provincia spagnola. La città, arroccata sulla Costa del Sol, è sinonimo di arte, cultura e sole.</p>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 7 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 7 - Mercoledì 08 Aprile 2026</h2>
+                <div class="day-city">Cadice</div>
+                <div class="day-info">Arrivo 07:00 / Partenza 16:00</div>
+                <p class="day-text">Fai una sosta a Cadice, città andalusa che dà il nome alla regione di cui è capitale e al golfo sulle cui alture si erge fiera.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>Le cittadine bianche dell’Andalusia</li>
+                        <li>Giro panoramico di Cadice</li>
+                        <li>in bici alla scoperta di Cadice</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 8 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 8 - Giovedì 09 Aprile 2026</h2>
+                <div class="day-city">Lisbona</div>
+                <div class="day-info">Arrivo 08:00 / Partenza 16:00</div>
+                <p class="day-text">La capitale del Portogallo è un concentrato dello stile di vita portoghese. Fin dall’arrivo nel porto di Lisbona, potrai iniziare il soggiorno gustando le delizie della cucina locale.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>Assaggiare il vino verde</li>
+                        <li>Il museo nazionale di arte antica</li>
+                        <li>La vecchia linea di tram</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">coppia al ristorante</div>
+                    <div class="photo-placeholder">massaggio di coppia</div>
+                    <div class="photo-placeholder">foto di coppia</div>
+                    <div class="photo-placeholder">coppia al ristorante</div>
+                    <div class="photo-placeholder">massaggio di coppia</div>
+                    <div class="photo-placeholder">foto di coppia</div>
+                </div>
+            </div>
+
+            <!-- Giorno 9 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 9 - Venerdì 10 Aprile 2026</h2>
+                <div class="day-city">In navigazione...</div>
+                <p class="day-text">Immergiti nella vita di bordo: la giornata di navigazione è pensata apposta per farti divertire, rilassare e provare cose nuove da mattina a sera.</p>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 10 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 10 - Sabato 11 Aprile 2026</h2>
+                <div class="day-city">Alicante</div>
+                <div class="day-info">Arrivo 09:30 / Partenza 16:30</div>
+                <p class="day-text">Durante la sosta nel porto di Alicante, potrai goderti i tesori artistici e il fascino mediterraneo della città.</p>
+                <div class="not-to-miss">
+                    <strong>Da non perdere:</strong>
+                    <ul>
+                        <li>L’affascinante villaggio di montagna Guadalest</li>
+                        <li>Alicante e Elche</li>
+                        <li>Murcia, la città dai mille volti</li>
+                    </ul>
+                </div>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 11 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 11 - Domenica 12 Aprile 2026</h2>
+                <div class="day-city">Barcellona</div>
+                <div class="day-info">Arrivo 07:00 / Partenza 13:00</div>
+                <p class="day-text">La città ospita un innovativo museo di arte contemporanea, la cattedrale della Sagrada Familia e il Camp Nou. Nella capitale catalana potrai ammirare ovunque edifici dall’architettura memorabile.</p>
+                <div class="photo-grid">
+                    <div class="photo-placeholder">image</div>
+                    <div class="photo-placeholder">image</div>
+                </div>
+            </div>
+
+            <!-- Giorno 12 -->
+            <div class="day-card">
+                <h2 class="day-header">Giorno 12 - Lunedì 13 Aprile 2026</h2>
+                <div class="day-city">Savona</div>
+                <div class="day-info">Giorno di sbarco, Arrivo 09:00</div>
+            </div>
+        </section>
     </main>
 
     <script src="script.js"></script>
