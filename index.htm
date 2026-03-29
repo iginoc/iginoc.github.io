@@ -41,27 +41,32 @@
             color: white;
             text-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
-        /* Nuova mini-card della nave all'interno della mappa */
+        /* Card della nave usata come titolo */
         .map-ship-overlay {
-            position: absolute;
-            bottom: 80px;
-            right: 15px;
-            width: 180px;
-            border-radius: 8px;
+            display: block;
+            margin: 15px auto 10px;
+            width: 260px;
+            position: relative;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 25;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            text-decoration: none;
         }
+        .map-ship-overlay:hover { transform: scale(1.02); }
         .map-ship-overlay img { width: 100%; display: block; }
         .map-ship-text {
             position: absolute;
-            top: 5px;
-            left: 8px;
+            bottom: 8px;
+            left: 15px;
             color: white;
-            font-size: 0.65rem;
+            font-size: 1.2rem;
             font-weight: 900;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0,0,0,0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .diary-section {
             max-width: 900px;
@@ -226,16 +231,17 @@
     </div>
 
     <header class="sticky-header">
+        <!-- Card della nave ora fuori dall'immagine e usata come titolo -->
+        <a href="#" class="map-ship-overlay" id="refresh-ship" title="Torna all'inizio e aggiorna">
+            <img src="1.jpg" alt="Costa Favolosa" id="ship-img">
+            <span class="map-ship-text">Costa Favolosa</span>
+        </a>
+
         <div class="map-container" id="map-section">
             <div class="current-date-display">
                 <span id="date-text"></span>
                 <span id="countdown-text" class="countdown-timer"></span>
             </div>
-            <!-- Overlay immagine nave -->
-            <a href="#" class="map-ship-overlay" id="refresh-ship" title="Torna all'inizio e aggiorna">
-                <img src="1.jpg" alt="Costa Favolosa" id="ship-img">
-                <span class="map-ship-text">Costa Favolosa</span>
-            </a>
             <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block;">
             <!-- Hotspots posizionati sui puntini gialli -->
             <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
