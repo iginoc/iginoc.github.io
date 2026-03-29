@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -42,6 +45,7 @@
             padding: 2.5rem;
             margin-bottom: 3rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            scroll-margin-top: 20px;
         }
         .day-header {
             font-size: clamp(1.8rem, 6vw, 3rem);
@@ -59,6 +63,23 @@
         .not-to-miss ul { list-style: none; padding: 0; margin-top: 0.5rem; }
         .not-to-miss li { padding: 4px 0; color: rgba(255,255,255,0.7); display: flex; align-items: flex-start; }
         .not-to-miss li::before { content: "•"; color: var(--accent-1); margin-right: 10px; font-weight: bold; }
+
+        /* Stili per la mappa interattiva */
+        .map-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .hotspot {
+            position: absolute;
+            width: 3.5%;
+            height: 5%;
+            /* background: rgba(255, 255, 0, 0.2); // Decommenta per debug posizionamento */
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -108,12 +129,24 @@
         </div>
 
         <div style="padding: 40px 20px; display: flex; justify-content: center;">
-            <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+            <div class="map-container">
+                <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); display: block;">
+                <!-- Hotspots posizionati sui puntini gialli -->
+                <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
+                <a href="#marsiglia" class="hotspot" style="left: 73%; top: 25.5%;" title="Marsiglia"></a>
+                <a href="#barcellona" class="hotspot" style="left: 60.5%; top: 41.5%;" title="Barcellona"></a>
+                <a href="#valencia" class="hotspot" style="left: 51%; top: 55.5%;" title="Valencia"></a>
+                <a href="#alicante" class="hotspot" style="left: 50.3%; top: 64%;" title="Alicante"></a>
+                <a href="#cartagena" class="hotspot" style="left: 47.5%; top: 69.5%;" title="Cartagena"></a>
+                <a href="#malaga" class="hotspot" style="left: 34.5%; top: 76.5%;" title="Malaga"></a>
+                <a href="#cadice" class="hotspot" style="left: 27%; top: 78%;" title="Cadice"></a>
+                <a href="#lisbona" class="hotspot" style="left: 15.5%; top: 61.5%;" title="Lisbona"></a>
+            </div>
         </div>
 
         <section class="diary-section">
             <!-- Giorno 1 -->
-            <div class="day-card">
+            <div class="day-card" id="savona">
                 <h2 class="day-header">Giorno 1 - Giovedì 02 Aprile 2026</h2>
                 <div class="day-city">Savona</div>
                 <div class="day-info">Giorno d'imbarco, Partenza 17:30</div>
@@ -130,7 +163,7 @@
             </div>
 
             <!-- Giorno 2 -->
-            <div class="day-card">
+            <div class="day-card" id="marsiglia">
                 <h2 class="day-header">Giorno 2 - Venerdì 03 Aprile 2026</h2>
                 <div class="day-city">Marsiglia</div>
                 <div class="day-info">Arrivo 09:00 / Partenza 18:00</div>
@@ -153,7 +186,7 @@
             </div>
 
             <!-- Giorno 4 -->
-            <div class="day-card">
+            <div class="day-card" id="valencia">
                 <h2 class="day-header">Giorno 4 - Domenica 05 Aprile 2026</h2>
                 <div class="day-city">Valencia</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
@@ -169,7 +202,7 @@
             </div>
 
             <!-- Giorno 5 -->
-            <div class="day-card">
+            <div class="day-card" id="cartagena">
                 <h2 class="day-header">Giorno 5 - Lunedì 06 Aprile 2026</h2>
                 <div class="day-city">Cartagena</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
@@ -185,7 +218,7 @@
             </div>
 
             <!-- Giorno 6 -->
-            <div class="day-card">
+            <div class="day-card" id="malaga">
                 <h2 class="day-header">Giorno 6 - Martedì 07 Aprile 2026</h2>
                 <div class="day-city">Malaga</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
@@ -193,7 +226,7 @@
             </div>
 
             <!-- Giorno 7 -->
-            <div class="day-card">
+            <div class="day-card" id="cadice">
                 <h2 class="day-header">Giorno 7 - Mercoledì 08 Aprile 2026</h2>
                 <div class="day-city">Cadice</div>
                 <div class="day-info">Arrivo 07:00 / Partenza 16:00</div>
@@ -209,7 +242,7 @@
             </div>
 
             <!-- Giorno 8 -->
-            <div class="day-card">
+            <div class="day-card" id="lisbona">
                 <h2 class="day-header">Giorno 8 - Giovedì 09 Aprile 2026</h2>
                 <div class="day-city">Lisbona</div>
                 <div class="day-info">Arrivo 08:00 / Partenza 16:00</div>
@@ -232,7 +265,7 @@
             </div>
 
             <!-- Giorno 10 -->
-            <div class="day-card">
+            <div class="day-card" id="alicante">
                 <h2 class="day-header">Giorno 10 - Sabato 11 Aprile 2026</h2>
                 <div class="day-city">Alicante</div>
                 <div class="day-info">Arrivo 09:30 / Partenza 16:30</div>
@@ -248,7 +281,7 @@
             </div>
 
             <!-- Giorno 11 -->
-            <div class="day-card">
+            <div class="day-card" id="barcellona">
                 <h2 class="day-header">Giorno 11 - Domenica 12 Aprile 2026</h2>
                 <div class="day-city">Barcellona</div>
                 <div class="day-info">Arrivo 07:00 / Partenza 13:00</div>
