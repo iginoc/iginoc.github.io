@@ -35,6 +35,11 @@
             max-height: 50px;
             width: auto;
             display: block;
+            filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5));
+            transition: filter 0.3s ease;
+        }
+        .logo-img:hover {
+            filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.8));
         }
         .diary-section {
             max-width: 900px;
@@ -94,15 +99,6 @@
                 background: rgba(255, 255, 255, 0.3);
                 box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
             }
-        }
-
-        /* Animazione evidenziazione scheda */
-        @keyframes highlight-glow {
-            0% { border-color: var(--accent-3); box-shadow: 0 0 30px rgba(6, 182, 212, 0.4); transform: scale(1.02); }
-            100% { border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(1); }
-        }
-        .day-card:target {
-            animation: highlight-glow 2s ease-out;
         }
 
         /* Stile pulsante torna alla mappa */
@@ -171,7 +167,9 @@
 
     <header class="sticky-header">
         <div class="top-bar">
-            <img src="1.jpg" alt="Costa Favolosa" class="logo-img">
+            <a href="#" title="Torna all'inizio">
+                <img src="1.jpg" alt="Costa Favolosa" class="logo-img">
+            </a>
         </div>
 
         <div class="map-container" id="map-section">
