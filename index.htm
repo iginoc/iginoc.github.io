@@ -25,7 +25,7 @@
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
+            padding-bottom: 0;
         }
         .top-bar {
             padding: 15px 20px;
@@ -45,12 +45,12 @@
         .map-ship-overlay {
             display: block;
             margin: 15px auto 10px;
-            width: 260px;
+            width: 95%;
+            max-width: 900px;
             position: relative;
-            border-radius: 12px;
+            border-radius: 2rem;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 100;
             transition: transform 0.3s ease;
             text-decoration: none;
@@ -102,12 +102,15 @@
         /* Stili per la mappa interattiva */
         .map-container {
             position: relative;
-            max-width: 500px;
+            width: 95%;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 0 10px;
+            padding: 0;
             transition: all 0.4s ease-in-out;
-            max-height: 400px; /* Altezza massima per l'apertura */
+            max-height: 800px; /* Aumentato per mostrare l'intera mappa su desktop */
             overflow: hidden;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Styles for the scrolled state */
@@ -242,7 +245,7 @@
                 <span id="date-text"></span>
                 <span id="countdown-text" class="countdown-timer"></span>
             </div>
-            <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block;">
+            <img src="viaggio.webp" alt="Itinerario di viaggio" style="width: 100%; height: auto; display: block;">
             <!-- Hotspots posizionati sui puntini gialli -->
             <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
             <a href="#marsiglia" class="hotspot" style="left: 73%; top: 25.5%;" title="Marsiglia"></a>
