@@ -26,7 +26,6 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
-            transition: all 0.4s ease-in-out;
         }
         .top-bar {
             padding: 15px 20px;
@@ -51,7 +50,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
             margin-bottom: 10px; /* Space between image and map */
             max-height: 180px; /* Limit height of the image container */
-            transition: all 0.4s ease-in-out;
         }
         .logo-img-header {
             width: 100%;
@@ -74,7 +72,6 @@
             font-size: clamp(1rem, 4vw, 1.8rem); /* Responsive font size */
             text-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 20px rgba(6, 182, 212, 0.5);
             z-index: 1;
-            transition: all 0.4s ease-in-out;
         }
         .logo-img:hover {
             filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.8));
@@ -92,10 +89,10 @@
             padding: 2.5rem;
             margin-bottom: 3rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            scroll-margin-top: 220px; /* Allineato all'altezza dell'header compresso */
+            scroll-margin-top: calc(var(--header-height, 600px) + 20px);
         }
         @media (max-width: 600px) {
-            .day-card { scroll-margin-top: 260px; padding: 1.5rem; }
+            .day-card { padding: 1.5rem; }
         }
         .day-header {
             font-size: clamp(1.8rem, 6vw, 3rem);
@@ -130,16 +127,6 @@
             background: rgba(5, 5, 5, 0.7); /* More transparent */
             padding-bottom: 5px;
         }
-        .sticky-header.scrolled .logo-image-container {
-            max-height: 100px; /* Smaller logo container */
-        }
-        .sticky-header.scrolled .map-container {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            opacity: 0;
-            pointer-events: none;
-        }
         .hotspot {
             position: absolute;
             width: 3.5%;
@@ -149,6 +136,7 @@
             transform: translate(-50%, -50%);
             z-index: 20;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         @media (hover: hover) {
             .hotspot:hover {
@@ -156,6 +144,13 @@
                 background: rgba(255, 255, 255, 0.3);
                 box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
             }
+        }
+        .hotspot.active {
+            background: #ef4444 !important; /* Rosso */
+            box-shadow: 0 0 15px 5px rgba(239, 68, 68, 0.6);
+            transform: translate(-50%, -50%) scale(1.3);
+            border: 2px solid white;
+            z-index: 35;
         }
 
         /* Box data sulla mappa */
@@ -533,10 +528,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const dots = document.querySelectorAll('.nav-dot');
+            const hotspots = document.querySelectorAll('.hotspot');
             const sections = document.querySelectorAll('.day-card[id]');
             const dateText = document.getElementById('date-text');
             const countdownText = document.getElementById('countdown-text');
             const header = document.querySelector('.sticky-header');
+
+            // Aggiorna l'altezza dell'header per lo scroll-margin-top dinamico
+            const updateHeaderHeight = () => {
+                document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+            };
+            window.addEventListener('resize', updateHeaderHeight);
+            updateHeaderHeight();
 
             // Gestione Header al resize/scroll
             window.addEventListener('scroll', () => {
@@ -629,6 +632,11 @@
                     const id = intersecting[intersecting.length - 1].target.getAttribute('id');
                     dots.forEach(dot => {
                         dot.classList.toggle('active', dot.getAttribute('href') === `#${id}`);
+                    });
+                    hotspots.forEach(hot => {
+                        // Evidenzia il punto se l'id coincide o se siamo al giorno 12 (Savona)
+                        const isActive = hot.getAttribute('href') === `#${id}` || (id === 'day-12' && hot.getAttribute('href') === '#savona');
+                        hot.classList.toggle('active', isActive);
                     });
                 }
             }, observerOptions);
