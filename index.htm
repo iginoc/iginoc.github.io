@@ -143,6 +143,12 @@
             transform: scale(1.2);
             box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
+        .nav-dot.active {
+            background: var(--accent-3);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            border-color: var(--accent-3);
+        }
         @media (max-width: 1100px) {
             .side-nav { display: none; }
         }
@@ -414,5 +420,31 @@
         </section>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dots = document.querySelectorAll('.nav-dot');
+            const sections = document.querySelectorAll('.day-card[id]');
+
+            const observerOptions = {
+                root: null,
+                // Il margine superiore ed inferiore definisce l'area "attiva" dello schermo
+                rootMargin: '-20% 0px -70% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        dots.forEach(dot => {
+                            dot.classList.toggle('active', dot.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
 </body>
 </html>
