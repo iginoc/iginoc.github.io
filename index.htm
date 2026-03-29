@@ -44,9 +44,9 @@
         /* Nuova mini-card della nave all'interno della mappa */
         .map-ship-overlay {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 140px;
+            bottom: 80px;
+            right: 15px;
+            width: 180px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -247,22 +247,12 @@
             <a href="#malaga" class="hotspot" style="left: 34.5%; top: 76.5%;" title="Malaga"></a>
             <a href="#cadice" class="hotspot" style="left: 27%; top: 78%;" title="Cadice"></a>
             <a href="#lisbona" class="hotspot" style="left: 15.5%; top: 61.5%;" title="Lisbona"></a>
-        </div>
 
-        <nav class="side-nav">
-            <a href="#savona" class="nav-dot" title="Giorno 1">1</a>
-            <a href="#marsiglia" class="nav-dot" title="Giorno 2">2</a>
-            <a href="#day-3" class="nav-dot" title="Giorno 3">3</a>
-            <a href="#valencia" class="nav-dot" title="Giorno 4">4</a>
-            <a href="#cartagena" class="nav-dot" title="Giorno 5">5</a>
-            <a href="#malaga" class="nav-dot" title="Giorno 6">6</a>
-            <a href="#cadice" class="nav-dot" title="Giorno 7">7</a>
-            <a href="#lisbona" class="nav-dot" title="Giorno 8">8</a>
-            <a href="#day-9" class="nav-dot" title="Giorno 9">9</a>
-            <a href="#alicante" class="nav-dot" title="Giorno 10">10</a>
-            <a href="#barcellona" class="nav-dot" title="Giorno 11">11</a>
-            <a href="#day-12" class="nav-dot" title="Giorno 12">12</a>
-        </nav>
+            <div class="slider-wrapper">
+                <span id="slider-label">Giorno 1</span>
+                <input type="range" id="day-slider" min="1" max="12" value="1" step="1">
+            </div>
+        </div>
     </header>
 
     <main style="margin-top: 20px; position: relative; z-index: 10;">
@@ -387,12 +377,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const dots = document.querySelectorAll('.nav-dot');
             const hotspots = document.querySelectorAll('.hotspot');
             const sections = document.querySelectorAll('.day-card[id]');
             const dateText = document.getElementById('date-text');
             const countdownText = document.getElementById('countdown-text');
             const header = document.querySelector('.sticky-header');
+            const daySlider = document.getElementById('day-slider');
+            const sliderLabel = document.getElementById('slider-label');
 
             // Aggiorna l'altezza dell'header per lo scroll-margin-top dinamico
             const updateHeaderHeight = () => {
@@ -475,10 +466,13 @@
             const currentPortId = cruiseSchedule[todayKey];
 
             if (currentPortId) {
-                // Evidenzia pulsante navigazione
-                const targetDot = document.querySelector(`.nav-dot[href="#${currentPortId}"]`);
-                if (targetDot) targetDot.classList.add('active');
-
+                // Imposta slider sulla tappa di oggi
+                const currentIndex = dayIds.indexOf(currentPortId);
+                if (currentIndex !== -1) {
+                    daySlider.value = currentIndex + 1;
+                    sliderLabel.textContent = `Giorno ${currentIndex + 1}`;
+                }
+                
                 // Aggiungi icona nave sulla mappa se siamo in un porto
                 if (portCoords[currentPortId]) {
                     const mapContainer = document.getElementById('map-section');
@@ -504,9 +498,11 @@
                 const intersecting = entries.filter(e => e.isIntersecting);
                 if (intersecting.length > 0) {
                     const id = intersecting[intersecting.length - 1].target.getAttribute('id');
-                    dots.forEach(dot => {
-                        dot.classList.toggle('active', dot.getAttribute('href') === `#${id}`);
-                    });
+                    const index = dayIds.indexOf(id);
+                    if (index !== -1) {
+                        daySlider.value = index + 1;
+                        sliderLabel.textContent = `Giorno ${index + 1}`;
+                    }
                     hotspots.forEach(hot => {
                         // Evidenzia il punto se l'id coincide o se siamo al giorno 12 (Savona)
                         const isActive = hot.getAttribute('href') === `#${id}` || (id === 'day-12' && hot.getAttribute('href') === '#savona');
