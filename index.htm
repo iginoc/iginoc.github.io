@@ -232,10 +232,10 @@
                 <span id="countdown-text" class="countdown-timer"></span>
             </div>
             <!-- Overlay immagine nave -->
-            <div class="map-ship-overlay">
-                <img src="1.jpg" alt="Costa Favolosa">
+            <a href="#" class="map-ship-overlay" id="refresh-ship" title="Torna all'inizio e aggiorna">
+                <img src="1.jpg" alt="Costa Favolosa" id="ship-img">
                 <span class="map-ship-text">Costa Favolosa</span>
-            </div>
+            </a>
             <img src="viaggio.webp" alt="Itinerario di viaggio" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block;">
             <!-- Hotspots posizionati sui puntini gialli -->
             <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
@@ -400,6 +400,20 @@
             };
             window.addEventListener('resize', updateHeaderHeight);
             updateHeaderHeight();
+
+            // Gestione click immagine nave (torna su e refresh cache)
+            const shipRefresh = document.getElementById('refresh-ship');
+            const shipImg = document.getElementById('ship-img');
+
+            if (shipRefresh && shipImg) {
+                shipRefresh.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Ricarica l'immagine forzando il bypass della cache tramite timestamp
+                    const baseUrl = shipImg.src.split('?')[0];
+                    shipImg.src = baseUrl + '?t=' + new Date().getTime();
+                });
+            }
 
             // Gestione Header al resize/scroll
             window.addEventListener('scroll', () => {
