@@ -390,6 +390,9 @@
             const header = document.querySelector('.sticky-header');
             const daySlider = document.getElementById('day-slider');
             const sliderLabel = document.getElementById('slider-label');
+            
+            // Definizione degli ID per la navigazione
+            const dayIds = ["savona", "marsiglia", "day-3", "valencia", "cartagena", "malaga", "cadice", "lisbona", "day-9", "alicante", "barcellona", "day-12"];
 
             // Aggiorna l'altezza dell'header per lo scroll-margin-top dinamico
             const updateHeaderHeight = () => {
@@ -411,6 +414,19 @@
                     shipImg.src = baseUrl + '?t=' + new Date().getTime();
                 });
             }
+
+            // Gestione slider (Sincronizzazione barra -> pagina)
+            daySlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                sliderLabel.textContent = `Giorno ${val}`;
+                const targetId = dayIds[val - 1];
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    // Calcola offset per non finire sotto l'header
+                    const offset = header.offsetHeight + 20;
+                    window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
+                }
+            });
 
             // Gestione Header al resize/scroll
             window.addEventListener('scroll', () => {
