@@ -16,9 +16,16 @@
     font-family: 'Inter', sans-serif;
 }
 
+html {
+    overflow-y: auto;
+    height: auto;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
 }
 
 /* Background Blobs */
