@@ -92,10 +92,10 @@
             padding: 2.5rem;
             margin-bottom: 3rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            scroll-margin-top: 580px; /* Adjusted for new sticky header height */
+            scroll-margin-top: 220px; /* Allineato all'altezza dell'header compresso */
         }
         @media (max-width: 600px) {
-            .day-card { scroll-margin-top: 650px; padding: 1.5rem; } /* Adjusted for new sticky header height on mobile */
+            .day-card { scroll-margin-top: 260px; padding: 1.5rem; }
         }
         .day-header {
             font-size: clamp(1.8rem, 6vw, 3rem);
@@ -121,6 +121,8 @@
             margin: 0 auto;
             padding: 0 10px;
             transition: all 0.4s ease-in-out;
+            max-height: 400px; /* Altezza massima per l'apertura */
+            overflow: hidden;
         }
 
         /* Styles for the scrolled state */
@@ -132,8 +134,11 @@
             max-height: 100px; /* Smaller logo container */
         }
         .sticky-header.scrolled .map-container {
-            max-width: 400px; /* Smaller map */
-            opacity: 0.9;
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            pointer-events: none;
         }
         .hotspot {
             position: absolute;
