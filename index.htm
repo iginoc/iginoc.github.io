@@ -11,6 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
         .map-wrapper {
             flex: 1;
             position: relative;
@@ -177,6 +182,9 @@
                 maxZoom: 18
             }).addTo(osmMap);
 
+            // Forza il ricalcolo delle dimensioni per evitare che la mappa appaia grigia o invisibile
+            setTimeout(() => { osmMap.invalidateSize(); }, 100);
+
             const cruiseDestinations = [
                 { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Partenza 17:30" },
                 { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg", date: "03 Apr 2026", info: "09:00 - 18:00" },
@@ -293,25 +301,25 @@
                 osmEl.style.display = 'block';
                 if (shipFinalPos) {
                     centerBtn.style.display = 'block';
-                    setTimeout(() => {
-                        osmMap.invalidateSize();
-                        osmMap.setView(shipFinalPos, 6);
-                    }, 100);
                 }
+                setTimeout(() => {
+                    osmMap.invalidateSize();
+                    if (shipFinalPos) osmMap.setView(shipFinalPos, 6);
+                }, 50);
             });
 
             document.getElementById('show-vessel').addEventListener('click', function() {
                 hideAll();
                 this.classList.add('active');
                 vesselContainer.style.display = 'block';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="100%" frameborder="0"></iframe>`;
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" style="width:100%; height:100%; border:none;"></iframe>`;
             });
 
             document.getElementById('show-marine').addEventListener('click', function() {
                 hideAll();
                 this.classList.add('active');
                 marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/imo:9479852/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/trackvessel:true" width="100%" height="100%" frameborder="0"></iframe>`;
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/imo:9479852/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/trackvessel:true" style="width:100%; height:100%; border:none;"></iframe>`;
             });
 
             if (shipFinalPos) {
