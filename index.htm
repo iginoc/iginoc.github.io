@@ -297,11 +297,14 @@
                 }).addTo(osmMap);
             }
 
+            const savonaIndex = cruiseDestinations.findIndex(d => d.id === "savona");
+
             cruiseDestinations.forEach((dest, index) => {
+                const dayNum = index < savonaIndex ? index - savonaIndex : index - savonaIndex + 1;
                 const popupHtml = `
                     <div class="popup-card">
                         <div class="popup-info">
-                            <h3>Giorno ${index + 1}: ${dest.name}</h3>
+                            <h3>Giorno ${dayNum}: ${dest.name}</h3>
                             <p><strong>${dest.date}</strong></p>
                             <p>${dest.info}</p>
                         </div>
@@ -312,7 +315,7 @@
                 L.marker(dest.coords, {
                     icon: L.divIcon({
                         className: 'marker-label',
-                        html: `<span>${index + 1}</span>`,
+                        html: `<span>${dayNum}</span>`,
                         iconSize: [24, 24],
                         iconAnchor: [12, 12]
                     })
