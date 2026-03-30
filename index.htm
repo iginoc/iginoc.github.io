@@ -185,6 +185,29 @@
             font-size: 0.8rem;
             text-transform: uppercase;
         }
+
+        /* Animazione Pulsante per la tappa odierna */
+        .pulse-container {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-3);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 10px var(--accent-3);
+        }
+        .pulse-container::after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+            position: absolute;
+            animation: pulse-animation 2s infinite;
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(4); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -243,90 +266,6 @@
                 <script type="text/javascript" src="https://www.marinetraffic.com/js/embed.js"></script>
             </div>
         </div>
-
-        <section class="diary-section">
-            <!-- Giorno 1 -->
-            <div class="day-card" id="savona">
-                <h2 class="day-header">Giorno 1 - Giovedì 02 Aprile 2026</h2>
-                <div class="day-city">Savona</div>
-                <div class="day-info">Giorno d'imbarco, Partenza 17:30</div>
-            </div>
-
-            <!-- Giorno 2 -->
-            <div class="day-card" id="marsiglia">
-                <h2 class="day-header">Giorno 2 - Venerdì 03 Aprile 2026</h2>
-                <div class="day-city">Marsiglia</div>
-                <div class="day-info">Arrivo 09:00 / Partenza 18:00</div>
-            </div>
-
-            <!-- Giorno 3 -->
-            <div class="day-card" id="day-3">
-                <h2 class="day-header">Giorno 3 - Sabato 04 Aprile 2026</h2>
-                <div class="day-city">In navigazione...</div>
-            </div>
-
-            <!-- Giorno 4 -->
-            <div class="day-card" id="valencia">
-                <h2 class="day-header">Giorno 4 - Domenica 05 Aprile 2026</h2>
-                <div class="day-city">Valencia</div>
-                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-            </div>
-
-            <!-- Giorno 5 -->
-            <div class="day-card" id="cartagena">
-                <h2 class="day-header">Giorno 5 - Lunedì 06 Aprile 2026</h2>
-                <div class="day-city">Cartagena</div>
-                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-            </div>
-
-            <!-- Giorno 6 -->
-            <div class="day-card" id="malaga">
-                <h2 class="day-header">Giorno 6 - Martedì 07 Aprile 2026</h2>
-                <div class="day-city">Malaga</div>
-                <div class="day-info">Arrivo 08:00 / Partenza 18:00</div>
-            </div>
-
-            <!-- Giorno 7 -->
-            <div class="day-card" id="cadice">
-                <h2 class="day-header">Giorno 7 - Mercoledì 08 Aprile 2026</h2>
-                <div class="day-city">Cadice</div>
-                <div class="day-info">Arrivo 07:00 / Partenza 16:00</div>
-            </div>
-
-            <!-- Giorno 8 -->
-            <div class="day-card" id="lisbona">
-                <h2 class="day-header">Giorno 8 - Giovedì 09 Aprile 2026</h2>
-                <div class="day-city">Lisbona</div>
-                <div class="day-info">Arrivo 08:00 / Partenza 16:00</div>
-            </div>
-
-            <!-- Giorno 9 -->
-            <div class="day-card" id="day-9">
-                <h2 class="day-header">Giorno 9 - Venerdì 10 Aprile 2026</h2>
-                <div class="day-city">In navigazione...</div>
-            </div>
-
-            <!-- Giorno 10 -->
-            <div class="day-card" id="alicante">
-                <h2 class="day-header">Giorno 10 - Sabato 11 Aprile 2026</h2>
-                <div class="day-city">Alicante</div>
-                <div class="day-info">Arrivo 09:30 / Partenza 16:30</div>
-            </div>
-
-            <!-- Giorno 11 -->
-            <div class="day-card" id="barcellona">
-                <h2 class="day-header">Giorno 11 - Domenica 12 Aprile 2026</h2>
-                <div class="day-city">Barcellona</div>
-                <div class="day-info">Arrivo 07:00 / Partenza 13:00</div>
-            </div>
-
-            <!-- Giorno 12 -->
-            <div class="day-card" id="day-12">
-                <h2 class="day-header">Giorno 12 - Lunedì 13 Aprile 2026</h2>
-                <div class="day-city">Savona</div>
-                <div class="day-info">Giorno di sbarco, Arrivo 09:00</div>
-            </div>
-        </section>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -382,40 +321,58 @@
             }).addTo(osmMap);
 
             const cruiseDestinations = [
-                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg" },
-                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg" },
-                { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], img: "1.jpg" },
-                { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], img: "1.jpg" },
-                { id: "cartagena", name: "Cartagena", coords: [37.6051, -0.9862], img: "1.jpg" },
-                { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], img: "1.jpg" },
-                { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], img: "1.jpg" },
-                { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], img: "1.jpg" },
-                { id: "day-9", name: "In Navigazione", coords: [36.0, -5.6], img: "1.jpg" },
-                { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], img: "1.jpg" },
-                { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], img: "1.jpg" },
-                { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], img: "1.jpg" }
+                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Partenza 17:30" },
+                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg", date: "03 Apr 2026", info: "09:00 - 18:00" },
+                { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], img: "1.jpg", date: "04 Apr 2026", info: "Mar Mediterraneo" },
+                { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], img: "1.jpg", date: "05 Apr 2026", info: "08:00 - 18:00" },
+                { id: "cartagena", name: "Cartagena", coords: [37.6051, -0.9862], img: "1.jpg", date: "06 Apr 2026", info: "08:00 - 18:00" },
+                { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], img: "1.jpg", date: "07 Apr 2026", info: "08:00 - 18:00" },
+                { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], img: "1.jpg", date: "08 Apr 2026", info: "07:00 - 16:00" },
+                { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], img: "1.jpg", date: "09 Apr 2026", info: "08:00 - 16:00" },
+                { id: "day-9", name: "In Navigazione", coords: [36.0, -5.6], img: "1.jpg", date: "10 Apr 2026", info: "Stretto di Gibilterra" },
+                { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], img: "1.jpg", date: "11 Apr 2026", info: "09:30 - 16:30" },
+                { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], img: "1.jpg", date: "12 Apr 2026", info: "07:00 - 13:00" },
+                { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], img: "1.jpg", date: "13 Apr 2026", info: "Arrivo 09:00" }
             ];
+
+            // Mapping date -> ID per animazione pulsante
+            const cruiseSchedule = {
+                "2026-04-02": "savona", "2026-04-03": "marsiglia", "2026-04-04": "day-3",
+                "2026-04-05": "valencia", "2026-04-06": "cartagena", "2026-04-07": "malaga",
+                "2026-04-08": "cadice", "2026-04-09": "lisbona", "2026-04-10": "day-9",
+                "2026-04-11": "alicante", "2026-04-12": "barcellona", "2026-04-13": "day-12"
+            };
+            
+            const todayKey = now.toISOString().split('T')[0];
+            const activeId = cruiseSchedule[todayKey];
 
             const pathCoords = cruiseDestinations.map(d => d.coords);
             L.polyline(pathCoords, { color: '#06b6d4', weight: 3, opacity: 0.5, dashArray: '5, 10' }).addTo(osmMap);
 
             cruiseDestinations.forEach((dest, index) => {
-                // Recupera info dalla card corrispondente
-                const card = document.getElementById(dest.id);
-                const infoText = card ? card.querySelector('.day-info')?.innerText || "In navigazione" : "";
-                const dateText = card ? card.querySelector('.day-header')?.innerText.split('-')[1]?.trim() || "" : "";
-
                 const popupHtml = `
                     <div class="popup-card">
                         <img src="${dest.img}" alt="${dest.name}">
                         <div class="popup-info">
                             <h3>Giorno ${index + 1}: ${dest.name}</h3>
-                            <p><strong>${dateText}</strong></p>
-                            <p>${infoText}</p>
-                            <a href="#${dest.id}" class="popup-btn">Dettagli tappa →</a>
+                            <p><strong>${dest.date}</strong></p>
+                            <p>${dest.info}</p>
                         </div>
                     </div>
                 `;
+
+                // Aggiungi effetto pulse se è la tappa di oggi
+                if (dest.id === activeId) {
+                    L.marker(dest.coords, {
+                        icon: L.divIcon({
+                            className: '',
+                            html: '<div class="pulse-container"></div>',
+                            iconSize: [12, 12],
+                            iconAnchor: [6, 6]
+                        }),
+                        interactive: false
+                    }).addTo(osmMap);
+                }
 
                 L.circleMarker(dest.coords, {
                     radius: 6,
