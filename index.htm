@@ -188,7 +188,27 @@
             setTimeout(() => { osmMap.invalidateSize(); }, 100);
 
             const cruiseDestinations = [
-                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Partenza 17:30" },
+                { id: "buenos-aires", name: "Buenos Aires", coords: [-34.6037, -58.3816], img: "1.jpg", date: "13 Mar 2026", info: "Partenza 19:00" },
+                { id: "mar-14", name: "In Navigazione", coords: [-31.0, -50.0], img: "1.jpg", date: "14 Mar 2026", info: "Oceano Atlantico" },
+                { id: "mar-15", name: "In Navigazione", coords: [-27.0, -45.0], img: "1.jpg", date: "15 Mar 2026", info: "Oceano Atlantico" },
+                { id: "rio", name: "Rio de Janeiro", coords: [-22.9068, -43.1729], img: "1.jpg", date: "16 Mar 2026", info: "12:00 - 20:00" },
+                { id: "mar-17", name: "In Navigazione", coords: [-18.0, -39.0], img: "1.jpg", date: "17 Mar 2026", info: "Costa Brasiliana" },
+                { id: "mar-18", name: "In Navigazione", coords: [-13.0, -36.0], img: "1.jpg", date: "18 Mar 2026", info: "Costa Brasiliana" },
+                { id: "recife", name: "Recife", coords: [-8.0578, -34.8778], img: "1.jpg", date: "19 Mar 2026", info: "10:00 - 19:30" },
+                { id: "mar-20", name: "In Navigazione", coords: [-4.0, -32.0], img: "1.jpg", date: "20 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mar-21", name: "In Navigazione", coords: [1.0, -30.0], img: "1.jpg", date: "21 Mar 2026", info: "Passaggio Equatore" },
+                { id: "mar-22", name: "In Navigazione", coords: [6.0, -28.0], img: "1.jpg", date: "22 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mar-23", name: "In Navigazione", coords: [11.0, -26.0], img: "1.jpg", date: "23 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mindelo", name: "Mindelo", coords: [16.8901, -24.9923], img: "1.jpg", date: "24 Mar 2026", info: "08:00 - 18:00" },
+                { id: "mar-25", name: "In Navigazione", coords: [21.0, -22.0], img: "1.jpg", date: "25 Mar 2026", info: "Verso le Canarie" },
+                { id: "mar-26", name: "In Navigazione", coords: [25.0, -19.0], img: "1.jpg", date: "26 Mar 2026", info: "Verso le Canarie" },
+                { id: "tenerife", name: "Santa Cruz de Tenerife", coords: [28.4636, -16.2518], img: "1.jpg", date: "27 Mar 2026", info: "08:00 - 16:00" },
+                { id: "mar-28", name: "In Navigazione", coords: [32.0, -11.0], img: "1.jpg", date: "28 Mar 2026", info: "Verso Tangeri" },
+                { id: "tangeri", name: "Tangier", coords: [35.7595, -5.8340], img: "1.jpg", date: "29 Mar 2026", info: "09:00 - 19:00" },
+                { id: "mar-30", name: "In Navigazione", coords: [38.0, -1.0], img: "1.jpg", date: "30 Mar 2026", info: "Mar Mediterraneo" },
+                { id: "barcelona-1", name: "Barcelona", coords: [41.3851, 2.1734], img: "1.jpg", date: "31 Mar 2026", info: "08:00 - 18:00" },
+                { id: "marseille-1", name: "Marseille", coords: [43.2965, 5.3698], img: "1.jpg", date: "01 Apr 2026", info: "08:00 - 17:00" },
+                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Arrivo 08:00 / Partenza 17:30" },
                 { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg", date: "03 Apr 2026", info: "09:00 - 18:00" },
                 { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], img: "1.jpg", date: "04 Apr 2026", info: "Mar Mediterraneo" },
                 { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], img: "1.jpg", date: "05 Apr 2026", info: "08:00 - 18:00" },
@@ -204,6 +224,13 @@
 
             // Mapping date -> ID per animazione pulsante
             const cruiseSchedule = {
+                "2026-03-13": "buenos-aires", "2026-03-14": "mar-14", "2026-03-15": "mar-15",
+                "2026-03-16": "rio", "2026-03-17": "mar-17", "2026-03-18": "mar-18",
+                "2026-03-19": "recife", "2026-03-20": "mar-20", "2026-03-21": "mar-21",
+                "2026-03-22": "mar-22", "2026-03-23": "mar-23", "2026-03-24": "mindelo",
+                "2026-03-25": "mar-25", "2026-03-26": "mar-26", "2026-03-27": "tenerife",
+                "2026-03-28": "mar-28", "2026-03-29": "tangeri", "2026-03-30": "mar-30",
+                "2026-03-31": "barcelona-1", "2026-04-01": "marseille-1",
                 "2026-04-02": "savona", "2026-04-03": "marsiglia", "2026-04-04": "day-3",
                 "2026-04-05": "valencia", "2026-04-06": "cartagena", "2026-04-07": "malaga",
                 "2026-04-08": "cadice", "2026-04-09": "lisbona", "2026-04-10": "day-9",
@@ -223,15 +250,35 @@
 
             // Definizione dei segmenti della rotta con waypoint nautici per evitare la terraferma
             const cruisePathSegments = [
+                [[-34.6037, -58.3816], [-35.0, -55.0], [-31.0, -50.0]], // BA -> Nav
+                [[-31.0, -50.0], [-27.0, -45.0]], // Nav -> Nav
+                [[-27.0, -45.0], [-23.0, -42.0], [-22.9068, -43.1729]], // Nav -> Rio
+                [[-22.9068, -43.1729], [-20.0, -38.0], [-18.0, -39.0]], // Rio -> Nav
+                [[-18.0, -39.0], [-15.0, -38.0], [-13.0, -36.0]], // Nav -> Nav
+                [[-13.0, -36.0], [-10.0, -35.0], [-8.0578, -34.8778]], // Nav -> Recife
+                [[-8.0578, -34.8778], [-4.0, -32.0]], // Recife -> Nav
+                [[-4.0, -32.0], [1.0, -30.0]], // Nav -> Nav
+                [[1.0, -30.0], [6.0, -28.0]], // Nav -> Nav
+                [[6.0, -28.0], [11.0, -26.0]], // Nav -> Nav
+                [[11.0, -26.0], [16.8901, -24.9923]], // Nav -> Mindelo
+                [[16.8901, -24.9923], [21.0, -22.0]], // Mindelo -> Nav
+                [[21.0, -22.0], [25.0, -19.0]], // Nav -> Nav
+                [[25.0, -19.0], [28.4636, -16.2518]], // Nav -> Tenerife
+                [[28.4636, -16.2518], [32.0, -11.0]], // Tenerife -> Nav
+                [[32.0, -11.0], [35.0, -8.0], [35.7595, -5.8340]], // Nav -> Tangeri
+                [[35.7595, -5.8340], [36.0, -4.0], [38.0, -1.0]], // Tangeri -> Nav
+                [[38.0, -1.0], [39.0, 0.0], [41.3851, 2.1734]], // Nav -> Barcelona
+                [[41.3851, 2.1734], [42.5, 4.5], [43.2965, 5.3698]], // Barcelona -> Marseille
+                [[43.2965, 5.3698], [43.8, 8.0], [44.3129, 8.4764]], // Marseille -> Savona
                 [[44.3129, 8.4764], [43.8, 8.0], [43.4, 6.0], [43.2965, 5.3698]], // Savona -> Marsiglia
-                [[43.2965, 5.3698], [42.0, 4.5], [41.5, 3.5]],      // Marsiglia -> Navigazione
-                [[41.5, 3.5], [40.0, 1.0], [39.4699, -0.3763]],     // Navigazione -> Valencia
+                [[43.2965, 5.3698], [42.0, 4.5], [41.5, 3.5]],      // Marsiglia -> Nav
+                [[41.5, 3.5], [40.0, 1.0], [39.4699, -0.3763]],     // Nav -> Valencia
                 [[39.4699, -0.3763], [38.5, 0.5], [37.6051, -0.9862]], // Valencia -> Cartagena
                 [[37.6051, -0.9862], [36.4, -2.2], [36.5, -3.5], [36.7213, -4.4214]], // Cartagena -> Malaga
                 [[36.7213, -4.4214], [35.9, -5.5], [36.5298, -6.2947]], // Malaga -> Cadice
                 [[36.5298, -6.2947], [35.8, -7.5], [36.8, -9.2], [38.7223, -9.1393]], // Cadice -> Lisbona
-                [[38.7223, -9.1393], [36.8, -9.2], [35.8, -7.5], [35.9, -5.5], [36.0, -5.6]], // Lisbona -> Navigazione
-                [[36.0, -5.6], [36.4, -2.2], [37.4, -0.7], [38.3452, -0.4810]],   // Navigazione -> Alicante
+                [[38.7223, -9.1393], [36.8, -9.2], [35.8, -7.5], [35.9, -5.5], [36.0, -5.6]], // Lisbona -> Nav
+                [[36.0, -5.6], [36.4, -2.2], [37.4, -0.7], [38.3452, -0.4810]],   // Nav -> Alicante
                 [[38.3452, -0.4810], [38.7, 0.5], [40.5, 1.5], [41.3851, 2.1734]], // Alicante -> Barcellona
                 [[41.3851, 2.1734], [42.5, 4.5], [43.8, 8.0], [44.3129, 8.4764]]  // Barcellona -> Savona
             ];
@@ -347,8 +394,8 @@
                 centerBtn.style.display = 'none';
             }
 
-            // Countdown alla partenza (2 Aprile 2026)
-            const startDate = new Date("2026-04-02");
+            // Countdown alla partenza (13 Marzo 2026)
+            const startDate = new Date("2026-03-13");
             const diffTime = startDate - now;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
