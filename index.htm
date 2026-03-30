@@ -292,17 +292,30 @@
             
             const todayKey = now.toISOString().split('T')[0];
             const activeId = cruiseSchedule[todayKey];
-            let activeCoords = null;
+            const scheduleKeys = Object.keys(cruiseSchedule);
+            const activeIndex = scheduleKeys.indexOf(todayKey);
             
-            // Trova le coordinate previste per oggi
+            let activeCoords = null;
             const todayDest = cruiseDestinations.find(d => d.id === activeId);
             if (todayDest) activeCoords = todayDest.coords;
 
-            // La posizione finale è quella manuale (se esiste) o quella prevista
             const shipFinalPos = manualAISPosition || activeCoords;
 
+            // Disegna ITINERARIO con GRADIENTE (Passato vs Futuro)
             const pathCoords = cruiseDestinations.map(d => d.coords);
-            L.polyline(pathCoords, { color: '#06b6d4', weight: 3, opacity: 0.5, dashArray: '5, 10' }).addTo(osmMap);
+            for (let i = 0; i < pathCoords.length - 1; i++) {
+                const isPast = activeIndex !== -1 && i < activeIndex;
+                const segmentColor = isPast ? '#4f46e5' : '#06b6d4';
+                const segmentOpacity = isPast ? 0.8 : 0.4;
+                const segmentDash = isPast ? '' : '5, 10';
+                
+                L.polyline([pathCoords[i], pathCoords[i+1]], {
+                    color: segmentColor,
+                    weight: 4,
+                    opacity: segmentOpacity,
+                    dashArray: segmentDash
+                }).addTo(osmMap);
+            }
 
             cruiseDestinations.forEach((dest, index) => {
                 const popupHtml = `
