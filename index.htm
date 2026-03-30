@@ -64,13 +64,40 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #osm-map {
+        .map-wrapper {
+            position: relative;
             width: 95%;
             max-width: 900px;
-            height: 350px;
             margin: 0 auto 15px;
+        }
+        #osm-map {
+            width: 100%;
+            height: 350px;
             border-radius: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .map-control-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--accent-3);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        .map-control-btn:hover {
+            background: var(--accent-3);
+            color: white;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
         .current-date-display {
             background: rgba(5, 5, 5, 0.6);
@@ -167,7 +194,10 @@
             <span id="date-text"></span>
             <span id="countdown-text" class="countdown-timer"></span>
         </div>
-        <div id="osm-map"></div>
+        <div class="map-wrapper">
+            <div id="osm-map"></div>
+            <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
+        </div>
     </header>
 
     <main style="margin-top: 20px; position: relative; z-index: 10;">
@@ -252,6 +282,7 @@
             
             const todayKey = now.toISOString().split('T')[0];
             const activeId = cruiseSchedule[todayKey];
+            let activeCoords = null;
 
             const pathCoords = cruiseDestinations.map(d => d.coords);
             L.polyline(pathCoords, { color: '#06b6d4', weight: 3, opacity: 0.5, dashArray: '5, 10' }).addTo(osmMap);
@@ -259,7 +290,6 @@
             cruiseDestinations.forEach((dest, index) => {
                 const popupHtml = `
                     <div class="popup-card">
-                        <img src="${dest.img}" alt="${dest.name}">
                         <div class="popup-info">
                             <h3>Giorno ${index + 1}: ${dest.name}</h3>
                             <p><strong>${dest.date}</strong></p>
@@ -270,6 +300,7 @@
 
                 // Aggiungi effetto pulse se è la tappa di oggi
                 if (dest.id === activeId) {
+                    activeCoords = dest.coords;
                     L.marker(dest.coords, {
                         icon: L.divIcon({
                             className: '',
@@ -294,6 +325,15 @@
             });
 
             osmMap.fitBounds(L.polyline(pathCoords).getBounds(), { padding: [30, 30] });
+
+            const centerBtn = document.getElementById('center-map-btn');
+            if (activeCoords) {
+                centerBtn.addEventListener('click', () => {
+                    osmMap.flyTo(activeCoords, 10, { animate: true, duration: 1.5 });
+                });
+            } else {
+                centerBtn.style.display = 'none';
+            }
 
             // Countdown alla partenza (2 Aprile 2026)
             const startDate = new Date("2026-04-02");
