@@ -215,6 +215,22 @@
             0% { transform: scale(0.5); opacity: 0.8; }
             100% { transform: scale(2.5); opacity: 0; }
         }
+        /* Numeri sopra le tappe */
+        .marker-label {
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid var(--accent-3);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -338,6 +354,17 @@
                     maxWidth: 220,
                     className: 'custom-cruise-popup'
                 });
+
+                // Aggiunge il numero del giorno sopra il marker
+                L.marker(dest.coords, {
+                    icon: L.divIcon({
+                        className: 'marker-label',
+                        html: `<span>${index + 1}</span>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 28] // Posizionato sopra il cerchietto della tappa
+                    }),
+                    interactive: false
+                }).addTo(osmMap);
             });
 
             // Disegna l'icona della nave sulla posizione corretta
