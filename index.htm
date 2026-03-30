@@ -171,12 +171,6 @@
         .leaflet-popup-tip { background: rgba(15, 15, 15, 0.85) !important; }
         
         .popup-card { display: flex; flex-direction: column; }
-        .popup-card img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-bottom: 2px solid var(--accent-3);
-        }
         .popup-info { padding: 15px; }
         .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
         .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
@@ -426,7 +420,7 @@
                 hideAll();
                 this.classList.add('active');
                 marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/mmsi:247311100/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/imo:9479852/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
             });
 
             if (shipFinalPos) {
