@@ -11,136 +11,70 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        body { /* Ensure body has no extra margins/paddings */
-            margin: 0; 
-            padding: 0; 
-            min-height: 100vh; /* Ensure body takes full viewport height */
-        }
-        .diary-section {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px 20px 100px;
-        }
-        .day-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2rem;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            scroll-margin-top: calc(var(--header-height, 600px) + 20px);
-        }
-        @media (max-width: 600px) {
-            .day-card { padding: 1.5rem; }
-        }
-        .day-header {
-            font-size: clamp(1.8rem, 6vw, 3rem);
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
-        .day-city { font-size: 1.8rem; color: var(--accent-3); margin-bottom: 0.2rem; font-weight: 700; }
-        .day-info { font-size: 1.1rem; color: var(--accent-2); margin-bottom: 1.5rem; font-weight: 600; }
-        .day-text { line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 1.2rem; font-size: 1.05rem; }
-
-        /* Stili per la mappa interattiva */
-        .map-container {
-            position: relative;
-            width: 95%;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0;
-            transition: all 0.4s ease-in-out;
-            max-height: 500px;
-            overflow: hidden;
-            border-radius: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
         .map-wrapper {
+            flex: 1;
             position: relative;
-            width: 95%;
-            max-width: 900px;
-            margin: 0 auto 15px;
+            width: 100%;
         }
         #osm-map {
             width: 100%;
-            height: 400px;
-            border-radius: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
         }
         #vessel-map-container, #marine-map-container {
             display: none;
             width: 100%;
-            height: 400px;
-            border-radius: 2rem;
-            overflow: hidden;
+            height: 100%;
         }
         .map-control-btn {
             position: absolute;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            background: rgba(15, 15, 15, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #111;
+            border: 1px solid #333;
             color: var(--accent-3);
             padding: 8px 16px;
             border-radius: 30px;
             font-size: 0.7rem;
             font-weight: 700;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
         }
         .map-control-btn:hover {
             background: var(--accent-3);
             color: white;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
         .header-controls {
+            background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 0 auto 15px;
+            padding: 10px;
             flex-wrap: wrap;
+            border-bottom: 1px solid #222;
         }
         .map-switch-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #111;
+            border: 1px solid #333;
             color: white;
             padding: 8px 15px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
         }
-        .map-switch-btn:hover { background: rgba(255, 255, 255, 0.15); }
+        .map-switch-btn:hover { background: #222; }
         .map-switch-btn.active { background: var(--accent-3); border-color: var(--accent-3); }
 
         .current-date-display {
-            background: rgba(5, 5, 5, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #111;
+            border: 1px solid #333;
             padding: 8px 18px;
             border-radius: 30px;
             font-size: 0.75rem;
             font-weight: 600;
             color: var(--accent-3);
-            z-index: 25;
             text-transform: capitalize;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             line-height: 1.2;
@@ -148,41 +82,28 @@
             text-align: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .current-date-display:hover { transform: scale(1.05); }
         .countdown-timer {
             font-size: 0.65rem;
-            color: var(--accent-2);
+            color: #888;
             margin-top: 3px;
         }
 
         /* Personalizzazione Popup Leaflet */
         .leaflet-popup-content-wrapper {
-            background: rgba(15, 15, 15, 0.85) !important;
+            background: #111 !important;
             color: white !important;
-            border-radius: 1.5rem !important;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            border-radius: 1rem !important;
+            border: 1px solid #333;
             padding: 0;
-            overflow: hidden;
         }
         .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
-        .leaflet-popup-tip { background: rgba(15, 15, 15, 0.85) !important; }
+        .leaflet-popup-tip { background: #111 !important; }
         
         .popup-card { display: flex; flex-direction: column; }
         .popup-info { padding: 15px; }
         .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
         .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
-        .popup-btn {
-            display: block;
-            margin-top: 10px;
-            color: var(--accent-3);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
 
         /* Stile per l'icona della nave AIS */
         .ship-marker-container {
@@ -190,28 +111,14 @@
             justify-content: center;
             align-items: center;
         }
-        .pulse-container {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: rgba(6, 182, 212, 0.4);
-            border-radius: 50%;
-            animation: pulse-animation 2s infinite;
-            z-index: -1;
-        }
         .ship-icon-svg {
-            filter: drop-shadow(0 0 8px var(--accent-3));
             fill: var(--accent-3);
             stroke: white;
             stroke-width: 1px;
         }
-        @keyframes pulse-animation {
-            0% { transform: scale(0.5); opacity: 0.8; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
         /* Numeri sopra le tappe */
         .marker-label {
-            background: rgba(15, 15, 15, 0.9);
+            background: #111;
             border: 1px solid var(--accent-3);
             color: white;
             border-radius: 50%;
@@ -223,17 +130,10 @@
             font-size: 10px;
             font-weight: 800;
             pointer-events: none;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
     <header>
         <div class="header-controls">
             <button class="map-switch-btn" id="show-vessel">VesselFinder</button>
@@ -311,21 +211,13 @@
 
             const shipFinalPos = manualAISPosition || activeCoords;
 
-            // Disegna ITINERARIO con GRADIENTE (Passato vs Futuro)
+            // Disegna ITINERARIO (Semplice)
             const pathCoords = cruiseDestinations.map(d => d.coords);
-            for (let i = 0; i < pathCoords.length - 1; i++) {
-                const isPast = activeIndex !== -1 && i < activeIndex;
-                const segmentColor = isPast ? '#4f46e5' : '#06b6d4';
-                const segmentOpacity = isPast ? 0.8 : 0.4;
-                const segmentDash = isPast ? '' : '5, 10';
-                
-                L.polyline([pathCoords[i], pathCoords[i+1]], {
-                    color: segmentColor,
-                    weight: 4,
-                    opacity: segmentOpacity,
-                    dashArray: segmentDash
-                }).addTo(osmMap);
-            }
+            L.polyline(pathCoords, {
+                color: '#06b6d4',
+                weight: 3,
+                opacity: 0.6
+            }).addTo(osmMap);
 
             cruiseDestinations.forEach((dest, index) => {
                 const popupHtml = `
@@ -366,7 +258,6 @@
                 const shipIcon = L.divIcon({
                     className: 'ship-marker-container',
                     html: `
-                        <div class="pulse-container"></div>
                         <svg class="ship-icon-svg" viewBox="0 0 24 24" width="30" height="30">
                             <path d="M4,15C4,15 5,18 12,18C19,18 20,15 20,15L22,13L20,11L4,11L2,13L4,15Z M10,11L11,5L13,5L14,11L10,11Z" />
                         </svg>
@@ -413,14 +304,14 @@
                 hideAll();
                 this.classList.add('active');
                 vesselContainer.style.display = 'block';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="400" frameborder="0"></iframe>`;
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="100%" frameborder="0"></iframe>`;
             });
 
             document.getElementById('show-marine').addEventListener('click', function() {
                 hideAll();
                 this.classList.add('active');
                 marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/imo:9479852/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/imo:9479852/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/trackvessel:true" width="100%" height="100%" frameborder="0"></iframe>`;
             });
 
             if (shipFinalPos) {
