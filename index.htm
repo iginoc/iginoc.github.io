@@ -127,37 +127,7 @@
             background: rgba(5, 5, 5, 0.7); /* More transparent */
             padding-bottom: 5px;
         }
-        .hotspot {
-            position: absolute;
-            width: 3.5%;
-            height: 5%;
-            /* background: rgba(255, 255, 0, 0.2); // Decommenta per debug posizionamento */
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        @media (hover: hover) {
-            .hotspot:hover {
-                transform: translate(-50%, -50%) scale(1.5);
-                background: rgba(255, 255, 255, 0.3);
-                box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
-            }
-        }
-        .hotspot.active {
-            background: #ef4444 !important; /* Rosso */
-            box-shadow: 0 0 15px 5px rgba(239, 68, 68, 0.6);
-            transform: translate(-50%, -50%) scale(1.3);
-            border: 2px solid white;
-            z-index: 35;
-        }
-
-        /* Box data sulla mappa */
         .current-date-display {
-            position: absolute;
-            top: 15px;
-            left: 20px;
             background: rgba(5, 5, 5, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -172,66 +142,15 @@
             display: flex;
             flex-direction: column;
             line-height: 1.2;
+            margin: 0 auto 15px;
+            width: fit-content;
+            text-align: center;
+            align-items: center;
         }
         .countdown-timer {
             font-size: 0.65rem;
             color: var(--accent-2);
             margin-top: 3px;
-        }
-        .ship-marker {
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            z-index: 30;
-            pointer-events: none;
-            transform: translate(-50%, -100%);
-            filter: drop-shadow(0 0 8px var(--accent-3));
-            animation: shipFloat 2s ease-in-out infinite;
-        }
-        @keyframes shipFloat {
-            0%, 100% { transform: translate(-50%, -100%) translateY(0); }
-            50% { transform: translate(-50%, -100%) translateY(-6px); }
-        }
-
-        /* Navigazione rapida laterale */
-        .side-nav {
-            position: static;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
-            padding: 0 10px;
-        }
-        .nav-dot {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 700;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @media (hover: hover) {
-            .nav-dot:hover {
-                background: var(--accent-3);
-                transform: scale(1.2);
-                box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-            }
-        }
-        .nav-dot.active {
-            background: var(--accent-3);
-            transform: scale(1.2);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-            border-color: var(--accent-3);
         }
     </style>
 </head>
@@ -249,30 +168,12 @@
             <span class="map-ship-text">Costa Favolosa</span>
         </a>
 
-        <div id="osm-map"></div>
-
-        <div class="map-container" id="map-section">
-            <div class="current-date-display">
-                <span id="date-text"></span>
-                <span id="countdown-text" class="countdown-timer"></span>
-            </div>
-            <img src="viaggio.webp" alt="Itinerario di viaggio" style="width: 100%; height: auto; display: block;">
-            <!-- Hotspots posizionati sui puntini gialli -->
-            <a href="#savona" class="hotspot" style="left: 85%; top: 18%;" title="Savona"></a>
-            <a href="#marsiglia" class="hotspot" style="left: 73%; top: 25.5%;" title="Marsiglia"></a>
-            <a href="#barcellona" class="hotspot" style="left: 60.5%; top: 41.5%;" title="Barcellona"></a>
-            <a href="#valencia" class="hotspot" style="left: 51%; top: 55.5%;" title="Valencia"></a>
-            <a href="#alicante" class="hotspot" style="left: 50.3%; top: 64%;" title="Alicante"></a>
-            <a href="#cartagena" class="hotspot" style="left: 47.5%; top: 69.5%;" title="Cartagena"></a>
-            <a href="#malaga" class="hotspot" style="left: 34.5%; top: 76.5%;" title="Malaga"></a>
-            <a href="#cadice" class="hotspot" style="left: 27%; top: 78%;" title="Cadice"></a>
-            <a href="#lisbona" class="hotspot" style="left: 15.5%; top: 61.5%;" title="Lisbona"></a>
-
-            <div class="slider-wrapper">
-                <span id="slider-label">Giorno 1</span>
-                <input type="range" id="day-slider" min="1" max="12" value="1" step="1">
-            </div>
+        <div class="current-date-display">
+            <span id="date-text"></span>
+            <span id="countdown-text" class="countdown-timer"></span>
         </div>
+
+        <div id="osm-map"></div>
     </header>
 
     <main style="margin-top: 20px; position: relative; z-index: 10;">
@@ -398,16 +299,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const hotspots = document.querySelectorAll('.hotspot');
-            const sections = document.querySelectorAll('.day-card[id]');
             const dateText = document.getElementById('date-text');
             const countdownText = document.getElementById('countdown-text');
             const header = document.querySelector('.sticky-header');
-            const daySlider = document.getElementById('day-slider');
-            const sliderLabel = document.getElementById('slider-label');
-            
-            // Definizione degli ID per la navigazione
-            const dayIds = ["savona", "marsiglia", "day-3", "valencia", "cartagena", "malaga", "cadice", "lisbona", "day-9", "alicante", "barcellona", "day-12"];
 
             // Aggiorna l'altezza dell'header per lo scroll-margin-top dinamico
             const updateHeaderHeight = () => {
@@ -430,19 +324,6 @@
                 });
             }
 
-            // Gestione slider (Sincronizzazione barra -> pagina)
-            daySlider.addEventListener('input', (e) => {
-                const val = parseInt(e.target.value);
-                sliderLabel.textContent = `Giorno ${val}`;
-                const targetId = dayIds[val - 1];
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    // Calcola offset per non finire sotto l'header
-                    const offset = header.offsetHeight + 20;
-                    window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
-                }
-            });
-
             // Gestione Header al resize/scroll
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 50) {
@@ -456,22 +337,6 @@
             const now = new Date();
             const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
             dateText.textContent = now.toLocaleDateString('it-IT', dateOptions);
-
-            // Mappatura date crociera 2026 -> ID sezioni
-            const cruiseSchedule = {
-                "2026-04-02": "savona",
-                "2026-04-03": "marsiglia",
-                "2026-04-04": "day-3",
-                "2026-04-05": "valencia",
-                "2026-04-06": "cartagena",
-                "2026-04-07": "malaga",
-                "2026-04-08": "cadice",
-                "2026-04-09": "lisbona",
-                "2026-04-10": "day-9",
-                "2026-04-11": "alicante",
-                "2026-04-12": "barcellona",
-                "2026-04-13": "day-12"
-            };
 
             // Configurazione Mappa Interattiva (OpenStreetMap)
             const osmMap = L.map('osm-map', {
@@ -513,19 +378,6 @@
 
             osmMap.fitBounds(L.polyline(pathCoords).getBounds(), { padding: [30, 30] });
 
-            // Coordinate per l'icona della nave
-            const portCoords = {
-                "savona": { l: "85%", t: "18%" },
-                "marsiglia": { l: "73%", t: "25.5%" },
-                "barcellona": { l: "60.5%", t: "41.5%" },
-                "valencia": { l: "51%", t: "55.5%" },
-                "alicante": { l: "50.3%", t: "64%" },
-                "cartagena": { l: "47.5%", t: "69.5%" },
-                "malaga": { l: "34.5%", t: "76.5%" },
-                "cadice": { l: "27%", t: "78%" },
-                "lisbona": { l: "15.5%", t: "61.5%" }
-            };
-
             // Countdown alla partenza (2 Aprile 2026)
             const startDate = new Date("2026-04-02");
             const diffTime = startDate - now;
@@ -538,57 +390,6 @@
             } else if (now < new Date("2026-04-14")) {
                 countdownText.textContent = "Crociera in corso";
             }
-
-            const todayKey = now.toISOString().split('T')[0];
-            const currentPortId = cruiseSchedule[todayKey];
-
-            if (currentPortId) {
-                // Imposta slider sulla tappa di oggi
-                const currentIndex = dayIds.indexOf(currentPortId);
-                if (currentIndex !== -1) {
-                    daySlider.value = currentIndex + 1;
-                    sliderLabel.textContent = `Giorno ${currentIndex + 1}`;
-                }
-                
-                // Aggiungi icona nave sulla mappa se siamo in un porto
-                if (portCoords[currentPortId]) {
-                    const mapContainer = document.getElementById('map-section');
-                    const ship = document.createElement('div');
-                    ship.className = 'ship-marker';
-                    ship.style.left = portCoords[currentPortId].l;
-                    ship.style.top = portCoords[currentPortId].t;
-                    ship.innerHTML = `
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 17L3 20H21L22 17H2ZM18 10L17 14H7L6 10H18ZM15 4V7H9V4H15Z" fill="#06b6d4" stroke="white" stroke-width="1"/>
-                        </svg>`;
-                    mapContainer.appendChild(ship);
-                }
-            }
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '-30% 0px -30% 0px',
-                threshold: 0
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                const intersecting = entries.filter(e => e.isIntersecting);
-                if (intersecting.length > 0) {
-                    const id = intersecting[intersecting.length - 1].target.getAttribute('id');
-                    const index = dayIds.indexOf(id);
-                    if (index !== -1) {
-                        daySlider.value = index + 1;
-                        sliderLabel.textContent = `Giorno ${index + 1}`;
-                    }
-                    hotspots.forEach(hot => {
-                        // Evidenzia il punto se l'id coincide o se siamo al giorno 12 (Savona)
-                        const isActive = hot.getAttribute('href') === `#${id}` || (id === 'day-12' && hot.getAttribute('href') === '#savona');
-                        hot.classList.toggle('active', isActive);
-                    });
-                }
-            }, observerOptions);
-
-            sections.forEach(section => observer.observe(section));
         });
     </script>
 </body>
