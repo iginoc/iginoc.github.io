@@ -152,6 +152,39 @@
             color: var(--accent-2);
             margin-top: 3px;
         }
+
+        /* Personalizzazione Popup Leaflet */
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 15, 15, 0.85) !important;
+            color: white !important;
+            border-radius: 1.5rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 0;
+            overflow: hidden;
+        }
+        .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
+        .leaflet-popup-tip { background: rgba(15, 15, 15, 0.85) !important; }
+        
+        .popup-card { display: flex; flex-direction: column; }
+        .popup-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--accent-3);
+        }
+        .popup-info { padding: 15px; }
+        .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
+        .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
+        .popup-btn {
+            display: block;
+            margin-top: 10px;
+            color: var(--accent-3);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -349,31 +382,51 @@
             }).addTo(osmMap);
 
             const cruiseDestinations = [
-                { name: "Savona", coords: [44.3129, 8.4764] },
-                { name: "Marsiglia", coords: [43.2965, 5.3698] },
-                { name: "In Navigazione", coords: [41.5, 3.5] },
-                { name: "Valencia", coords: [39.4699, -0.3763] },
-                { name: "Cartagena", coords: [37.6051, -0.9862] },
-                { name: "Malaga", coords: [36.7213, -4.4214] },
-                { name: "Cadice", coords: [36.5298, -6.2947] },
-                { name: "Lisbona", coords: [38.7223, -9.1393] },
-                { name: "In Navigazione", coords: [36.0, -5.6] },
-                { name: "Alicante", coords: [38.3452, -0.4810] },
-                { name: "Barcellona", coords: [41.3851, 2.1734] },
-                { name: "Savona (Ritorno)", coords: [44.3129, 8.4764] }
+                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg" },
+                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg" },
+                { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], img: "1.jpg" },
+                { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], img: "1.jpg" },
+                { id: "cartagena", name: "Cartagena", coords: [37.6051, -0.9862], img: "1.jpg" },
+                { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], img: "1.jpg" },
+                { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], img: "1.jpg" },
+                { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], img: "1.jpg" },
+                { id: "day-9", name: "In Navigazione", coords: [36.0, -5.6], img: "1.jpg" },
+                { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], img: "1.jpg" },
+                { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], img: "1.jpg" },
+                { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], img: "1.jpg" }
             ];
 
             const pathCoords = cruiseDestinations.map(d => d.coords);
             L.polyline(pathCoords, { color: '#06b6d4', weight: 3, opacity: 0.5, dashArray: '5, 10' }).addTo(osmMap);
 
             cruiseDestinations.forEach((dest, index) => {
+                // Recupera info dalla card corrispondente
+                const card = document.getElementById(dest.id);
+                const infoText = card ? card.querySelector('.day-info')?.innerText || "In navigazione" : "";
+                const dateText = card ? card.querySelector('.day-header')?.innerText.split('-')[1]?.trim() || "" : "";
+
+                const popupHtml = `
+                    <div class="popup-card">
+                        <img src="${dest.img}" alt="${dest.name}">
+                        <div class="popup-info">
+                            <h3>Giorno ${index + 1}: ${dest.name}</h3>
+                            <p><strong>${dateText}</strong></p>
+                            <p>${infoText}</p>
+                            <a href="#${dest.id}" class="popup-btn">Dettagli tappa →</a>
+                        </div>
+                    </div>
+                `;
+
                 L.circleMarker(dest.coords, {
                     radius: 6,
                     fillColor: "#06b6d4",
                     color: "#fff",
                     weight: 2,
                     fillOpacity: 1
-                }).addTo(osmMap).bindPopup(`<strong>Giorno ${index + 1}</strong><br>${dest.name}`);
+                }).addTo(osmMap).bindPopup(popupHtml, {
+                    maxWidth: 220,
+                    className: 'custom-cruise-popup'
+                });
             });
 
             osmMap.fitBounds(L.polyline(pathCoords).getBounds(), { padding: [30, 30] });
