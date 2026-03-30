@@ -58,7 +58,7 @@
             flex-wrap: wrap;
             border-bottom: 1px solid #222;
         }
-        .map-switch-btn {
+        .map-switch-btn, .home-btn {
             background: #111;
             border: 1px solid #333;
             color: white;
@@ -68,8 +68,14 @@
             font-weight: 700;
             cursor: pointer;
         }
-        .map-switch-btn:hover { background: #222; }
+        .map-switch-btn:hover, .home-btn:hover { background: #222; }
         .map-switch-btn.active { background: var(--accent-3); border-color: var(--accent-3); }
+
+        .home-btn {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
 
         .current-date-display {
             background: #111;
@@ -143,8 +149,11 @@
 <body>
     <header>
         <div class="header-controls">
+            <a href="index.htm" class="home-btn" title="Home">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
             <button class="map-switch-btn" id="show-vessel">Vessel</button>
-            <div class="current-date-display" id="reset-map" title="Torna alla mappa itinerario">
+            <div class="current-date-display" id="open-calendar" title="Apri Calendario">
                 <span id="date-text"></span>
                 <span id="countdown-text" class="countdown-timer"></span>
             </div>
@@ -154,6 +163,11 @@
             <div id="osm-map"></div>
             <div id="vessel-map-container"></div>
             <div id="marine-map-container"></div>
+            <div id="calendar-view">
+                <div class="calendar-container">
+                    <div id="calendar-content"></div>
+                </div>
+            </div>
             <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
         </div>
     </header>
@@ -167,7 +181,8 @@
             // --- CONFIGURAZIONE POSIZIONE REALE ---
             // Se vuoi forzare la posizione della nave (es. presa da MarineTraffic), 
             // inserisci le coordinate qui [lat, lon]. Se null, usa l'itinerario.
-            const manualAISPosition = [44.3129, 8.4764]; // Esempio: Savona. Cambia questi numeri!
+            const manualAISPosition = [37.2, -0.5]; // Posizione del 30 Marzo 2026
+            let shipMarker;
 
             // Gestione Data Odierna
             const now = new Date();
@@ -205,7 +220,7 @@
                 { id: "tenerife", name: "Santa Cruz de Tenerife", coords: [28.4636, -16.2518], img: "1.jpg", date: "27 Mar 2026", info: "08:00 - 16:00" },
                 { id: "mar-28", name: "In Navigazione", coords: [32.0, -11.0], img: "1.jpg", date: "28 Mar 2026", info: "Verso Tangeri" },
                 { id: "tangeri", name: "Tangier", coords: [35.7595, -5.8340], img: "1.jpg", date: "29 Mar 2026", info: "09:00 - 19:00" },
-                { id: "mar-30", name: "In Navigazione", coords: [38.0, -1.0], img: "1.jpg", date: "30 Mar 2026", info: "Mar Mediterraneo" },
+                { id: "mar-30", name: "In Navigazione", coords: [37.2, -0.5], img: "1.jpg", date: "30 Mar 2026", info: "Mar Mediterraneo" },
                 { id: "barcelona-1", name: "Barcelona", coords: [41.3851, 2.1734], img: "1.jpg", date: "31 Mar 2026", info: "08:00 - 18:00" },
                 { id: "marseille-1", name: "Marseille", coords: [43.2965, 5.3698], img: "1.jpg", date: "01 Apr 2026", info: "08:00 - 17:00" },
                 { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Arrivo 08:00 / Partenza 17:30" },
@@ -216,7 +231,7 @@
                 { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], img: "1.jpg", date: "07 Apr 2026", info: "08:00 - 18:00" },
                 { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], img: "1.jpg", date: "08 Apr 2026", info: "07:00 - 16:00" },
                 { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], img: "1.jpg", date: "09 Apr 2026", info: "08:00 - 16:00" },
-                { id: "day-9", name: "In Navigazione", coords: [36.0, -5.6], img: "1.jpg", date: "10 Apr 2026", info: "Stretto di Gibilterra" },
+                { id: "day-9", name: "In Navigazione", coords: [36.5, -2.2], img: "1.jpg", date: "10 Apr 2026", info: "Mar di Alborán" },
                 { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], img: "1.jpg", date: "11 Apr 2026", info: "09:30 - 16:30" },
                 { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], img: "1.jpg", date: "12 Apr 2026", info: "07:00 - 13:00" },
                 { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], img: "1.jpg", date: "13 Apr 2026", info: "Arrivo 09:00" }
@@ -242,6 +257,33 @@
             const scheduleKeys = Object.keys(cruiseSchedule);
             const activeIndex = scheduleKeys.indexOf(todayKey);
             
+            // Funzione per generare una curva fluida tra punti (Catmull-Rom Spline)
+            const getCurvedPath = (points, tension = 0.4, segments = 15) => {
+                if (points.length < 3) return points;
+                const curvedPoints = [];
+                for (let i = 0; i < points.length - 1; i++) {
+                    const p0 = (i === 0) ? points[i] : points[i - 1];
+                    const p1 = points[i];
+                    const p2 = points[i + 1];
+                    const p3 = (i + 2 >= points.length) ? p2 : points[i + 2];
+                    for (let t = 0; t < segments; t++) {
+                        const t1 = t / segments;
+                        const t2 = t1 * t1;
+                        const t3 = t2 * t1;
+                        const f1 = -tension * t3 + 2 * tension * t2 - tension * t1;
+                        const f2 = (2 - tension) * t3 + (tension - 3) * t2 + 1;
+                        const f3 = (tension - 2) * t3 + (3 - 2 * tension) * t2 + tension * t1;
+                        const f4 = tension * t3 - tension * t2;
+                        curvedPoints.push([
+                            p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4,
+                            p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4
+                        ]);
+                    }
+                }
+                curvedPoints.push(points[points.length - 1]);
+                return curvedPoints;
+            };
+
             let activeCoords = null;
             const todayDest = cruiseDestinations.find(d => d.id === activeId);
             if (todayDest) activeCoords = todayDest.coords;
@@ -266,19 +308,19 @@
                 [[25.0, -19.0], [27.0, -19.0], [29.0, -18.0], [28.4636, -16.2518]], // Nav -> Tenerife (con waypoint per evitare la terra)
                 [[28.4636, -16.2518], [32.0, -11.0]], // Tenerife -> Nav
                 [[32.0, -11.0], [35.0, -8.0], [35.7595, -5.8340]], // Nav -> Tangeri
-                [[35.7595, -5.8340], [36.0, -4.0], [38.0, -1.0]], // Tangeri -> Nav
-                [[38.0, -1.0], [39.0, 0.0], [41.3851, 2.1734]], // Nav -> Barcelona
-                [[41.3851, 2.1734], [42.5, 4.5], [43.2965, 5.3698]], // Barcelona -> Marseille
-                [[43.2965, 5.3698], [43.8, 8.0], [44.3129, 8.4764]], // Marseille -> Savona
-                [[44.3129, 8.4764], [43.8, 8.0], [43.4, 6.0], [43.2965, 5.3698]], // Savona -> Marsiglia
+                [[35.7595, -5.8340], [36.1, -4.5], [36.8, -1.5], [37.2, -0.5]], // Tangeri -> Nav (-4 a -3)
+                [[37.2, -0.5], [39.0, 0.5], [41.3851, 2.1734]], // Nav -> Barcelona
+                [[41.3851, 2.1734], [42.5, 4.5], [43.2965, 5.3698]], // Barcelona -> Marseille (-2 a -1)
+                [[43.2965, 5.3698], [43.0, 6.0], [43.3, 7.3], [44.0, 8.2], [44.3129, 8.4764]], // Marseille -> Savona (-1 a 1)
+                [[44.3129, 8.4764], [44.0, 8.2], [43.3, 7.3], [43.0, 6.0], [43.2965, 5.3698]], // Savona -> Marsiglia (1 a 2)
                 [[43.2965, 5.3698], [42.0, 4.5], [41.5, 3.5]],      // Marsiglia -> Nav
                 [[41.5, 3.5], [40.0, 1.0], [39.4699, -0.3763]],     // Nav -> Valencia
                 [[39.4699, -0.3763], [38.5, 0.5], [37.6051, -0.9862]], // Valencia -> Cartagena
                 [[37.6051, -0.9862], [36.4, -2.2], [36.5, -3.5], [36.7213, -4.4214]], // Cartagena -> Malaga
                 [[36.7213, -4.4214], [35.9, -5.5], [36.5298, -6.2947]], // Malaga -> Cadice
                 [[36.5298, -6.2947], [35.8, -7.5], [36.8, -9.2], [38.7223, -9.1393]], // Cadice -> Lisbona
-                [[38.7223, -9.1393], [36.8, -9.2], [35.8, -7.5], [35.9, -5.5], [36.0, -5.6]], // Lisbona -> Nav
-                [[36.0, -5.6], [36.4, -2.2], [37.4, -0.7], [38.3452, -0.4810]],   // Nav -> Alicante
+                [[38.7223, -9.1393], [36.8, -9.2], [35.8, -7.5], [35.9, -5.5], [36.5, -2.2]], // Lisbona -> Nav
+                [[36.5, -2.2], [37.4, -0.7], [38.3452, -0.4810]],   // Nav -> Alicante
                 [[38.3452, -0.4810], [38.7, 0.5], [40.5, 1.5], [41.3851, 2.1734]], // Alicante -> Barcellona
                 [[41.3851, 2.1734], [42.5, 4.5], [43.8, 8.0], [44.3129, 8.4764]]  // Barcellona -> Savona
             ];
@@ -289,7 +331,7 @@
                 const segmentOpacity = isPast ? 0.8 : 0.4;
                 const segmentDash = isPast ? '' : '5, 10';
                 
-                L.polyline(cruisePathSegments[i], {
+                L.polyline(getCurvedPath(cruisePathSegments[i]), {
                     color: segmentColor,
                     weight: 4,
                     opacity: segmentOpacity,
@@ -298,9 +340,26 @@
             }
 
             const savonaIndex = cruiseDestinations.findIndex(d => d.id === "savona");
+            const usedPositions = [];
 
             cruiseDestinations.forEach((dest, index) => {
                 const dayNum = index < savonaIndex ? index - savonaIndex : index - savonaIndex + 1;
+                
+                // Gestione sovrapposizioni: calcola offset se la posizione è già occupata
+                let displayCoords = [dest.coords[0], dest.coords[1]];
+                let foundCollision = true;
+                while (foundCollision) {
+                    foundCollision = usedPositions.some(pos => 
+                        Math.abs(pos[0] - displayCoords[0]) < 0.03 && 
+                        Math.abs(pos[1] - displayCoords[1]) < 0.03
+                    );
+                    if (foundCollision) {
+                        displayCoords[0] += 0.04; // Offset ridotto per rendere i punti vicinissimi
+                        displayCoords[1] += 0.04;
+                    }
+                }
+                usedPositions.push([...displayCoords]);
+
                 const popupHtml = `
                     <div class="popup-card">
                         <div class="popup-info">
@@ -312,7 +371,7 @@
                 `;
 
                 // Il numero cerchiato diventa il marker principale e cliccabile
-                L.marker(dest.coords, {
+                L.marker(displayCoords, {
                     icon: L.divIcon({
                         className: 'marker-label',
                         html: `<span>${dayNum}</span>`,
@@ -339,9 +398,8 @@
                 });
 
                 // zIndexOffset molto alto per stare sopra i numeri delle tappe
-                L.marker(shipFinalPos, { icon: shipIcon, zIndexOffset: 5000 })
-                    .addTo(osmMap)
-                    .bindPopup("<b>Posizione attuale della Costa Favolosa</b>");
+                shipMarker = L.marker(shipFinalPos, { icon: shipIcon, zIndexOffset: 5000 })
+                    .addTo(osmMap);
                 
                 osmMap.setView(shipFinalPos, 6);
             } else {
@@ -354,24 +412,54 @@
             const marineContainer = document.getElementById('marine-map-container');
             const centerBtn = document.getElementById('center-map-btn');
             const switchBtns = document.querySelectorAll('.map-switch-btn');
+            const calendarView = document.getElementById('calendar-view');
 
             const hideAll = () => {
-                [osmEl, vesselContainer, marineContainer].forEach(el => el.style.display = 'none');
+                [osmEl, vesselContainer, marineContainer, calendarView].forEach(el => el.style.display = 'none');
                 centerBtn.style.display = 'none';
                 switchBtns.forEach(btn => btn.classList.remove('active'));
             };
 
-            document.getElementById('reset-map').addEventListener('click', () => {
+            // Gestione Calendario
+            document.getElementById('open-calendar').addEventListener('click', () => {
                 hideAll();
-                osmEl.style.display = 'block';
-                if (shipFinalPos) {
-                    centerBtn.style.display = 'block';
-                }
-                setTimeout(() => {
-                    osmMap.invalidateSize();
-                    if (shipFinalPos) osmMap.setView(shipFinalPos, 6);
-                }, 50);
+                renderCalendar();
+                calendarView.style.display = 'block';
             });
+
+            function renderCalendar() {
+                const content = document.getElementById('calendar-content');
+                const today = new Date();
+                let html = '<h2>Marzo 2026</h2><div class="calendar-grid">';
+                
+                for(let i=1; i<=31; i++) {
+                    const dateStr = `2026-03-${String(i).padStart(2, '0')}`;
+                    const dateObj = new Date(dateStr);
+                    const isCruise = cruiseSchedule[dateStr];
+                    const isToday = dateStr === todayKey;
+                    const isPast = dateObj < today && !isToday;
+                    html += `<div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}">${i}</div>`;
+                }
+                html += '</div><h2 style="margin-top:30px">Aprile 2026</h2><div class="calendar-grid">';
+                
+                for(let i=1; i<=13; i++) {
+                    const dateStr = `2026-04-${String(i).padStart(2, '0')}`;
+                    const dateObj = new Date(dateStr);
+                    const isCruise = cruiseSchedule[dateStr];
+                    const isToday = dateStr === todayKey;
+                    const isPast = dateObj < today && !isToday;
+                    
+                    let destName = '';
+                    if (i >= 2 && isCruise) {
+                        const dest = cruiseDestinations.find(d => d.id === isCruise);
+                        if (dest) destName = `<span class="calendar-dest">${dest.name}</span>`;
+                    }
+                    
+                    html += `<div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}">${i}${destName}</div>`;
+                }
+                html += '</div>';
+                content.innerHTML = html;
+            }
 
             document.getElementById('show-vessel').addEventListener('click', function() {
                 hideAll();
