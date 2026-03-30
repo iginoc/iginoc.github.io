@@ -58,7 +58,7 @@
             margin: 0 auto;
             padding: 0;
             transition: all 0.4s ease-in-out;
-            max-height: 800px; /* Aumentato per mostrare l'intera mappa su desktop */
+            max-height: 500px;
             overflow: hidden;
             border-radius: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -72,9 +72,16 @@
         }
         #osm-map {
             width: 100%;
-            height: 350px;
+            height: 400px;
             border-radius: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #vessel-map-container, #marine-map-container {
+            display: none;
+            width: 100%;
+            height: 400px;
+            border-radius: 2rem;
+            overflow: hidden;
         }
         .map-control-btn {
             position: absolute;
@@ -99,6 +106,29 @@
             color: white;
             box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto 15px;
+            flex-wrap: wrap;
+        }
+        .map-switch-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .map-switch-btn:hover { background: rgba(255, 255, 255, 0.15); }
+        .map-switch-btn.active { background: var(--accent-3); border-color: var(--accent-3); }
+
         .current-date-display {
             background: rgba(5, 5, 5, 0.6);
             backdrop-filter: blur(10px);
@@ -114,11 +144,13 @@
             display: flex;
             flex-direction: column;
             line-height: 1.2;
-            margin: 0 auto 15px;
             width: fit-content;
             text-align: center;
             align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
+        .current-date-display:hover { transform: scale(1.05); }
         .countdown-timer {
             font-size: 0.65rem;
             color: var(--accent-2);
@@ -193,51 +225,21 @@
     </div>
 
     <header>
-        <div class="current-date-display">
-            <span id="date-text"></span>
-            <span id="countdown-text" class="countdown-timer"></span>
+        <div class="header-controls">
+            <button class="map-switch-btn" id="show-vessel">VesselFinder</button>
+            <div class="current-date-display" id="reset-map" title="Torna alla mappa itinerario">
+                <span id="date-text"></span>
+                <span id="countdown-text" class="countdown-timer"></span>
+            </div>
+            <button class="map-switch-btn" id="show-marine">MarineTraffic</button>
         </div>
         <div class="map-wrapper">
             <div id="osm-map"></div>
+            <div id="vessel-map-container"></div>
+            <div id="marine-map-container"></div>
             <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
         </div>
     </header>
-
-    <main style="margin-top: 20px; position: relative; z-index: 10;">
-        <div style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
-            <div class="day-card" style="padding: 0; overflow: hidden; height: 500px;">
-                <script type="text/javascript">
-                    // Map appearance
-                    var width="100%";         // width in pixels or percentage
-                    var height="100%";        // height in pixels or percentage
-                    var latitude="40.00";     // center latitude (decimal degrees)
-                    var longitude="0";    // center longitude (decimal degrees) 
-                    var zoom="4";
-                    var names=false;           // always show ship names (defaults to false)
-
-                    // Single ship tracking
-                    var imo="9479852";        // display latest position (by IMO, overrides MMSI)
-                    var show_track=true;      // display track line (last 24 hours)
-                </script>
-                <script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
-            </div>
-
-            <div class="day-card" style="padding: 0; overflow: hidden; height: 450px; margin-top: 2rem;">
-                <script type="text/javascript">
-                    width = '100%';
-                    height = '450';
-                    border = '0';
-                    shownames = 'true';
-                    latitude = '40.0';
-                    longitude = '30.0';
-                    zoom = '3';
-                    maptype = '3';
-                    trackvessel = '247311100';
-                </script>
-                <script type="text/javascript" src="https://www.marinetraffic.com/js/embed.js"></script>
-            </div>
-        </div>
-    </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -248,7 +250,7 @@
             // --- CONFIGURAZIONE POSIZIONE REALE ---
             // Se vuoi forzare la posizione della nave (es. presa da MarineTraffic), 
             // inserisci le coordinate qui [lat, lon]. Se null, usa l'itinerario.
-            const manualAISPosition = null; 
+            const manualAISPosition = [44.3129, 8.4764]; // Esempio: Savona. Cambia questi numeri!
 
             // Gestione Data Odierna
             const now = new Date();
@@ -303,6 +305,16 @@
             L.polyline(pathCoords, { color: '#06b6d4', weight: 3, opacity: 0.5, dashArray: '5, 10' }).addTo(osmMap);
 
             cruiseDestinations.forEach((dest, index) => {
+                const popupHtml = `
+                    <div class="popup-card">
+                        <div class="popup-info">
+                            <h3>Giorno ${index + 1}: ${dest.name}</h3>
+                            <p><strong>${dest.date}</strong></p>
+                            <p>${dest.info}</p>
+                        </div>
+                    </div>
+                `;
+
                 L.circleMarker(dest.coords, {
                     radius: 6,
                     fillColor: "#06b6d4",
@@ -345,6 +357,40 @@
                 });
             } else {
                 centerBtn.style.display = 'none';
+            }
+
+            // GESTIONE SWITCH MAPPE
+            const osmEl = document.getElementById('osm-map');
+            const vesselContainer = document.getElementById('vessel-map-container');
+            const marineContainer = document.getElementById('marine-map-container');
+            const centerBtn = document.getElementById('center-map-btn');
+
+            const hideAll = () => {
+                [osmEl, vesselContainer, marineContainer].forEach(el => el.style.display = 'none');
+                centerBtn.style.display = 'none';
+            };
+
+            document.getElementById('reset-map').addEventListener('click', () => {
+                hideAll();
+                osmEl.style.display = 'block';
+                if (shipFinalPos) centerBtn.style.display = 'block';
+                osmMap.invalidateSize();
+            });
+
+            document.getElementById('show-vessel').addEventListener('click', () => {
+                hideAll();
+                vesselContainer.style.display = 'block';
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="400" frameborder="0"></iframe>`;
+            });
+
+            document.getElementById('show-marine').addEventListener('click', () => {
+                hideAll();
+                marineContainer.style.display = 'block';
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/mmsi:247311100/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
+            });
+
+            if (shipFinalPos) {
+                centerBtn.addEventListener('click', () => osmMap.flyTo(shipFinalPos, 10, { animate: true, duration: 1.5 }));
             }
 
             // Countdown alla partenza (2 Aprile 2026)
