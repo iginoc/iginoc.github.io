@@ -363,47 +363,51 @@
                 osmMap.fitBounds(L.polyline(pathCoords).getBounds(), { padding: [30, 30] });
             }
 
+            // GESTIONE SWITCH MAPPE
+            const osmEl = document.getElementById('osm-map');
+            const vesselContainer = document.getElementById('vessel-map-container');
+            const marineContainer = document.getElementById('marine-map-container');
             const centerBtn = document.getElementById('center-map-btn');
+            const switchBtns = document.querySelectorAll('.map-switch-btn');
+
+            const hideAll = () => {
+                [osmEl, vesselContainer, marineContainer].forEach(el => el.style.display = 'none');
+                centerBtn.style.display = 'none';
+                switchBtns.forEach(btn => btn.classList.remove('active'));
+            };
+
+            document.getElementById('reset-map').addEventListener('click', () => {
+                hideAll();
+                osmEl.style.display = 'block';
+                if (shipFinalPos) {
+                    centerBtn.style.display = 'block';
+                    setTimeout(() => {
+                        osmMap.invalidateSize();
+                        osmMap.setView(shipFinalPos, 6);
+                    }, 100);
+                }
+            });
+
+            document.getElementById('show-vessel').addEventListener('click', function() {
+                hideAll();
+                this.classList.add('active');
+                vesselContainer.style.display = 'block';
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="400" frameborder="0"></iframe>`;
+            });
+
+            document.getElementById('show-marine').addEventListener('click', function() {
+                hideAll();
+                this.classList.add('active');
+                marineContainer.style.display = 'block';
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/mmsi:247311100/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
+            });
+
             if (shipFinalPos) {
                 centerBtn.addEventListener('click', () => {
                     osmMap.flyTo(shipFinalPos, 10, { animate: true, duration: 1.5 });
                 });
             } else {
                 centerBtn.style.display = 'none';
-            }
-
-            // GESTIONE SWITCH MAPPE
-            const osmEl = document.getElementById('osm-map');
-            const vesselContainer = document.getElementById('vessel-map-container');
-            const marineContainer = document.getElementById('marine-map-container');
-            const centerBtn = document.getElementById('center-map-btn');
-
-            const hideAll = () => {
-                [osmEl, vesselContainer, marineContainer].forEach(el => el.style.display = 'none');
-                centerBtn.style.display = 'none';
-            };
-
-            document.getElementById('reset-map').addEventListener('click', () => {
-                hideAll();
-                osmEl.style.display = 'block';
-                if (shipFinalPos) centerBtn.style.display = 'block';
-                osmMap.invalidateSize();
-            });
-
-            document.getElementById('show-vessel').addEventListener('click', () => {
-                hideAll();
-                vesselContainer.style.display = 'block';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=5&track=true" width="100%" height="400" frameborder="0"></iframe>`;
-            });
-
-            document.getElementById('show-marine').addEventListener('click', () => {
-                hideAll();
-                marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:40/centerx:10/maptype:3/shownames:false/mmsi:247311100/trackvessel:true" width="100%" height="400" frameborder="0"></iframe>`;
-            });
-
-            if (shipFinalPos) {
-                centerBtn.addEventListener('click', () => osmMap.flyTo(shipFinalPos, 10, { animate: true, duration: 1.5 }));
             }
 
             // Countdown alla partenza (2 Aprile 2026)
