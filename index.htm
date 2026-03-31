@@ -602,7 +602,8 @@
 
             if (shipFinalPos) {
                 centerBtn.addEventListener('click', () => {
-                    osmMap.flyTo(shipFinalPos, 10, { animate: true, duration: 1.5 });
+                    const currentPos = shipMarker ? shipMarker.getLatLng() : shipFinalPos;
+                    osmMap.flyTo(currentPos, 10, { animate: true, duration: 1.5 });
                 });
             } else {
                 centerBtn.style.display = 'none';
