@@ -242,38 +242,38 @@
             setTimeout(() => { osmMap.invalidateSize(); }, 100);
 
             const cruiseDestinations = [
-                { id: "buenos-aires", name: "Buenos Aires", coords: [-34.6037, -58.3816], img: "1.jpg", date: "13 Mar 2026", info: "Partenza 19:00" },
-                { id: "mar-14", name: "In Navigazione", coords: [-31.0, -50.0], img: "1.jpg", date: "14 Mar 2026", info: "Oceano Atlantico" },
-                { id: "mar-15", name: "In Navigazione", coords: [-27.0, -45.0], img: "1.jpg", date: "15 Mar 2026", info: "Oceano Atlantico" },
-                { id: "rio", name: "Rio de Janeiro", coords: [-22.9068, -43.1729], img: "1.jpg", date: "16 Mar 2026", info: "12:00 - 20:00" },
-                { id: "mar-17", name: "In Navigazione", coords: [-18.0, -39.0], img: "1.jpg", date: "17 Mar 2026", info: "Costa Brasiliana" },
-                { id: "mar-18", name: "In Navigazione", coords: [-13.0, -36.0], img: "1.jpg", date: "18 Mar 2026", info: "Costa Brasiliana" },
-                { id: "recife", name: "Recife", coords: [-8.0578, -34.8778], img: "1.jpg", date: "19 Mar 2026", info: "10:00 - 19:30" },
-                { id: "mar-20", name: "In Navigazione", coords: [-4.0, -32.0], img: "1.jpg", date: "20 Mar 2026", info: "Traversata Atlantica" },
-                { id: "mar-21", name: "In Navigazione", coords: [1.0, -30.0], img: "1.jpg", date: "21 Mar 2026", info: "Passaggio Equatore" },
-                { id: "mar-22", name: "In Navigazione", coords: [6.0, -28.0], img: "1.jpg", date: "22 Mar 2026", info: "Traversata Atlantica" },
-                { id: "mar-23", name: "In Navigazione", coords: [11.0, -26.0], img: "1.jpg", date: "23 Mar 2026", info: "Traversata Atlantica" },
-                { id: "mindelo", name: "Mindelo", coords: [16.8901, -24.9923], img: "1.jpg", date: "24 Mar 2026", info: "08:00 - 18:00" },
-                { id: "mar-25", name: "In Navigazione", coords: [21.0, -22.0], img: "1.jpg", date: "25 Mar 2026", info: "Verso le Canarie" },
-                { id: "mar-26", name: "In Navigazione", coords: [25.0, -19.0], img: "1.jpg", date: "26 Mar 2026", info: "Verso le Canarie" },
-                { id: "tenerife", name: "Santa Cruz de Tenerife", coords: [28.4636, -16.2518], img: "1.jpg", date: "27 Mar 2026", info: "08:00 - 16:00" },
-                { id: "mar-28", name: "In Navigazione", coords: [32.0, -11.0], img: "1.jpg", date: "28 Mar 2026", info: "Verso Tangeri" },
-                { id: "tangeri", name: "Tangier", coords: [35.7595, -5.8340], img: "1.jpg", date: "29 Mar 2026", info: "09:00 - 19:00" },
-                { id: "mar-30", name: "In Navigazione", coords: [37.2, -0.5], img: "1.jpg", date: "30 Mar 2026", info: "Mar Mediterraneo" },
-                { id: "barcelona-1", name: "Barcelona", coords: [41.3851, 2.1734], img: "1.jpg", date: "31 Mar 2026", info: "08:00 - 18:00" },
-                { id: "marseille-1", name: "Marseille", coords: [43.2965, 5.3698], img: "1.jpg", date: "01 Apr 2026", info: "08:00 - 17:00" },
-                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], img: "1.jpg", date: "02 Apr 2026", info: "Arrivo 08:00 / Partenza 17:30" },
-                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], img: "1.jpg", date: "03 Apr 2026", info: "09:00 - 18:00" },
-                { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], img: "1.jpg", date: "04 Apr 2026", info: "Mar Mediterraneo" },
-                { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], img: "1.jpg", date: "05 Apr 2026", info: "08:00 - 18:00" },
-                { id: "cartagena", name: "Cartagena", coords: [37.6051, -0.9862], img: "1.jpg", date: "06 Apr 2026", info: "08:00 - 18:00" },
-                { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], img: "1.jpg", date: "07 Apr 2026", info: "08:00 - 18:00" },
-                { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], img: "1.jpg", date: "08 Apr 2026", info: "07:00 - 16:00" },
-                { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], img: "1.jpg", date: "09 Apr 2026", info: "08:00 - 16:00" },
-                { id: "day-9", name: "In Navigazione", coords: [36.5, -2.2], img: "1.jpg", date: "10 Apr 2026", info: "Mar di Alborán" },
-                { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], img: "1.jpg", date: "11 Apr 2026", info: "09:30 - 16:30" },
-                { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], img: "1.jpg", date: "12 Apr 2026", info: "07:00 - 13:00" },
-                { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], img: "1.jpg", date: "13 Apr 2026", info: "Arrivo 09:00" }
+                { id: "buenos-aires", name: "Buenos Aires", coords: [-34.6037, -58.3816], date: "13 Mar 2026", info: "Partenza 19:00" },
+                { id: "mar-14", name: "In Navigazione", coords: [-31.0, -50.0], date: "14 Mar 2026", info: "Oceano Atlantico" },
+                { id: "mar-15", name: "In Navigazione", coords: [-27.0, -45.0], date: "15 Mar 2026", info: "Oceano Atlantico" },
+                { id: "rio", name: "Rio de Janeiro", coords: [-22.9068, -43.1729], date: "16 Mar 2026", info: "12:00 - 20:00" },
+                { id: "mar-17", name: "In Navigazione", coords: [-18.0, -39.0], date: "17 Mar 2026", info: "Costa Brasiliana" },
+                { id: "mar-18", name: "In Navigazione", coords: [-13.0, -36.0], date: "18 Mar 2026", info: "Costa Brasiliana" },
+                { id: "recife", name: "Recife", coords: [-8.0578, -34.8778], date: "19 Mar 2026", info: "10:00 - 19:30" },
+                { id: "mar-20", name: "In Navigazione", coords: [-4.0, -32.0], date: "20 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mar-21", name: "In Navigazione", coords: [1.0, -30.0], date: "21 Mar 2026", info: "Passaggio Equatore" },
+                { id: "mar-22", name: "In Navigazione", coords: [6.0, -28.0], date: "22 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mar-23", name: "In Navigazione", coords: [11.0, -26.0], date: "23 Mar 2026", info: "Traversata Atlantica" },
+                { id: "mindelo", name: "Mindelo", coords: [16.8901, -24.9923], date: "24 Mar 2026", info: "08:00 - 18:00" },
+                { id: "mar-25", name: "In Navigazione", coords: [21.0, -22.0], date: "25 Mar 2026", info: "Verso le Canarie" },
+                { id: "mar-26", name: "In Navigazione", coords: [25.0, -19.0], date: "26 Mar 2026", info: "Verso le Canarie" },
+                { id: "tenerife", name: "Santa Cruz de Tenerife", coords: [28.4636, -16.2518], date: "27 Mar 2026", info: "08:00 - 16:00" },
+                { id: "mar-28", name: "In Navigazione", coords: [32.0, -11.0], date: "28 Mar 2026", info: "Verso Tangeri" },
+                { id: "tangeri", name: "Tangier", coords: [35.7595, -5.8340], date: "29 Mar 2026", info: "09:00 - 19:00" },
+                { id: "mar-30", name: "In Navigazione", coords: [37.2, -0.5], date: "30 Mar 2026", info: "Mar Mediterraneo" },
+                { id: "barcelona-1", name: "Barcelona", coords: [41.3851, 2.1734], date: "31 Mar 2026", info: "08:00 - 18:00" },
+                { id: "marseille-1", name: "Marseille", coords: [43.2965, 5.3698], date: "01 Apr 2026", info: "08:00 - 17:00" },
+                { id: "savona", name: "Savona", coords: [44.3129, 8.4764], date: "02 Apr 2026", info: "Arrivo 08:00 / Partenza 17:30" },
+                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], date: "03 Apr 2026", info: "09:00 - 18:00" },
+                { id: "day-3", name: "In Navigazione", coords: [41.5, 3.5], date: "04 Apr 2026", info: "Mar Mediterraneo" },
+                { id: "valencia", name: "Valencia", coords: [39.4699, -0.3763], date: "05 Apr 2026", info: "08:00 - 18:00" },
+                { id: "cartagena", name: "Cartagena", coords: [37.6051, -0.9862], date: "06 Apr 2026", info: "08:00 - 18:00" },
+                { id: "malaga", name: "Malaga", coords: [36.7213, -4.4214], date: "07 Apr 2026", info: "08:00 - 18:00" },
+                { id: "cadice", name: "Cadice", coords: [36.5298, -6.2947], date: "08 Apr 2026", info: "07:00 - 16:00" },
+                { id: "lisbona", name: "Lisbona", coords: [38.7223, -9.1393], date: "09 Apr 2026", info: "08:00 - 16:00" },
+                { id: "day-9", name: "In Navigazione", coords: [36.5, -2.2], date: "10 Apr 2026", info: "Mar di Alborán" },
+                { id: "alicante", name: "Alicante", coords: [38.3452, -0.4810], date: "11 Apr 2026", info: "09:30 - 16:30" },
+                { id: "barcellona", name: "Barcellona", coords: [41.3851, 2.1734], date: "12 Apr 2026", info: "07:00 - 13:00" },
+                { id: "day-12", name: "Savona (Ritorno)", coords: [44.3129, 8.4764], date: "13 Apr 2026", info: "Arrivo 09:00" }
             ];
 
             // Mapping date -> ID per animazione pulsante
@@ -507,7 +507,7 @@
                 let html = '<h1 style="text-align:center; color:var(--accent-3); margin-bottom:40px; font-weight:900; text-transform:uppercase; letter-spacing:3px;">Itinerario 2026</h1><div class="calendar-grid">';
                 
                 // Genera date dal 31 Marzo al 13 Aprile
-                const start = new Date(2026, 2, 31); // 31 Marzo
+                const start = new Date(2026, 3, 2); // 2 Aprile
                 const end = new Date(2026, 3, 13);   // 13 Aprile
                 
                 for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
@@ -530,7 +530,7 @@
                         const dest = cruiseDestinations.find(d => d.id === isCruise);
                         if (dest) {
                             destName = `<div class="calendar-dest">${dest.name}</div>`;
-                            if (dest.img) bgImg = dest.img;
+                            if (dest.img && dest.img !== '1.jpg') bgImg = dest.img;
                         }
                     }
                     
