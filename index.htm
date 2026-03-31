@@ -459,18 +459,22 @@
                 osmMap.setView(shipFinalPos, 6);
 
                 // --- INTEGRAZIONE HOME ASSISTANT ---
-                // Tenta di caricare la posizione in tempo reale da position.json
-                fetch('position.json', { cache: "no-store" })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.lat && data.lon) {
-                            const livePos = [data.lat, data.lon];
-                            shipMarker.setLatLng(livePos);
-                            osmMap.setView(livePos, 7);
-                            console.log("Posizione aggiornata da Home Assistant:", livePos);
-                        }
-                    })
-                    .catch(err => console.log("Nessuna posizione live trovata, uso itinerario standard."));
+                function updateLivePosition() {
+                    fetch('position.json', { cache: "no-store" })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.lat && data.lon && data.lat !== 0 && data.lon !== 0) {
+                                const livePos = [data.lat, data.lon];
+                                shipMarker.setLatLng(livePos);
+                                // Non usiamo setView qui per non disturbare l'utente mentre naviga la mappa
+                                console.log("Posizione aggiornata da Home Assistant:", livePos);
+                            }
+                        })
+                        .catch(err => console.log("Errore caricamento posizione live."));
+                }
+
+                updateLivePosition();
+                setInterval(updateLivePosition, 60000); // Controlla ogni minuto
             } else {
                 osmMap.fitBounds(L.polyline(pathCoords).getBounds(), { padding: [30, 30] });
             }
