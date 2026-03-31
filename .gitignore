@@ -3,4 +3,4 @@
 Thumbs.db
 
 # Se decidi di gestire position.json separatamente o non vuoi tracciarlo
-# position.json
+position.json
