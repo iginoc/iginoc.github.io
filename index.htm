@@ -444,12 +444,12 @@
                 const shipIcon = L.divIcon({
                     className: 'ship-marker-container',
                     html: `
-                        <svg class="ship-icon-svg" viewBox="0 0 24 24" width="36" height="36" style="filter: drop-shadow(0 0 5px black);">
-                            <path d="M4,15C4,15 5,18 12,18C19,18 20,15 20,15L22,13L20,11L4,11L2,13L4,15Z M10,11L11,5L13,5L14,11L10,11Z" stroke-width="2" />
+                        <svg viewBox="0 0 24 24" width="30" height="30" style="filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));">
+                            <path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/>
                         </svg>
                     `,
-                    iconSize: [36, 36],
-                    iconAnchor: [18, 18]
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30]
                 });
 
                 // zIndexOffset molto alto per stare sopra i numeri delle tappe
@@ -459,6 +459,17 @@
                 osmMap.setView(shipFinalPos, 6);
 
                 // --- INTEGRAZIONE HOME ASSISTANT ---
+                function timeAgo(date) {
+                    if (!date) return "N/D";
+                    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+                    if (seconds < 60) return "Adesso";
+                    const minutes = Math.floor(seconds / 60);
+                    if (minutes < 60) return `${minutes} min fa`;
+                    const hours = Math.floor(minutes / 60);
+                    if (hours < 24) return `${hours} ore fa`;
+                    return new Date(date).toLocaleDateString('it-IT');
+                }
+
                 function updateLivePosition() {
                     fetch('position.json', { cache: "no-store" })
                         .then(response => response.json())
@@ -466,7 +477,21 @@
                             if (data.lat && data.lon && data.lat !== 0 && data.lon !== 0) {
                                 const livePos = [data.lat, data.lon];
                                 shipMarker.setLatLng(livePos);
-                                // Non usiamo setView qui per non disturbare l'utente mentre naviga la mappa
+                                
+                                // Formattazione popup con timestamp
+                                const updateTime = data.timestamp ? timeAgo(data.timestamp) : "Recentemente";
+                                const popupContent = `
+                                    <div class="popup-card">
+                                        <div class="popup-info">
+                                            <h3>La mia posizione</h3>
+                                            <p>Aggiornato: <strong>${updateTime}</strong></p>
+                                            <p><small>${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}</small></p>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                shipMarker.bindPopup(popupContent, { maxWidth: 200 });
+
                                 console.log("Posizione aggiornata da Home Assistant:", livePos);
                             }
                         })
