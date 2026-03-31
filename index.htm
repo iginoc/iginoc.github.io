@@ -291,7 +291,9 @@
                 "2026-04-11": "alicante", "2026-04-12": "barcellona", "2026-04-13": "day-12"
             };
             
-            const todayKey = now.toISOString().split('T')[0];
+            const todayKey = now.getFullYear() + '-' + 
+                             String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                             String(now.getDate()).padStart(2, '0');
             const activeId = cruiseSchedule[todayKey];
             const scheduleKeys = Object.keys(cruiseSchedule);
             const activeIndex = scheduleKeys.indexOf(todayKey);
@@ -509,7 +511,9 @@
                 const end = new Date(2026, 3, 13);   // 13 Aprile
                 
                 for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                    const dateStr = d.toISOString().split('T')[0];
+                    const dateStr = d.getFullYear() + '-' + 
+                                     String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                     String(d.getDate()).padStart(2, '0');
                     const dateObj = new Date(d);
                     const isCruise = cruiseSchedule[dateStr];
                     const isToday = dateStr === todayKey;
@@ -519,17 +523,21 @@
                     const dayNum = d.getDate();
 
                     let destName = '';
-                    let bgImg = '1.jpg'; // Immagine di default
+                    // Prova a usare un'immagine chiamata come la data (es. 2026-04-02.jpg)
+                    let bgImg = `${dateStr}.jpg`; 
+
                     if (isCruise) {
                         const dest = cruiseDestinations.find(d => d.id === isCruise);
                         if (dest) {
                             destName = `<div class="calendar-dest">${dest.name}</div>`;
-                            if (dest.img) bgImg = dest.img; // Usa l'immagine specifica se definita
+                            if (dest.img) bgImg = dest.img;
                         }
                     }
                     
                     html += `
-                        <div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${bgImg}')" onclick="toggleExpand(this)">
+                        <div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}" 
+                             style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${bgImg}'), url('1.jpg')" 
+                             onclick="toggleExpand(this)">
                             <span class="day-num">${dayName} ${dayNum}</span>
                             ${destName}
                         </div>`;
