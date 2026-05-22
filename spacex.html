@@ -133,21 +133,19 @@
     <script>
         async function fetchLaunchData() {
             try {
-                const response = await fetch('https://api.spacexdata.com/v5/launches/next');
-                const data = await response.json();
+                // Configurazione manuale per la missione specifica richiesta
+                const missionName = "Starship's Twelfth Flight Test";
+                const missionDetails = "Il dodicesimo test di volo di Starship mira a perfezionare il rientro atmosferico di precisione e la cattura del booster Super Heavy tramite i bracci della torre di lancio.";
                 
-                console.log("Dati del prossimo lancio da SpaceX API:", data); // Aggiunto per debug
+                // Impostiamo il lancio per oggi (22 Maggio 2026) alle ore 21:00 UTC
+                const launchDate = new Date("2026-05-22T21:00:00Z").getTime();
 
-                document.getElementById('mission-name').innerText = data.name;
-                document.getElementById('details').innerText = data.details || "Nessun dettaglio disponibile per questa missione.";
+                document.getElementById('mission-name').innerText = missionName;
+                document.getElementById('details').innerText = missionDetails;
                 
-                if(data.links.patch.small) {
-                    const patchImg = document.getElementById('mission-patch');
-                    patchImg.src = data.links.patch.small;
-                    patchImg.style.display = 'block'; // Changed to block for better centering
-                }
-
-                const launchDate = new Date(data.date_utc).getTime();
+                const patchImg = document.getElementById('mission-patch');
+                patchImg.src = "https://images2.imgbox.com/33/2e/S6969p96_o.png"; // Immagine Starship
+                patchImg.style.display = 'block';
 
                 const timer = setInterval(() => {
                     const now = new Date().getTime();
@@ -159,7 +157,7 @@
                         document.getElementById('hours').innerText = "00";
                         document.getElementById('minutes').innerText = "00";
                         document.getElementById('seconds').innerText = "00";
-                        document.getElementById('mission-name').innerText = data.name + " (Lanciato!)";
+                        document.getElementById('mission-name').innerText = missionName + " (Lanciato!)";
                         document.getElementById('details').innerText = "Questo lancio è già avvenuto.";
                     } else {
                         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
