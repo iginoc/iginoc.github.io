@@ -513,20 +513,16 @@
                     const dayNum = d.getDate();
 
                     let destName = '';
-                    // Prova a usare un'immagine chiamata come la data (es. 2026-04-02.jpg)
-                    let bgImg = `${dateStr}.jpg`; 
-
                     if (isCruise) {
                         const dest = cruiseDestinations.find(d => d.id === isCruise);
                         if (dest) {
                             destName = `<div class="calendar-dest">${dest.name}</div>`;
-                            if (dest.img && dest.img !== '1.jpg') bgImg = dest.img;
                         }
                     }
                     
                     html += `
                         <div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}" 
-                             style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${bgImg}'), url('1.jpg')" 
+                             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dateStr}.jpg'), url('1.jpg')" 
                              onclick="toggleExpand(this)">
                             <span class="day-num">${dayName} ${dayNum}</span>
                             ${destName}
