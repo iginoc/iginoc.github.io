@@ -737,10 +737,8 @@
                 closeBtn.addEventListener('click', window.closeDayDetail);
             }
             if (modal) {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        window.closeDayDetail();
-                    }
+                modal.addEventListener('click', () => {
+                    window.closeDayDetail();
                 });
             }
 
