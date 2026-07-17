@@ -209,6 +209,7 @@
             </div>
             <div class="map-controls-top-right" id="map-overlays">
                 <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
+                <button id="center-ship-btn" class="map-control-btn" style="display: none;">Centra Nave</button>
             </div>
         </div>
     </header>
@@ -400,69 +401,81 @@
                 }).addTo(osmMap);
             });
 
-            // Disegna l'icona della nave sulla posizione corretta
-            if (shipFinalPos) {
-                const shipIcon = L.divIcon({
-                    className: 'ship-marker-container',
-                    html: `
-                        <svg viewBox="0 0 24 24" width="30" height="30" style="filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));">
-                            <path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/>
-                        </svg>
-                    `,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 30]
-                });
+            // Disegna l'icona della nave (segnalino rosso) sulla posizione corretta
+            const shipIcon = L.divIcon({
+                className: 'ship-marker-container',
+                html: `
+                    <svg viewBox="0 0 24 24" width="30" height="30" style="filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));">
+                        <path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/>
+                    </svg>
+                `,
+                iconSize: [30, 30],
+                iconAnchor: [15, 30]
+            });
 
-                // zIndexOffset molto alto per stare sopra i numeri delle tappe
+            // Inizializza il marker se abbiamo una posizione predefinita
+            if (shipFinalPos) {
                 shipMarker = L.marker(shipFinalPos, { icon: shipIcon, zIndexOffset: 5000 })
                     .addTo(osmMap);
-
-                // --- INTEGRAZIONE HOME ASSISTANT ---
-                function timeAgo(date) {
-                    if (!date) return "N/D";
-                    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-                    if (seconds < 60) return "Adesso";
-                    const minutes = Math.floor(seconds / 60);
-                    if (minutes < 60) return `${minutes} min fa`;
-                    const hours = Math.floor(minutes / 60);
-                    if (hours < 24) return `${hours} ore fa`;
-                    return new Date(date).toLocaleDateString('it-IT');
-                }
-
-                function updateLivePosition() {
-                    fetch('position.json', { cache: "no-store" })
-                        .then(response => {
-                            if (!response.ok) throw new Error("File non trovato");
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.lat && data.lon && data.lat !== 0 && data.lon !== 0) {
-                                const livePos = [data.lat, data.lon];
-                                shipMarker.setLatLng(livePos);
-                                
-                                // Formattazione popup con timestamp
-                                const updateTime = data.timestamp ? timeAgo(data.timestamp) : "Recentemente";
-                                const popupContent = `
-                                    <div class="popup-card">
-                                        <div class="popup-info">
-                                            <h3>La mia posizione</h3>
-                                            <p>Aggiornato: <strong>${updateTime}</strong></p>
-                                            <p><small>${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}</small></p>
-                                        </div>
-                                    </div>
-                                `;
-                                
-                                shipMarker.bindPopup(popupContent, { maxWidth: 200 });
-
-                                console.log("Posizione aggiornata da Home Assistant:", livePos);
-                            }
-                        })
-                        .catch(err => console.warn("Errore caricamento posizione live:", err.message));
-                }
-
-                updateLivePosition();
-                setInterval(updateLivePosition, 60000); // Controlla ogni minuto
             }
+
+            // --- INTEGRAZIONE POSIZIONE LIVE ---
+            function timeAgo(date) {
+                if (!date) return "N/D";
+                const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+                if (seconds < 60) return "Adesso";
+                const minutes = Math.floor(seconds / 60);
+                if (minutes < 60) return `${minutes} min fa`;
+                const hours = Math.floor(minutes / 60);
+                if (hours < 24) return `${hours} ore fa`;
+                return new Date(date).toLocaleDateString('it-IT');
+            }
+
+            function updateLivePosition() {
+                fetch('position.json', { cache: "no-store" })
+                    .then(response => {
+                        if (!response.ok) throw new Error("File non trovato");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.lat && data.lon && data.lat !== 0 && data.lon !== 0) {
+                            const livePos = [data.lat, data.lon];
+                            
+                            // Formattazione popup con timestamp
+                            const updateTime = data.timestamp ? timeAgo(data.timestamp) : "Recentemente";
+                            const popupContent = `
+                                <div class="popup-card">
+                                    <div class="popup-info">
+                                        <h3>La mia posizione</h3>
+                                        <p>Aggiornato: <strong>${updateTime}</strong></p>
+                                        <p><small>${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}</small></p>
+                                    </div>
+                                </div>
+                            `;
+
+                            if (!shipMarker) {
+                                shipMarker = L.marker(livePos, { icon: shipIcon, zIndexOffset: 5000 })
+                                    .addTo(osmMap);
+                            } else {
+                                shipMarker.setLatLng(livePos);
+                            }
+                            
+                            shipMarker.bindPopup(popupContent, { maxWidth: 200 });
+
+                            // Mostra il pulsante per centrare sulla nave se esiste la posizione
+                            const centerShipBtn = document.getElementById('center-ship-btn');
+                            if (centerShipBtn) {
+                                centerShipBtn.style.display = 'block';
+                            }
+
+                            console.log("Posizione aggiornata da position.json:", livePos);
+                        }
+                    })
+                    .catch(err => console.warn("Errore caricamento posizione live:", err.message));
+            }
+
+            updateLivePosition();
+            setInterval(updateLivePosition, 60000); // Controlla ogni minuto
 
             // Centra la mappa sull'itinerario all'avvio
             const itineraryBounds = L.latLngBounds(cruiseDestinations.map(d => d.coords));
@@ -549,6 +562,15 @@
             centerBtn.addEventListener('click', () => {
                 osmMap.flyToBounds(itineraryBounds, { animate: true, duration: 1.5, padding: [50, 50] });
             });
+
+            const centerShipBtn = document.getElementById('center-ship-btn');
+            if (centerShipBtn) {
+                centerShipBtn.addEventListener('click', () => {
+                    if (shipMarker) {
+                        osmMap.flyTo(shipMarker.getLatLng(), 10, { animate: true, duration: 1.5 });
+                    }
+                });
+            }
         });
     </script>
 </body>
