@@ -638,6 +638,70 @@
             updateLivePosition();
             setInterval(updateLivePosition, 60000); // Controlla ogni minuto
 
+            // --- PERCORSO AUTOSTRADALE FORLÌ -> AMBURGO (via Monaco di Baviera) ---
+            // Waypoint che ricalcano il tracciato autostradale reale:
+            // A14 Forlì-Bologna, A22 del Brennero (Modena-Verona-Trento-Bolzano-Brennero),
+            // A13/A12 austriache (Innsbruck-Kufstein), A8/A99 tedesche fino a Monaco,
+            // A9 Monaco-Norimberga-Halle, A2 Halle-Hannover, A7 Hannover-Amburgo.
+            const highwayRoute = [
+                [44.222, 12.041],  // Forlì
+                [44.494, 11.342],  // Bologna (A14)
+                [44.646, 10.925],  // Modena (A1 -> innesto A22)
+                [45.157, 10.792],  // Mantova (A22)
+                [45.438, 10.993],  // Verona (A22)
+                [46.068, 11.121],  // Trento (A22)
+                [46.498, 11.354],  // Bolzano (A22)
+                [47.002, 11.507],  // Passo del Brennero
+                [47.269, 11.404],  // Innsbruck (A13)
+                [47.583, 12.167],  // Kufstein (A12)
+                [48.137, 11.576],  // Monaco di Baviera (A8/A99)
+                [49.452, 11.077],  // Norimberga (A9)
+                [51.482, 11.969],  // Halle (A9)
+                [52.375, 9.732],   // Hannover (A2)
+                [53.551, 9.993]    // Amburgo (A7)
+            ];
+
+            const highwayPoly = L.polyline(highwayRoute, {
+                color: '#f97316',
+                weight: 4,
+                opacity: 0.9
+            }).addTo(osmMap);
+
+            const highwayStartIcon = L.divIcon({
+                className: 'marker-label',
+                html: `<span>F</span>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+            const highwayWaypointIcon = L.divIcon({
+                className: 'marker-label',
+                html: `<span>M</span>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            L.marker([44.222, 12.041], { icon: highwayStartIcon })
+                .bindPopup(`
+                    <div class="popup-card">
+                        <div class="popup-info">
+                            <h3>Forlì</h3>
+                            <p>Partenza del percorso autostradale</p>
+                        </div>
+                    </div>
+                `, { maxWidth: 220, className: 'custom-cruise-popup' })
+                .addTo(osmMap);
+
+            L.marker([48.137, 11.576], { icon: highwayWaypointIcon })
+                .bindPopup(`
+                    <div class="popup-card">
+                        <div class="popup-info">
+                            <h3>Monaco di Baviera</h3>
+                            <p>Tappa intermedia sulla A9/A8</p>
+                        </div>
+                    </div>
+                `, { maxWidth: 220, className: 'custom-cruise-popup' })
+                .addTo(osmMap);
+
             // Centra la mappa sull'itinerario all'avvio
             const itineraryBounds = L.latLngBounds(cruiseDestinations.map(d => d.coords));
             osmMap.fitBounds(itineraryBounds, { padding: [50, 50] });
