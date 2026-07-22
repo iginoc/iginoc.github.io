@@ -1,1 +1,1 @@
-{"lat": 53.5291162, "lon": 9.9605427}
+{"lat": %gl_latitude, "lon": %gl_longitude}
