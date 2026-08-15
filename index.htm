@@ -404,42 +404,36 @@
             setTimeout(() => { osmMap.invalidateSize(); }, 100);
 
             const cruiseDestinations = [
-                { id: "hamburg-1", name: "Amburgo", coords: [53.550, 10.000], date: "22 Luglio 2026", info: "Giorno d'imbarco, Partenza 20:00" },
-                { id: "navigazione-1", name: "In Navigazione", coords: [56.0, 7.0], date: "23 Luglio 2026", info: "Immergiti nella vita di bordo..." },
-                { id: "maloy", name: "Maloy", coords: [61.936, 5.131], date: "24 Luglio 2026", info: "Arrivo 13:30 / Partenza 20:00" },
-                { id: "navigazione-2", name: "In Navigazione", coords: [65.0, 9.0], date: "25 Luglio 2026", info: "Immergiti nella vita di bordo..." },
-                { id: "leknes", name: "Leknes | Isole Lofoten", coords: [68.1475, 13.6115], date: "26 Luglio 2026", info: "Arrivo 08:00 / Partenza 18:00" },
-                { id: "tromso", name: "Tromso", coords: [69.6517, 18.9556], date: "27 Luglio 2026", info: "Arrivo 09:00 / Partenza 18:00" },
-                { id: "honningsvag", name: "Honningsvag | Capo Nord", coords: [70.97861, 25.97667], date: "28 Luglio 2026", info: "Arrivo 08:00 / Partenza 18:00" },
-                { id: "navigazione-3", name: "In Navigazione", coords: [67.0, 11.0], date: "29 Luglio 2026", info: "Immergiti nella vita di bordo..." },
-                { id: "trondheim", name: "Trondheim", coords: [63.42972, 10.39333], date: "30 Luglio 2026", info: "Arrivo 12:00 / Partenza 20:00" },
-                { id: "alesund", name: "Alesund", coords: [62.47226, 6.1549], date: "31 Luglio 2026", info: "Arrivo 08:00 / Partenza 18:00" },
-                { id: "vik-sogn", name: "VIK-SOGN", coords: [61.08708, 6.57914], date: "01 Agosto 2026", info: "Arrivo 09:00 / Partenza 17:00" },
-                { id: "navigazione-4", name: "In Navigazione", coords: [58.0, 5.0], date: "02 Agosto 2026", info: "Immergiti nella vita di bordo..." },
-                { id: "hamburg-2", name: "Amburgo", coords: [53.550, 10.000], date: "03 Agosto 2026", info: "Giorno di sbarco, Arrivo 08:00" }
+                { id: "savona-1", name: "Savona", coords: [44.3079, 8.4811], date: "06 Settembre 2026", info: "Giorno d'imbarco, Partenza 16:30", dayNum: 1 },
+                { id: "laseyne", name: "La Seyne | St. Tropez", coords: [43.100, 5.900], date: "07 Settembre 2026", info: "Arrivo 07:30 / Partenza 15:30", dayNum: 2 },
+                { id: "palma", name: "Palma", coords: [39.5696, 2.6502], date: "08 Settembre 2026", info: "Arrivo 10:00 / Partenza 21:30", dayNum: 3 },
+                { id: "palma-bay", name: "Palma Bay (Sea Destination)", coords: [39.43, 2.68], date: "08 Settembre 2026", info: "Dalle 23:00 alle 01:30", dayNum: 3 },
+                { id: "valencia", name: "Valencia", coords: [39.450, -0.315], date: "09 Settembre 2026", info: "Arrivo 09:00 / Partenza 17:00", dayNum: 4 },
+                { id: "balearic-dark", name: "Balearic Sea (Sea Destination)", coords: [39.500, 1.000], date: "09 Settembre 2026", info: "Balearic sea darkest spot, dalle 23:30 alle 00:30", dayNum: 4 },
+                { id: "navigazione-1", name: "In Navigazione", coords: [40.0, 5.0], date: "10 Settembre 2026", info: "Giornata a bordo", dayNum: 5 },
+                { id: "olbia", name: "Olbia | Costa Smeralda", coords: [40.925, 9.518], date: "11 Settembre 2026", info: "Arrivo 06:30 / Partenza 18:00", dayNum: 6 },
+                { id: "aranci-gulf", name: "Golfo Aranci (Sea Destination)", coords: [40.998, 9.627], date: "11 Settembre 2026", info: "Aranci Gulf, dalle 19:15 alle 21:00", dayNum: 6 },
+                { id: "civitavecchia", name: "Civitavecchia | Roma", coords: [42.092, 11.790], date: "12 Settembre 2026", info: "Arrivo 08:00 / Partenza 18:30", dayNum: 7 },
+                { id: "savona-2", name: "Savona", coords: [44.3079, 8.4811], date: "13 Settembre 2026", info: "Giorno di sbarco, Arrivo 08:30", dayNum: 8 }
             ];
 
             // Mapping date -> ID per animazione pulsante
             const cruiseSchedule = {
-                "2026-07-22": "hamburg-1",
-                "2026-07-23": "navigazione-1",
-                "2026-07-24": "maloy",
-                "2026-07-25": "navigazione-2",
-                "2026-07-26": "leknes",
-                "2026-07-27": "tromso",
-                "2026-07-28": "honningsvag",
-                "2026-07-29": "navigazione-3",
-                "2026-07-30": "trondheim",
-                "2026-07-31": "alesund",
-                "2026-08-01": "vik-sogn",
-                "2026-08-02": "navigazione-4",
-                "2026-08-03": "hamburg-2"
+                "2026-09-06": ["savona-1"],
+                "2026-09-07": ["laseyne"],
+                "2026-09-08": ["palma", "palma-bay"],
+                "2026-09-09": ["valencia", "balearic-dark"],
+                "2026-09-10": ["navigazione-1"],
+                "2026-09-11": ["olbia", "aranci-gulf"],
+                "2026-09-12": ["civitavecchia"],
+                "2026-09-13": ["savona-2"]
             };
             
             const todayKey = now.getFullYear() + '-' + 
                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
                              String(now.getDate()).padStart(2, '0');
-            const activeId = cruiseSchedule[todayKey];
+            const activeIds = cruiseSchedule[todayKey] || [];
+            const activeId = activeIds[0];
             const scheduleKeys = Object.keys(cruiseSchedule);
             const activeIndex = scheduleKeys.indexOf(todayKey);
             
@@ -477,32 +471,22 @@
             const shipFinalPos = manualAISPosition || activeCoords;
 
             // Definizione dei segmenti della rotta con waypoint nautici per evitare la terraferma
-            // Nuovi segmenti di percorso per la crociera in Norvegia
+            // Nuovi segmenti di percorso per la crociera nel Mediterraneo
             const cruisePathSegments = [
-                // Giorno 1: Amburgo -> Giorno 2: In Navigazione (verso Maloy)
-                [[53.550, 10.000], [53.56, 9.60], [53.92, 8.70], [54.20, 8.20], [56.0, 7.0]],
-                // Giorno 2: In Navigazione -> Giorno 3: Maloy
-                [[56.0, 7.0], [58.0, 4.5], [60.0, 4.0], [61.80, 4.5], [61.936, 5.131]],
-                // Giorno 3: Maloy -> Giorno 4: In Navigazione (verso Leknes)
-                [[61.936, 5.131], [62.20, 4.80], [64.00, 7.50], [65.0, 9.0]],
-                // Giorno 4: In Navigazione -> Giorno 5: Leknes
-                [[65.0, 9.0], [67.0, 11.50], [67.80, 12.80], [68.1475, 13.6115]],
-                // Giorno 5: Leknes -> Giorno 6: Tromso
-                [[68.1475, 13.6115], [68.35, 14.50], [69.40, 17.50], [69.6517, 18.9556]],
-                // Giorno 6: Tromso -> Giorno 7: Honningsvag
-                [[69.6517, 18.9556], [70.20, 19.50], [70.80, 23.50], [70.97861, 25.97667]],
-                // Giorno 7: Honningsvag -> Giorno 8: In Navigazione (verso Trondheim)
-                [[70.97861, 25.97667], [71.20, 25.00], [69.0, 16.0], [67.0, 11.0]],
-                // Giorno 8: In Navigazione -> Giorno 9: Trondheim
-                [[67.0, 11.0], [65.0, 11.50], [63.60, 9.50], [63.42972, 10.39333]],
-                // Giorno 9: Trondheim -> Giorno 10: Alesund
-                [[63.42972, 10.39333], [63.50, 9.00], [62.80, 6.50], [62.47226, 6.1549]],
-                // Giorno 10: Alesund -> Giorno 11: VIK-SOGN
-                [[62.47226, 6.1549], [61.50, 4.80], [61.10, 5.00], [61.10, 6.00], [61.08708, 6.57914]],
-                // Giorno 11: VIK-SOGN -> Giorno 12: In Navigazione (verso Amburgo)
-                [[61.08708, 6.57914], [61.10, 5.00], [59.5, 4.0], [58.0, 5.0]],
-                // Giorno 12: In Navigazione -> Giorno 13: Amburgo
-                [[58.0, 5.0], [55.0, 7.5], [54.00, 8.50], [53.90, 8.80], [53.56, 9.60], [53.550, 10.000]]
+                // Giorno 1 -> Giorno 2: Savona -> La Seyne
+                [[44.3079, 8.4811], [43.80, 8.00], [43.40, 7.00], [43.100, 5.900]],
+                // Giorno 2 -> Giorno 3: La Seyne -> Palma (con Palma Bay)
+                [[43.100, 5.900], [41.50, 4.50], [39.5696, 2.6502], [39.43, 2.68]],
+                // Giorno 3 -> Giorno 4: Palma Bay -> Valencia (con Balearic Sea)
+                [[39.43, 2.68], [39.00, 1.50], [39.450, -0.315], [39.500, 1.000]],
+                // Giorno 4 -> Giorno 5: Balearic Sea -> Navigazione
+                [[39.500, 1.000], [39.80, 3.00], [40.00, 5.00]],
+                // Giorno 5 -> Giorno 6: Navigazione -> Olbia (con Golfo Aranci)
+                [[40.00, 5.00], [40.50, 7.50], [40.925, 9.518], [40.998, 9.627]],
+                // Giorno 6 -> Giorno 7: Golfo Aranci -> Civitavecchia
+                [[40.998, 9.627], [41.40, 10.70], [42.092, 11.790]],
+                // Giorno 7 -> Giorno 8: Civitavecchia -> Savona
+                [[42.092, 11.790], [42.70, 10.20], [43.50, 9.30], [44.3079, 8.4811]]
             ];
 
             for (let i = 0; i < cruisePathSegments.length; i++) {
@@ -521,8 +505,8 @@
 
             const usedPositions = [];
 
-            cruiseDestinations.forEach((dest, index) => {                
-                const dayNum = index + 1; // Simply use index + 1 for day number
+            cruiseDestinations.forEach((dest) => {                
+                const dayNum = dest.dayNum;
                 // Gestione sovrapposizioni: calcola offset se la posizione è già occupata
                 let displayCoords = [dest.coords[0], dest.coords[1]];
                 let foundCollision = true;
@@ -638,27 +622,22 @@
             updateLivePosition();
             setInterval(updateLivePosition, 60000); // Controlla ogni minuto
 
-            // --- PERCORSO AUTOSTRADALE FORLÌ -> AMBURGO (via Monaco di Baviera) ---
-            // Waypoint che ricalcano il tracciato autostradale reale:
-            // A14 Forlì-Bologna, A22 del Brennero (Modena-Verona-Trento-Bolzano-Brennero),
-            // A13/A12 austriache (Innsbruck-Kufstein), A8/A99 tedesche fino a Monaco,
-            // A9 Monaco-Norimberga-Halle, A2 Halle-Hannover, A7 Hannover-Amburgo.
+            // --- PERCORSO AUTOSTRADALE FORLÌ -> SAVONA ---
+            // Waypoint che ricalcano il tracciato autostradale reale italiano:
+            // A14 Forlì-Bologna, A1 Bologna-Piacenza, A21 Piacenza-Alessandria, A26 Alessandria-Voltri, A10 Voltri-Savona.
             const highwayRoute = [
                 [44.222, 12.041],  // Forlì
                 [44.494, 11.342],  // Bologna (A14)
-                [44.646, 10.925],  // Modena (A1 -> innesto A22)
-                [45.157, 10.792],  // Mantova (A22)
-                [45.438, 10.993],  // Verona (A22)
-                [46.068, 11.121],  // Trento (A22)
-                [46.498, 11.354],  // Bolzano (A22)
-                [47.002, 11.507],  // Passo del Brennero
-                [47.269, 11.404],  // Innsbruck (A13)
-                [47.583, 12.167],  // Kufstein (A12)
-                [48.137, 11.576],  // Monaco di Baviera (A8/A99)
-                [49.452, 11.077],  // Norimberga (A9)
-                [51.482, 11.969],  // Halle (A9)
-                [52.375, 9.732],   // Hannover (A2)
-                [53.551, 9.993]    // Amburgo (A7)
+                [44.646, 10.925],  // Modena (A1)
+                [44.698, 10.631],  // Reggio Emilia (A1)
+                [44.801, 10.328],  // Parma (A1)
+                [44.866, 10.060],  // Fidenza (A1)
+                [45.052, 9.693],   // Piacenza (A1 -> innesto A21)
+                [44.996, 9.009],   // Voghera (A21)
+                [44.912, 8.615],   // Alessandria (A21 -> innesto A26)
+                [44.639, 8.667],   // Ovada (A26)
+                [44.428, 8.751],   // Voltri (A26 -> innesto A10)
+                [44.3079, 8.4811]  // Savona (A10)
             ];
 
             const highwayPoly = L.polyline(highwayRoute, {
@@ -675,7 +654,7 @@
             });
             const highwayWaypointIcon = L.divIcon({
                 className: 'marker-label',
-                html: `<span>M</span>`,
+                html: `<span>P</span>`,
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
             });
@@ -685,18 +664,18 @@
                     <div class="popup-card">
                         <div class="popup-info">
                             <h3>Forlì</h3>
-                            <p>Partenza del percorso autostradale</p>
+                            <p>Partenza del percorso in auto</p>
                         </div>
                     </div>
                 `, { maxWidth: 220, className: 'custom-cruise-popup' })
                 .addTo(osmMap);
 
-            L.marker([48.137, 11.576], { icon: highwayWaypointIcon })
+            L.marker([45.052, 9.693], { icon: highwayWaypointIcon })
                 .bindPopup(`
                     <div class="popup-card">
                         <div class="popup-info">
-                            <h3>Monaco di Baviera</h3>
-                            <p>Tappa intermedia sulla A9/A8</p>
+                            <h3>Piacenza</h3>
+                            <p>Tappa di passaggio (A1 -> A21)</p>
                         </div>
                     </div>
                 `, { maxWidth: 220, className: 'custom-cruise-popup' })
@@ -730,19 +709,14 @@
             });
 
             const cruiseDescriptions = {
-                "2026-07-22": "Amburgo è una città ricca di fascino, famosa per la Speicherstadt (il quartiere dei magazzini in mattoni rossi patrimonio UNESCO) e la maestosa Elbphilharmonie. Partenza alle ore 20:00 per l'inizio dell'avventura.",
-                "2026-07-23": "Giornata in navigazione. Approfitta dei comfort di bordo di Costa Favolosa, rilassati nelle piscine, goditi la cucina di alto livello ed esplora le attività di intrattenimento offerte dal personale di bordo.",
-                "2026-07-24": "Un autentico e pittoresco villaggio di pescatori. Da non perdere la celebre formazione rocciosa di Kannesteinen, scolpita dall'oceano a forma di fungo, il faro di Hendanes a picco sulle scogliere e la splendida spiaggia di sabbia chiara di Refvik.",
-                "2026-07-25": "Giornata in navigazione. Rilassati mentre la nave solca le acque del Mare del Nord verso il Circolo Polare Artico. Goditi la vista panoramica dell'oceano e la vita a bordo.",
-                "2026-07-26": "Una delle destinazioni più spettacolari al mondo, caratterizzata da maestose montagne granitiche che si gettano a picco nel mare, spiagge di sabbia bianca lambite da acque cristalline come Haukland e i caratteristici villaggi di pescatori con le tipiche rorbuer rosse.",
-                "2026-07-27": "Conosciuta come la 'Porta dell'Artico', Tromsø è circondata da maestosi fiordi e montagne. Visita la celebre Cattedrale Artica con le sue grandi vetrate, sali con la funivia Fjellheisen per una vista panoramica mozzafiato o esplora i musei dedicati alle spedizioni polari.",
-                "2026-07-28": "Il punto d'accesso al mitico promontorio di Capo Nord (Nordkapp), una maestosa falesia a picco sul Mar Glaciale Artico situata a 71°10'21\" N. Qui potrai vivere l'emozione unica e indimenticabile di trovarti 'alla fine del mondo'.",
-                "2026-07-29": "Giornata in navigazione. Inizia la rotta di discesa verso sud lungo la spettacolare costa della Norvegia. Ammira i panorami dei fiordi e delle isole dal ponte della nave in totale relax.",
-                "2026-07-30": "Antica capitale norvegese ricca di storia e fascino. Ammira la cattedrale gotica di Nidaros (sito di incoronazione dei re norvegesi), passeggia tra le tipiche case in legno colorato del quartiere storico di Bakklandet e attraversa il ponte Gamle Bybro.",
-                "2026-07-31": "Famosa in tutto il mondo per la sua splendida architettura in stile Art Nouveau (Jugendstil), nata dalla ricostruzione dopo il grande incendio del 1904. Sali i 418 gradini del monte Aksla per godere di un panorama spettacolare sulla città e sulle isole circostanti.",
-                "2026-08-01": "Situata sulle sponde del maestoso Sognefjord, il fiordo più lungo e profondo della Norvegia. Vik ospita la celebre Hopperstad Stavkirke, una delle più antiche e affascinanti chiese in legno medievali giunte fino a noi, risalente al 1130.",
-                "2026-08-02": "Giornata in navigazione. Ultimo giorno in mare mentre la nave fa rotta di rientro verso la Germania. È il momento ideale per rilassarsi alla SPA di bordo, fare gli ultimi acquisti ed ammirare il tramonto sul mare.",
-                "2026-08-03": "Si conclude ad Amburgo questo straordinario viaggio tra i fiordi norvegesi e il Capo Nord. Tempo per un ultimo saluto a Costa Favolosa o per una visita della vivace città anseatica prima del rientro."
+                "2026-09-06": "Savona è una città ricca di fascino, tra gli aperitivi al porticciolo, le passeggiate in borghi antichi e la celebre farinata. Partenza alle ore 16:30 per l'inizio dell'avventura a bordo di Costa Pacifica.",
+                "2026-09-07": "Porto di La Seyne-sur-Mer, porta d'accesso alla favolosa Costa Azzurra e a St. Tropez. Spiagge dorate, acque turchesi e l'atmosfera glamour della riviera francese vi attendono. Arrivo 07:30 / Partenza 15:30.",
+                "2026-09-08": "Palma di Maiorca vi accoglie con la sua imponente Cattedrale gotica. Più tardi, in serata, vivremo la straordinaria Sea Destination a Palma Bay dalle 23:00 alle 01:30, ballando sotto le stelle del golfo.",
+                "2026-09-09": "Valencia unisce storia, modernità della Città delle Scienze e la tipica paella. Nella notte, navigazione speciale verso il 'Balearic sea darkest spot' dalle 23:30 alle 00:30 per ammirare un cielo stellato incontaminato.",
+                "2026-09-10": "Giornata interamente dedicata alla navigazione. Goditi i comfort esclusivi di Costa Pacifica: piscine, teatro, spa e ristoranti gourmet mentre navighiamo verso la Sardegna.",
+                "2026-09-11": "Olbia vi accoglie tra la bellezza naturale della Costa Smeralda. In serata, vivremo l'esperienza nel Golfo degli Aranci dalle 19:15 alle 21:00 con uno spettacolo unico sul mare.",
+                "2026-09-12": "Civitavecchia, il porto di Roma. Scopri le meraviglie millenarie della Città Eterna, dal Colosseo a San Pietro, in una giornata ricca di storia e cultura. Arrivo 08:00 / Partenza 18:30.",
+                "2026-09-13": "Rientro a Savona, dove si conclude il nostro viaggio. Arrivo alle ore 08:30 per le procedure di sbarco. Un arrivederci alla prossima crociera!"
             };
 
             function formatItineraryDate(dateStr) {
@@ -816,8 +790,8 @@
                     </div>
                     <div class="calendar-grid">`;
                 
-                const start = new Date(2026, 6, 22);
-                const end = new Date(2026, 7, 3);
+                const start = new Date(2026, 8, 6);
+                const end = new Date(2026, 8, 13);
                 
                 for (let d = new Date(start); d.getTime() <= end.getTime(); d.setDate(d.getDate() + 1)) {
                     const dateStr = d.getFullYear() + '-' + 
@@ -833,11 +807,11 @@
 
                     let destName = '';
                     let plainDestName = '';
-                    if (isCruise) {
-                        const dest = cruiseDestinations.find(d => d.id === isCruise);
-                        if (dest) {
-                            destName = `<div class="calendar-dest">${dest.name}</div>`;
-                            plainDestName = dest.name;
+                    if (isCruise && isCruise.length > 0) {
+                        const dests = isCruise.map(id => cruiseDestinations.find(d => d.id === id)).filter(Boolean);
+                        if (dests.length > 0) {
+                            destName = dests.map(dest => `<div class="calendar-dest">${dest.name}</div>`).join('');
+                            plainDestName = dests.map(dest => dest.name).join(' / ');
                         }
                     }
                     
@@ -845,7 +819,7 @@
                         <div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}" 
                              style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dateStr}.jpg'), url('1.jpg')" 
                              onclick="openDayDetail('${dateStr}', '${dayName} ${dayNum}', ${dayNum}, '${plainDestName.replace(/'/g, "\\'")}')">
-                            <span class="day-num">${dayName} ${dayNum}</span>
+                             <span class="day-num">${dayName} ${dayNum}</span>
                             ${destName}
                         </div>`;
                 }
@@ -857,14 +831,14 @@
                 hideAll();
                 this.classList.add('active');
                 vesselContainer.style.display = 'block';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9479852&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9378498&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
             });
 
             document.getElementById('show-marine').addEventListener('click', function() {
                 hideAll();
                 this.classList.add('active');
                 marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/shipid:281385/zoom:14" style="width:100%; height:100%; border:none;"></iframe>`;
+                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/shipid:279923/zoom:14" style="width:100%; height:100%; border:none;"></iframe>`;
             });
 
             centerBtn.addEventListener('click', () => {
