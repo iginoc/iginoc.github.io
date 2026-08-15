@@ -473,20 +473,20 @@
             // Definizione dei segmenti della rotta con waypoint nautici per evitare la terraferma
             // Nuovi segmenti di percorso per la crociera nel Mediterraneo
             const cruisePathSegments = [
-                // Giorno 1 -> Giorno 2: Savona -> La Seyne
-                [[44.3079, 8.4811], [43.80, 8.00], [43.40, 7.00], [43.100, 5.900]],
-                // Giorno 2 -> Giorno 3: La Seyne -> Palma (con Palma Bay)
-                [[43.100, 5.900], [41.50, 4.50], [39.5696, 2.6502], [39.43, 2.68]],
-                // Giorno 3 -> Giorno 4: Palma Bay -> Valencia (con Balearic Sea)
-                [[39.43, 2.68], [39.00, 1.50], [39.450, -0.315], [39.500, 1.000]],
-                // Giorno 4 -> Giorno 5: Balearic Sea -> Navigazione
+                // Giorno 1 -> Giorno 2: Savona -> La Seyne (percorso al largo)
+                [[44.3079, 8.4811], [44.00, 7.50], [43.50, 6.50], [43.100, 5.900]],
+                // Giorno 2 -> Giorno 3: La Seyne -> Palma (Golfo del Leone, al largo)
+                [[43.100, 5.900], [42.50, 4.80], [41.00, 3.50], [39.5696, 2.6502], [39.43, 2.68]],
+                // Giorno 3 -> Giorno 4: Palma Bay -> Valencia (rotta a ovest, al largo delle Baleari)
+                [[39.43, 2.68], [38.80, 1.20], [38.50, 0.00], [39.00, -0.80], [39.450, -0.315], [39.500, 1.000]],
+                // Giorno 4 -> Giorno 5: Balearic Sea -> Navigazione (verso est)
                 [[39.500, 1.000], [39.80, 3.00], [40.00, 5.00]],
-                // Giorno 5 -> Giorno 6: Navigazione -> Olbia (con Golfo Aranci)
-                [[40.00, 5.00], [40.50, 7.50], [40.925, 9.518], [40.998, 9.627]],
-                // Giorno 6 -> Giorno 7: Golfo Aranci -> Civitavecchia
-                [[40.998, 9.627], [41.40, 10.70], [42.092, 11.790]],
-                // Giorno 7 -> Giorno 8: Civitavecchia -> Savona
-                [[42.092, 11.790], [42.70, 10.20], [43.50, 9.30], [44.3079, 8.4811]]
+                // Giorno 5 -> Giorno 6: Navigazione -> Olbia (al largo delle coste italiane)
+                [[40.00, 5.00], [40.30, 6.50], [40.60, 8.00], [40.925, 9.518], [40.998, 9.627]],
+                // Giorno 6 -> Giorno 7: Golfo Aranci -> Civitavecchia (al largo della Sardegna)
+                [[40.998, 9.627], [40.80, 10.50], [41.20, 11.20], [42.092, 11.790]],
+                // Giorno 7 -> Giorno 8: Civitavecchia -> Savona (lungo la costa, mare aperto)
+                [[42.092, 11.790], [42.50, 11.00], [42.80, 10.00], [43.30, 9.20], [43.80, 8.80], [44.3079, 8.4811]]
             ];
 
             for (let i = 0; i < cruisePathSegments.length; i++) {
