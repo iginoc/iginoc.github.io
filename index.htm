@@ -835,10 +835,7 @@
             });
 
             document.getElementById('show-marine').addEventListener('click', function() {
-                hideAll();
-                this.classList.add('active');
-                marineContainer.style.display = 'block';
-                marineContainer.innerHTML = `<iframe src="https://www.marinetraffic.com/en/ais/embed/shipid:279923" style="width:100%; height:100%; border:none;"></iframe>`;
+                window.open('https://www.marinetraffic.com/en/ais/home/shipid:279923/zoom:14', '_blank');
             });
 
             centerBtn.addEventListener('click', () => {
