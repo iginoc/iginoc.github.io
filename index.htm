@@ -536,7 +536,7 @@
                 const marker = L.marker(displayCoords, {
                     icon: L.divIcon({
                         className: 'marker-label',
-                        html: `<span>${dayNum}</span>`,
+                        html: `<span>${dest.date.split(' ')[0]}</span>`,
                         iconSize: [24, 24],
                         iconAnchor: [12, 12]
                     })
