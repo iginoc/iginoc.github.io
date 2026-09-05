@@ -393,11 +393,12 @@
             // Configurazione Mappa Interattiva (OpenStreetMap)
             const osmMap = L.map('osm-map', {
                 zoomControl: true,
-                attributionControl: false
+                attributionControl: true
             }).setView([40.0, 0.0], 5);
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 18
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
             }).addTo(osmMap);
 
             // Forza il ricalcolo delle dimensioni per evitare che la mappa appaia grigia o invisibile
