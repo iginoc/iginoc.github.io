@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Itinerario di Viaggio</title>
+    <title>Itinerario di Viaggio - Costa Crociere</title>
     <link rel="icon" type="image/jpeg" href="1.jpg">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,297 +11,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        header {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .map-wrapper {
-            flex: 1;
-            position: relative;
-            width: 100%;
-        }
-        #osm-map {
-            width: 100%;
-            height: 100%;
-        }
-        #vessel-map-container, #marine-map-container {
-            display: none;
-            width: 100%;
-            height: 100%;
-        }
-        .map-controls-top-right {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-        .map-control-btn {
-            background: #111;
-            border: 1px solid #333;
-            color: var(--accent-3);
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .map-control-btn:hover {
-            background: var(--accent-3);
-            color: white;
-        }
-        .header-controls {
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #222;
-        }
-        .map-switch-btn, .home-btn {
-            background: #111;
-            border: 1px solid #333;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        header { height: 100vh; display: flex; flex-direction: column; }
+        .map-wrapper { flex: 1; position: relative; width: 100%; }
+        #osm-map { width: 100%; height: 100%; }
+        #vessel-map-container, #marine-map-container { display: none; width: 100%; height: 100%; }
+        .map-controls-top-right { position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .map-control-btn { background: #111; border: 1px solid #333; color: var(--accent-3); padding: 8px 16px; border-radius: 30px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+        .map-control-btn:hover { background: var(--accent-3); color: white; }
+        .header-controls { background: #000; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; border-bottom: 1px solid #222; }
+        .map-switch-btn, .home-btn { background: #111; border: 1px solid #333; color: white; padding: 8px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .map-switch-btn:hover, .home-btn:hover { background: #222; }
         .map-switch-btn.active { background: var(--accent-3); border-color: var(--accent-3); }
-
-        .home-btn {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        /* Personalizzazione Popup Leaflet */
-        .leaflet-popup-content-wrapper {
-            background: #111 !important;
-            color: white !important;
-            border-radius: 1rem !important;
-            border: 1px solid #333;
-            padding: 0;
-        }
+        .home-btn { text-decoration: none; }
+        .leaflet-popup-content-wrapper { background: #111 !important; color: white !important; border-radius: 1rem !important; border: 1px solid #333; padding: 0; }
         .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
         .leaflet-popup-tip { background: #111 !important; }
-        
         .popup-card { display: flex; flex-direction: column; }
         .popup-info { padding: 15px; }
         .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
         .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
-
-        .ship-marker-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .marker-label {
-            background: #111;
-            border: 1px solid var(--accent-3);
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+        .ship-marker-container { display: flex; justify-content: center; align-items: center; }
+        .marker-label { background: #111; border: 1px solid var(--accent-3); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; transition: transform 0.2s; }
         .marker-label:hover { transform: scale(1.2); background: var(--accent-3); }
-
-        #calendar-view {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 2000;
-            padding: 30px;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .calendar-day {
-            background-size: cover;
-            background-position: center;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 25px 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-height: 100px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        #calendar-view { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 30px; overflow-y: auto; box-sizing: border-box; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
+        .calendar-day { background-size: cover; background-position: center; border: 1px solid #333; border-radius: 15px; padding: 25px 10px; text-align: center; display: flex; flex-direction: column; gap: 10px; min-height: 100px; transition: all 0.3s ease; cursor: pointer; }
         .calendar-day.cruise { border-color: var(--accent-3); border-width: 2px; }
-        .calendar-day.today { background-color: rgba(6, 182, 212, 0.4); border-color: white; box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
-        .calendar-day.past { opacity: 0.4; }
         .calendar-day .day-num { font-size: 1.5rem; font-weight: 900; color: white; white-space: nowrap; }
         .calendar-dest { font-size: 0.75rem; color: var(--accent-3); font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-        
-        .calendar-banner-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .calendar-banner-img {
-            max-width: 100%;
-            width: 600px;
-            height: auto;
-            border-radius: 15px;
-            border: 2px solid #333;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .calendar-banner-img:hover {
-            transform: scale(1.02);
-            border-color: var(--accent-3);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-overlay.open .modal-content {
-            transform: scale(1);
-        }
-        .modal-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: #aaa;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-            transition: color 0.2s;
-        }
-        .modal-close-btn:hover {
-            color: var(--accent-3);
-        }
-        .modal-body {
-            display: flex;
-            flex-direction: row;
-            height: 100%;
-        }
-        .modal-image-container {
-            flex: 1.2;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-top-left-radius: 20px;
-            border-bottom-left-radius: 20px;
-            overflow: hidden;
-            min-height: 350px;
-        }
-        .modal-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .modal-info-container {
-            flex: 1;
-            padding: 40px 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 15px;
-            overflow-y: auto;
-        }
-        .modal-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .modal-day-badge {
-            background: var(--accent-3);
-            color: #000;
-            font-weight: 900;
-            font-size: 0.85rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            text-transform: uppercase;
-        }
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: white;
-            line-height: 1.2;
-        }
-        .modal-date-text {
-            font-size: 0.95rem;
-            color: var(--accent-3);
-            font-weight: 700;
-            opacity: 0.9;
-        }
-        .modal-desc-text {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #ccc;
-            margin-top: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .modal-body { flex-direction: column; }
-            .modal-image-container { border-radius: 20px 20px 0 0; min-height: 250px; flex: none; }
-            .modal-info-container { padding: 25px 20px; flex: none; }
-            .modal-content { max-height: 90vh; }
-            .modal-title { font-size: 1.4rem; }
-        }
+        .calendar-banner-container { text-align: center; margin-bottom: 30px; }
+        .calendar-banner-img { max-width: 100%; width: 600px; height: auto; border-radius: 15px; border: 2px solid #333; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .modal-content { background: #111; border: 1px solid #333; border-radius: 20px; width: 90%; max-width: 900px; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
+        .modal-close-btn { position: absolute; top: 15px; right: 20px; color: #aaa; font-size: 2rem; font-weight: bold; cursor: pointer; z-index: 10; }
+        .modal-body { display: flex; flex-direction: row; }
+        .modal-image-container { flex: 1.2; background: #000; overflow: hidden; min-height: 350px; border-radius: 20px 0 0 20px; }
+        .modal-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-info-container { flex: 1; padding: 40px 30px; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
+        .modal-day-badge { background: var(--accent-3); color: #000; font-weight: 900; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; font-size: 0.8rem; }
+        .modal-title { font-size: 1.8rem; font-weight: 900; color: white; }
+        .modal-date-text { color: var(--accent-3); font-weight: 700; }
+        .modal-desc-text { line-height: 1.6; color: #ccc; }
+        @media (max-width: 768px) { .modal-body { flex-direction: column; } .modal-image-container { border-radius: 20px 20px 0 0; min-height: 250px; } }
     </style>
 </head>
 <body>
@@ -328,42 +80,33 @@
                     <div id="calendar-content"></div>
                 </div>
             </div>
-
             <div id="calendar-modal" class="modal-overlay">
                 <div class="modal-content">
-                    <span class="modal-close-btn">&times;</span>
+                    <span class="modal-close-btn" onclick="closeModals()">&times;</span>
                     <div class="modal-body">
-                        <div class="modal-image-container">
-                            <img id="modal-img" src="" alt="Dettaglio Giorno">
-                        </div>
+                        <div class="modal-image-container"><img id="modal-img" src="" alt=""></div>
                         <div class="modal-info-container">
-                            <div class="modal-header">
-                                <span id="modal-day-num" class="modal-day-badge"></span>
-                                <h2 id="modal-title"></h2>
-                            </div>
+                            <span id="modal-day-num" class="modal-day-badge"></span>
+                            <h2 id="modal-title" class="modal-title"></h2>
                             <div id="modal-date" class="modal-date-text"></div>
                             <p id="modal-desc" class="modal-desc-text"></p>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div id="link-modal" class="modal-overlay">
                 <div class="modal-content" style="max-width: 500px; padding: 30px;">
-                    <span class="modal-close-btn" id="close-link-modal">&times;</span>
+                    <span class="modal-close-btn" onclick="closeModals()">&times;</span>
                     <h2 style="color: var(--accent-3); margin-bottom: 20px;">Cambia Vacanza</h2>
-                    <p style="font-size: 0.9rem; margin-bottom: 15px; color: #ccc;">Inserisci il link Costa Crociere della nuova vacanza:</p>
-                    <input type="text" id="cruise-link-input" placeholder="https://www.costacrociere.it/..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; margin-bottom: 20px;">
+                    <input type="text" id="cruise-link-input" placeholder="Incolla link Costa..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; margin-bottom: 20px;">
                     <div style="display: flex; gap: 10px;">
-                        <button id="save-link-btn" class="map-control-btn" style="flex: 1; padding: 12px; font-size: 0.9rem;">Salva</button>
-                        <button id="reset-link-btn" class="map-control-btn" style="flex: 1; padding: 12px; font-size: 0.9rem; background: #222; border-color: #444;">Reset</button>
+                        <button id="save-link-btn" class="map-control-btn" style="flex: 1;">Salva</button>
+                        <button id="reset-link-btn" class="map-control-btn" style="flex: 1; background: #222;">Reset</button>
                     </div>
                 </div>
             </div>
-
-            <div class="map-controls-top-right" id="map-overlays">
-                <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
-                <button id="center-ship-btn" class="map-control-btn" style="display: none;">Centra Nave</button>
+            <div class="map-controls-top-right">
+                <button id="center-map-btn" class="map-control-btn">Centra</button>
             </div>
         </div>
     </header>
@@ -382,164 +125,120 @@
             messagingSenderId: "930175030658",
             appId: "1:930175030658:web:f84de0ef791ccc1cb2eb9b"
         };
-
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         document.addEventListener('DOMContentLoaded', () => {
-            const osmMap = L.map('osm-map').setView([40.0, 0.0], 5);
+            const osmMap = L.map('osm-map').setView([16, -61], 6);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
 
             let shipMarker = null;
-            let cruiseData = null;
-            let highwayPoly = null;
+            let currentData = null;
 
             const shipIcon = L.divIcon({
                 className: 'ship-marker-container',
-                html: `<svg viewBox=\"0 0 24 24\" width=\"30\" height=\"30\"><path fill=\"#ef4444\" d=\"M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z\"/></svg>`,
+                html: '<svg viewBox="0 0 24 24" width="30" height="30"><path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>',
                 iconSize: [30, 30], iconAnchor: [15, 30]
             });
 
             const renderCruise = (data) => {
-                // Pulisci mappa precedente
-                osmMap.eachLayer((layer) => {
-                    if (layer instanceof L.Polyline || (layer instanceof L.Marker && layer !== shipMarker)) {
-                        osmMap.removeLayer(layer);
-                    }
-                });
+                currentData = data;
+                osmMap.eachLayer(l => { if (l instanceof L.Polyline || (l instanceof L.Marker && l !== shipMarker)) osmMap.removeLayer(l); });
 
-                const destinations = data.destinations || [];
-                destinations.forEach(dest => {
-                    L.marker(dest.coords, {
-                        icon: L.divIcon({
-                            className: 'marker-label',
-                            html: `<span>${dest.dayNum}</span>`,
-                            iconSize: [24, 24], iconAnchor: [12, 12]
-                        })
-                    }).bindPopup(`<h3>${dest.name}</h3><p>${dest.date}</p><p>${dest.info}</p>`).addTo(osmMap);
+                const dests = data.destinations || [];
+                dests.forEach(d => {
+                    L.marker(d.coords, {
+                        icon: L.divIcon({ className: 'marker-label', html: `<span>${d.dayNum}</span>`, iconSize: [24, 24] })
+                    }).bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
                 });
 
                 (data.path_segments || []).forEach(seg => {
                     L.polyline(getCurvedPath(seg), { color: '#06b6d4', weight: 4, opacity: 0.6, dashArray: '5, 10' }).addTo(osmMap);
                 });
 
-                if (destinations.length > 0) {
-                    const bounds = L.latLngBounds(destinations.map(d => d.coords));
+                if (dests.length > 0) {
+                    const bounds = L.latLngBounds(dests.map(d => d.coords));
                     osmMap.fitBounds(bounds, { padding: [50, 50] });
-                    document.getElementById('center-map-btn').onclick = () => osmMap.flyToBounds(bounds);
+                    if (!shipMarker) shipMarker = L.marker(dests[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
                 }
-
                 renderCalendar(data);
-
-                // Aggiorna posizione nave predefinita se non c'è live data
-                if (!shipMarker && destinations.length > 0) {
-                    shipMarker = L.marker(destinations[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
-                }
             };
 
             const renderCalendar = (data) => {
                 const content = document.getElementById('calendar-content');
-                let html = `<h1 style=\"text-align:center; color:var(--accent-3);\">${data.cruise_name || 'Itinerario'}</h1><div class=\"calendar-grid\">`;
-                (data.destinations || []).forEach(dest => {
-                    html += `<div class=\"calendar-day cruise\" style=\"background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dest.image}'), url('1.jpg')\" onclick=\"openDayDetail('${dest.image.replace('.jpg','')}', 'Giorno ${dest.dayNum}', ${dest.dayNum}, '${dest.name.replace(/'/g, "\\'")}', '${(dest.description || '').replace(/'/g, "\\'")}', '${dest.date}')\"><span class=\"day-num\">Giorno ${dest.dayNum}</span><div class=\"calendar-dest\">${dest.name}</div></div>`;
+                let html = `<h1 style="text-align:center; color:var(--accent-3);">${data.cruise_name}</h1><div class="calendar-grid">`;
+                data.destinations.forEach(d => {
+                    html += `<div class="calendar-day cruise" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${d.image}'), url('1.jpg')" onclick="openDayDetail('${d.image}', 'Giorno ${d.dayNum}', '${d.name}', '${d.description}', '${d.date}')"><span class="day-num">${d.dayNum}</span><div class="calendar-dest">${d.name}</div></div>`;
                 });
                 content.innerHTML = html + '</div>';
             };
 
-            window.openDayDetail = (imgKey, dayName, dayNum, title, desc, date) => {
-                const modal = document.getElementById('calendar-modal');
-                document.getElementById('modal-img').src = imgKey + '.jpg';
-                document.getElementById('modal-day-num').textContent = dayName;
+            window.openDayDetail = (img, day, title, desc, date) => {
+                document.getElementById('modal-img').src = img;
+                document.getElementById('modal-day-num').textContent = day;
                 document.getElementById('modal-title').textContent = title;
                 document.getElementById('modal-date').textContent = date;
                 document.getElementById('modal-desc').textContent = desc;
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('open'), 10);
+                const m = document.getElementById('calendar-modal');
+                m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
             };
 
-            const closeModals = () => {
-                document.querySelectorAll('.modal-overlay').forEach(m => {
-                    m.classList.remove('open');
-                    setTimeout(() => m.style.display = 'none', 300);
+            window.closeModals = () => {
+                document.querySelectorAll('.modal-overlay').forEach(m => { m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); });
+            };
+
+            const load = () => {
+                database.ref('current_cruise').on('value', snap => {
+                    const val = snap.val();
+                    if (val && val.destinations) renderCruise(val);
+                    else fetch('cruise_data.json').then(r => r.json()).then(renderCruise);
                 });
             };
-
-            document.querySelectorAll('.modal-close-btn').forEach(btn => btn.onclick = closeModals);
-            window.onclick = (e) => { if (e.target.classList.contains('modal-overlay')) closeModals(); };
-
-            const loadData = () => {
-                database.ref('current_cruise').on('value', (snap) => {
-                    const data = snap.val();
-                    if (data) { cruiseData = data; renderCruise(data); }
-                    else { fetch('cruise_data.json').then(r => r.json()).then(d => { cruiseData = d; renderCruise(d); }); }
-                });
-            };
-            loadData();
-
-            document.getElementById('open-calendar').onclick = () => {
-                hideAll(); document.getElementById('calendar-view').style.display = 'block';
-            };
-
-            document.getElementById('open-link-modal').onclick = () => {
-                document.getElementById('cruise-link-input').value = localStorage.getItem('custom_cruise_link') || '';
-                const modal = document.getElementById('link-modal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('open'), 10);
-            };
+            load();
 
             document.getElementById('save-link-btn').onclick = () => {
                 const link = document.getElementById('cruise-link-input').value;
                 if (link) {
-                    localStorage.setItem('custom_cruise_link', link);
-                    const shipIMOs = { 'pacifica': '9378498', 'smeralda': '9781889', 'toscana': '9781891', 'fascinosa': '9476939' };
-                    let foundImo = '9378498';
-                    for (const [s, i] of Object.entries(shipIMOs)) { if (link.toLowerCase().includes(s)) foundImo = i; }
-                    localStorage.setItem('custom_cruise_imo', foundImo);
-                    database.ref('current_cruise').set({ ...cruiseData, cruise_link: link, imo: foundImo })
-                        .then(() => { alert("Vacanza aggiornata!"); closeModals(); });
+                    const isCaraibi = link.includes('PTP07A2L');
+                    fetch('cruise_data.json').then(r => r.json()).then(defaultData => {
+                        const newCruise = isCaraibi ? defaultData : { ...defaultData, cruise_link: link, cruise_name: "Vacanza Personalizzata (Solo Vessel Live)" };
+                        database.ref('current_cruise').set(newCruise).then(() => { alert("Aggiornato!"); closeModals(); });
+                    });
                 }
             };
 
             document.getElementById('reset-link-btn').onclick = () => {
-                database.ref('current_cruise').remove().then(() => { alert("Reset completato!"); closeModals(); });
+                database.ref('current_cruise').remove().then(() => { alert("Reset globale effettuato!"); closeModals(); });
             };
 
-            const hideAll = () => {
-                ['osm-map', 'vessel-map-container', 'marine-map-container', 'calendar-view', 'link-modal'].forEach(id => {
-                    const el = document.getElementById(id); if (el) el.style.display = 'none';
-                });
-                document.querySelectorAll('.map-switch-btn').forEach(b => b.classList.remove('active'));
-            };
-
+            document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display = 'block'; };
+            document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display = 'flex'; setTimeout(() => document.getElementById('link-modal').classList.add('open'), 10); };
             document.getElementById('show-vessel').onclick = function() {
                 hideAll(); this.classList.add('active');
-                const container = document.getElementById('vessel-map-container');
-                container.style.display = 'block';
-                const imo = (cruiseData && cruiseData.imo) || localStorage.getItem('custom_cruise_imo') || '9378498';
-                container.innerHTML = `<iframe src=\"https://www.vesselfinder.com/aismap?imo=${imo}&zoom=10\" style=\"width:100%; height:100%; border:none;\"></iframe>`;
+                const v = document.getElementById('vessel-map-container'); v.style.display = 'block';
+                v.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
             };
+            document.getElementById('show-marine').onclick = () => window.open('https://www.marinetraffic.com/en/ais/home/shipid:279923', '_blank');
+            document.getElementById('center-map-btn').onclick = () => { const b = L.latLngBounds(currentData.destinations.map(d => d.coords)); osmMap.flyToBounds(b); };
 
-            function getCurvedPath(points, tension = 0.3, segments = 15) {
-                if (points.length < 3) return points;
-                const curvedPoints = [];
-                for (let i = 0; i < points.length - 1; i++) {
-                    const p0 = (i === 0) ? points[i] : points[i - 1];
-                    const p1 = points[i];
-                    const p2 = points[i + 1];
-                    const p3 = (i + 2 >= points.length) ? p2 : points[i + 2];
+            function hideAll() {
+                ['osm-map', 'vessel-map-container', 'marine-map-container', 'calendar-view'].forEach(id => document.getElementById(id).style.display = 'none');
+                document.querySelectorAll('.map-switch-btn').forEach(b => b.classList.remove('active'));
+            }
+
+            function getCurvedPath(p, tension = 0.3, segments = 15) {
+                if (p.length < 3) return p;
+                const res = [];
+                for (let i = 0; i < p.length - 1; i++) {
+                    const p0 = (i === 0) ? p[i] : p[i - 1], p1 = p[i], p2 = p[i + 1], p3 = (i + 2 >= p.length) ? p2 : p[i + 2];
                     for (let t = 0; t < segments; t++) {
-                        const t1 = t / segments;
-                        const t2 = t1 * t1;
-                        const t3 = t2 * t1;
-                        const f1 = -tension * t3 + 2 * tension * t2 - tension * t1;
-                        const f2 = (2 - tension) * t3 + (tension - 3) * t2 + 1;
-                        const f3 = (tension - 2) * t3 + (3 - 2 * tension) * t2 + tension * t1;
-                        const f4 = tension * t3 - tension * t2;
-                        curvedPoints.push([p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4, p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4]);
+                        const t1 = t / segments, t2 = t1 * t1, t3 = t2 * t1;
+                        const f1 = -tension * t3 + 2 * tension * t2 - tension * t1, f2 = (2 - tension) * t3 + (tension - 3) * t2 + 1, f3 = (tension - 2) * t3 + (3 - 2 * tension) * t2 + tension * t1, f4 = tension * t3 - tension * t2;
+                        res.push([p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4, p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4]);
                     }
                 }
-                curvedPoints.push(points[points.length - 1]);
-                return curvedPoints;
+                res.push(p[p.length - 1]);
+                return res;
             }
         });
     </script>
