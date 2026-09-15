@@ -133,9 +133,10 @@
         };
 
         const itineraries = {
-            'PTP07A2L': 'cruise_data.json', // Caraibi
-            'TCI07A51': 'canarie_data.json', // Canarie Smeralda
-            'SAV': 'savona_data.json' // Placeholder per Savona
+            'PTP07A2L': 'cruise_data.json',
+            'TCI07A51': 'canarie_data.json',
+            'BUE09A0I': 'serena_sudamerica.json',
+            'SAV': 'savona_data.json'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -143,9 +144,14 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
             let shipMarker = null, currentData = null;
 
+            const shipIcon = L.divIcon({
+                className: 'ship-marker-container',
+                html: '<svg viewBox="0 0 24 24" width="30" height="30"><path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>',
+                iconSize: [30, 30], iconAnchor: [15, 30]
+            });
+
             const render = (data) => {
                 currentData = data;
-                // Pulisce mappa, rotte e vecchia posizione nave
                 osmMap.eachLayer(l => { if(l instanceof L.Polyline || l instanceof L.Marker) osmMap.removeLayer(l); });
                 shipMarker = null;
 
@@ -155,10 +161,8 @@
                      .bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
                 });
                 (data.path_segments || []).forEach(s => L.polyline(getCurvedPath(s), {color:'#06b6d4', weight:4, opacity:0.6, dashArray:'5,10'}).addTo(osmMap));
-
                 if(dests.length > 0) {
                     osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
-                    // Posiziona la nave sulla prima tappa del nuovo itinerario
                     shipMarker = L.marker(dests[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
                 }
                 renderCalendar(data);
@@ -186,60 +190,36 @@
             database.ref('current_cruise').on('value', snap => {
                 const val = snap.val();
                 if(val && val.destinations) render(val);
-                else fetch('cruise_data.json').then(r=>r.json()).then(render);
+                else fetch('serena_sudamerica.json').then(r=>r.json()).then(render);
             });
 
             document.getElementById('save-link-btn').onclick = () => {
                 const link = document.getElementById('cruise-link-input').value.trim();
                 if(!link) return;
 
-                // 1. Rileva Nave (cerca codici come /SM, /FS, /PC o il nome nel testo)
-                let ship = shipDatabase['PC']; // Default Pacifica
-                for (const k in shipDatabase) {
-                    if (link.toUpperCase().includes('/' + k) || link.toUpperCase().includes(shipDatabase[k].name.toUpperCase().replace('COSTA ', ''))) {
-                        ship = shipDatabase[k];
-                        break;
-                    }
-                }
+                let ship = shipDatabase['PC'];
+                for (const k in shipDatabase) { if (link.toUpperCase().includes('/' + k) || link.toUpperCase().includes(shipDatabase[k].name.toUpperCase().replace('COSTA ', ''))) { ship = shipDatabase[k]; break; } }
 
-                // 2. Rileva Itinerario (cerca codici come TCI07A51, PTP07A2L)
                 let itKey = 'DEFAULT';
-                for (const k in itineraries) {
-                    if (link.toUpperCase().includes(k.toUpperCase())) {
-                        itKey = k;
-                        break;
-                    }
-                }
+                for (const k in itineraries) { if (link.toUpperCase().includes(k.toUpperCase())) { itKey = k; break; } }
 
-                const dataUrl = itineraries[itKey] || 'cruise_data.json';
-                console.log("Link inserito:", link);
-                console.log("Nave rilevata:", ship.name, "Codice Itinerario:", itKey, "File dati:", dataUrl);
+                const dataUrl = itineraries[itKey] || 'serena_sudamerica.json';
 
                 fetch(dataUrl).then(r => r.json()).then(data => {
-                    const finalData = {
-                        ...data,
+                    const finalData = Object.assign({}, data, {
                         cruise_link: link,
                         ship_name: ship.name,
                         name: ship.name,
                         imo: ship.imo,
                         mid: ship.mid,
-                        cruise_name: (itKey === 'DEFAULT') ?
-                            (ship.name + " - Nuova Vacanza") :
-                            data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name),
+                        cruise_name: (itKey === 'DEFAULT') ? (ship.name + " - Nuova Vacanza") : data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name),
                         updated_at: Date.now()
-                    };
-
-                    database.ref('current_cruise').set(finalData).then(() => {
-                        alert("Vacanza aggiornata: " + ship.name + "\nItinerario: " + finalData.cruise_name);
-                        closeModals();
                     });
-                }).catch(err => {
-                    alert("Errore caricamento dati itinerario: " + dataUrl);
-                    console.error(err);
+                    database.ref('current_cruise').set(finalData).then(() => { alert("Aggiornata a: " + finalData.cruise_name); closeModals(); });
                 });
             };
 
-            document.getElementById('reset-link-btn').onclick = () => { database.ref('current_cruise').remove().then(()=> { alert("Reset effettuato!"); location.reload(); }); };
+            document.getElementById('reset-link-btn').onclick = () => { database.ref('current_cruise').remove().then(()=> { alert("Reset globale!"); location.reload(); }); };
             document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display='block'; };
             document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display='flex'; setTimeout(()=>document.getElementById('link-modal').classList.add('open'),10); };
             document.getElementById('show-vessel').onclick = function() { hideAll(); this.classList.add('active'); const v=document.getElementById('vessel-map-container'); v.style.display='block'; v.innerHTML=`<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`; };

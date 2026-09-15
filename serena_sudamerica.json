@@ -1,0 +1,27 @@
+{
+  "cruise_name": "Costa Serena - Sud America",
+  "ship_name": "Costa Serena",
+  "imo": "9344411",
+  "mid": "371727",
+  "cruise_link": "https://www.costacrociere.it/cruises/BUE09A0I/SE09270122.html",
+  "destinations": [
+    { "id": "bue-1", "name": "Buenos Aires", "coords": [-34.6037, -58.3816], "date": "22 Gennaio 2027", "info": "Imbarco, Partenza 19:00", "dayNum": 1, "image": "2026-07-27.jpg", "description": "Benvenuti a Buenos Aires! Inizia la nostra avventura sudamericana a bordo di Costa Serena." },
+    { "id": "mvd", "name": "Montevideo", "coords": [-34.9011, -56.1645], "date": "23 Gennaio 2027", "info": "Arrivo 07:00 / Partenza 17:00", "dayNum": 2, "image": "2026-07-28.jpg", "description": "Uruguay. Esploriamo il fascino coloniale di Montevideo." },
+    { "id": "nav-1", "name": "In Navigazione", "coords": [-31.0, -50.0], "date": "24 Gennaio 2027", "info": "Giornata a bordo", "dayNum": 3, "image": "1.jpg", "description": "Relax in piscina mentre navighiamo verso le coste del Brasile." },
+    { "id": "balneario", "name": "Balneário Camboriú", "coords": [-26.991, -48.634], "date": "25 Gennaio 2027", "info": "Arrivo 10:00 / Partenza 18:30", "dayNum": 4, "image": "2026-07-30.jpg", "description": "Brasile. Grattacieli e spiagge mozzafiato ci attendono a Balneário Camboriú." },
+    { "id": "angra", "name": "Angra dos Reis", "coords": [-23.006, -44.318], "date": "26 Gennaio 2027", "info": "Arrivo 12:00 / Partenza 19:00", "dayNum": 5, "image": "2026-07-31.jpg", "description": "Ilha Grande. Un paradiso naturale tra acque smeraldo e vegetazione tropicale." },
+    { "id": "rio", "name": "Rio de Janeiro", "coords": [-22.9068, -43.1729], "date": "27 Gennaio 2027", "info": "Arrivo 07:00 / Partenza 18:30", "dayNum": 6, "image": "2026-08-03.jpg", "description": "La città meravigliosa. Panorami iconici dal Corcovado e Copacabana." },
+    { "id": "ilhabela", "name": "Ilhabela", "coords": [-23.778, -45.358], "date": "28 Gennaio 2027", "info": "Arrivo 07:00 / Partenza 16:00", "dayNum": 7, "image": "2026-07-26.jpg", "description": "L'isola bella. Natura incontaminata e cascate nel cuore del Brasile." },
+    { "id": "nav-2", "name": "In Navigazione", "coords": [-28.0, -48.0], "date": "29 Gennaio 2027", "info": "Giornata a bordo", "dayNum": 8, "image": "1.jpg", "description": "Navigazione di rientro verso l'Argentina." },
+    { "id": "nav-3", "name": "In Navigazione", "coords": [-32.0, -52.0], "date": "30 Gennaio 2027", "info": "Giornata a bordo", "dayNum": 9, "image": "1.jpg", "description": "Ultimo giorno di relax prima del rientro." },
+    { "id": "bue-2", "name": "Buenos Aires", "coords": [-34.6037, -58.3816], "date": "31 Gennaio 2027", "info": "Sbarco, Arrivo 08:00", "dayNum": 10, "image": "2026-07-27.jpg", "description": "Fine della crociera. Arrivederci al prossimo viaggio!" }
+  ],
+  "path_segments": [
+    [[-34.6037, -58.3816], [-34.9011, -56.1645]],
+    [[-34.9011, -56.1645], [-32.0, -51.0], [-26.991, -48.634]],
+    [[-26.991, -48.634], [-25.0, -46.0], [-23.006, -44.318]],
+    [[-23.006, -44.318], [-22.9068, -43.1729]],
+    [[-22.9068, -43.1729], [-23.778, -45.358]],
+    [[-23.778, -45.358], [-28.0, -48.0], [-34.0, -54.0], [-34.6037, -58.3816]]
+  ]
+}
