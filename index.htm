@@ -191,8 +191,16 @@
                 for(const k in itineraries) { if(link.includes(k)) itKey = k; }
 
                 fetch(itineraries[itKey] || 'cruise_data.json').then(r=>r.json()).then(data => {
-                    const finalData = { ...data, cruise_link: link, ...ship, cruise_name: data.cruise_name.replace('Costa Fascinosa', ship.name) };
-                    database.ref('current_cruise').set(finalData).then(() => { alert("Vacanza aggiornata!"); closeModals(); });
+                    const finalData = {
+                        ...data,
+                        cruise_link: link,
+                        ship_name: ship.name,
+                        name: ship.name,
+                        imo: ship.imo,
+                        mid: ship.mid,
+                        cruise_name: data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name)
+                    };
+                    database.ref('current_cruise').set(finalData).then(() => { alert("Vacanza aggiornata a " + ship.name + "!"); closeModals(); });
                 });
             };
 
