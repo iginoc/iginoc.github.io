@@ -1,24 +1,25 @@
 {
-  "cruise_name": "Costa Pacifica - Mediterraneo",
-  "ship_name": "Costa Pacifica",
-  "imo": "9378498",
+  "cruise_name": "Costa Fascinosa - Caraibi e Antille",
+  "ship_name": "Costa Fascinosa",
+  "imo": "9476939",
+  "cruise_link": "https://www.costacrociere.it/cruises/PTP07A2L/FS07271202.html",
   "destinations": [
-    { "id": "savona-1", "name": "Savona", "coords": [44.3079, 8.4811], "date": "06 Settembre 2026", "info": "Giorno d'imbarco, Partenza 16:30", "dayNum": 1, "image": "2026-09-06.jpg", "description": "Savona è una città ricca di fascino... Partenza alle ore 16:30." },
-    { "id": "laseyne", "name": "La Seyne | St. Tropez", "coords": [43.100, 5.900], "date": "07 Settembre 2026", "info": "Arrivo 07:30 / Partenza 15:30", "dayNum": 2, "image": "2026-09-07.jpg", "description": "Porto di La Seyne-sur-Mer, porta d'accesso alla favolosa Costa Azzurra..." },
-    { "id": "palma", "name": "Palma", "coords": [39.5696, 2.6502], "date": "08 Settembre 2026", "info": "Arrivo 10:00 / Partenza 21:30", "dayNum": 3, "image": "2026-09-08.jpg", "description": "Palma di Maiorca vi accoglie con la sua imponente Cattedrale gotica." },
-    { "id": "valencia", "name": "Valencia", "coords": [39.450, -0.315], "date": "09 Settembre 2026", "info": "Arrivo 09:00 / Partenza 17:00", "dayNum": 4, "image": "2026-09-09.jpg", "description": "Valencia unisce storia, modernità della Città delle Scienze e la tipica paella." },
-    { "id": "navigazione-1", "name": "In Navigazione", "coords": [40.0, 5.0], "date": "10 Settembre 2026", "info": "Giornata a bordo", "dayNum": 5, "image": "1.jpg", "description": "Giornata interamente dedicata alla navigazione." },
-    { "id": "olbia", "name": "Olbia | Costa Smeralda", "coords": [40.925, 9.518], "date": "11 Settembre 2026", "info": "Arrivo 06:30 / Partenza 18:00", "dayNum": 6, "image": "2026-09-11.jpg", "description": "Olbia vi accoglie tra la bellezza naturale della Costa Smeralda." },
-    { "id": "civitavecchia", "name": "Civitavecchia | Roma", "coords": [42.092, 11.790], "date": "12 Settembre 2026", "info": "Arrivo 08:00 / Partenza 18:30", "dayNum": 7, "image": "2026-09-12.jpg", "description": "Civitavecchia, il porto di Roma. Scopri le meraviglie millenarie della Città Eterna." },
-    { "id": "savona-2", "name": "Savona", "coords": [44.3079, 8.4811], "date": "13 Settembre 2026", "info": "Giorno di sbarco, Arrivo 08:30", "dayNum": 8, "image": "1.jpg", "description": "Rientro a Savona, dove si conclude il nostro viaggio." }
+    { "id": "guadalupa-1", "name": "Pointe-à-Pitre", "coords": [16.24, -61.53], "date": "27 Luglio 2026", "info": "Imbarco, Partenza 23:00", "dayNum": 1, "image": "2026-07-27.jpg", "description": "Guadalupa, l'isola a forma di farfalla, ci accoglie per l'inizio di questa avventura caraibica." },
+    { "id": "tortola", "name": "Tortola", "coords": [18.42, -64.62], "date": "28 Luglio 2026", "info": "Arrivo 08:00 / Partenza 18:00", "dayNum": 2, "image": "2026-07-28.jpg", "description": "Isole Vergini Britanniche. Spiagge da sogno e acque cristalline a Tortola." },
+    { "id": "laromana", "name": "La Romana", "coords": [18.42, -68.97], "date": "29 Luglio 2026", "info": "Arrivo 08:00 / Partenza 23:59", "dayNum": 3, "image": "2026-07-30.jpg", "description": "Repubblica Dominicana. Una lunga sosta per godersi le spiagge dell'isola di Saona." },
+    { "id": "navigazione-1", "name": "In Navigazione", "coords": [16.0, -65.0], "date": "30 Luglio 2026", "info": "Giornata a bordo", "dayNum": 4, "image": "1.jpg", "description": "Relax totale a bordo di Costa Fascinosa mentre navighiamo nel Mar dei Caraibi." },
+    { "id": "stlucia", "name": "Saint Lucia", "coords": [14.01, -61.00], "date": "31 Luglio 2026", "info": "Arrivo 08:00 / Partenza 18:00", "dayNum": 5, "image": "2026-07-31.jpg", "description": "I Pitons, icona di Saint Lucia, ci danno il benvenuto a Castries." },
+    { "id": "barbados", "name": "Barbados", "coords": [13.11, -59.61], "date": "01 Agosto 2026", "info": "Arrivo 08:00 / Partenza 18:00", "dayNum": 6, "image": "2026-08-03.jpg", "description": "Bridgetown, tra storia coloniale e nuotate con le tartarughe." },
+    { "id": "antigua", "name": "Antigua", "coords": [17.12, -61.85], "date": "02 Agosto 2026", "info": "Arrivo 08:00 / Partenza 18:00", "dayNum": 7, "image": "2026-07-26.jpg", "description": "Un'isola, 365 spiagge. Antigua ci incanterà con i suoi colori." },
+    { "id": "guadalupa-2", "name": "Pointe-à-Pitre", "coords": [16.24, -61.53], "date": "03 Agosto 2026", "info": "Sbarco, Arrivo 08:00", "dayNum": 8, "image": "2026-07-27.jpg", "description": "Ritorno in Guadalupa e fine della crociera." }
   ],
   "path_segments": [
-    [[44.3079, 8.4811], [44.00, 7.50], [43.50, 6.50], [43.100, 5.900]],
-    [[43.100, 5.900], [42.50, 4.80], [41.00, 3.50], [39.5696, 2.6502]],
-    [[39.5696, 2.6502], [38.80, 1.20], [38.50, 0.00], [39.00, -0.80], [39.450, -0.315]],
-    [[39.450, -0.315], [39.80, 3.00], [40.00, 5.00]],
-    [[40.00, 5.00], [40.30, 6.50], [40.60, 8.00], [40.925, 9.518]],
-    [[40.925, 9.518], [40.80, 10.50], [41.20, 11.20], [42.092, 11.790]],
-    [[42.092, 11.790], [42.50, 11.00], [42.80, 10.00], [43.30, 9.20], [43.80, 8.80], [44.3079, 8.4811]]
+    [[16.24, -61.53], [17.5, -63.0], [18.42, -64.62]],
+    [[18.42, -64.62], [18.5, -66.5], [18.42, -68.97]],
+    [[18.42, -68.97], [17.0, -67.0], [16.0, -65.0]],
+    [[16.0, -65.0], [15.0, -63.0], [14.01, -61.00]],
+    [[14.01, -61.00], [13.5, -60.3], [13.11, -59.61]],
+    [[13.11, -59.61], [15.0, -60.5], [17.12, -61.85]],
+    [[17.12, -61.85], [16.7, -61.7], [16.24, -61.53]]
   ]
 }

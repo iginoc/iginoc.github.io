@@ -99,18 +99,11 @@
         .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
         .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
 
-        /* Stile per l'icona della nave AIS */
         .ship-marker-container {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .ship-icon-svg {
-            fill: var(--accent-3);
-            stroke: white;
-            stroke-width: 1px;
-        }
-        /* Numeri sopra le tappe */
         .marker-label {
             background: #111;
             border: 1px solid var(--accent-3);
@@ -160,6 +153,7 @@
             gap: 10px;
             min-height: 100px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .calendar-day.cruise { border-color: var(--accent-3); border-width: 2px; }
         .calendar-day.today { background-color: rgba(6, 182, 212, 0.4); border-color: white; box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
@@ -185,7 +179,6 @@
             border-color: var(--accent-3);
         }
 
-        /* Modal Dettaglio Calendario */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -302,28 +295,12 @@
             margin-top: 10px;
         }
         
-        /* Adattabilità Mobile */
         @media (max-width: 768px) {
-            .modal-body {
-                flex-direction: column;
-            }
-            .modal-image-container {
-                border-top-left-radius: 20px;
-                border-top-right-radius: 20px;
-                border-bottom-left-radius: 0;
-                min-height: 250px;
-                flex: none;
-            }
-            .modal-info-container {
-                padding: 25px 20px;
-                flex: none;
-            }
-            .modal-content {
-                max-height: 90vh;
-            }
-            .modal-title {
-                font-size: 1.4rem;
-            }
+            .modal-body { flex-direction: column; }
+            .modal-image-container { border-radius: 20px 20px 0 0; min-height: 250px; flex: none; }
+            .modal-info-container { padding: 25px 20px; flex: none; }
+            .modal-content { max-height: 90vh; }
+            .modal-title { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -333,10 +310,10 @@
             <a href="index.htm" class="home-btn" title="Home">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </a>
-            <button class="map-switch-btn" id="open-calendar" title="Calendario" style="display: flex; align-items: center; padding: 8px 12px;">
+            <button class="map-switch-btn" id="open-calendar" title="Calendario">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             </button>
-            <button class="map-switch-btn" id="open-link-modal" title="Cambia Vacanza" style="display: flex; align-items: center; padding: 8px 12px;">
+            <button class="map-switch-btn" id="open-link-modal" title="Cambia Vacanza">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
             </button>
             <button class="map-switch-btn" id="show-vessel">Vessel</button>
@@ -352,7 +329,6 @@
                 </div>
             </div>
 
-            <!-- Modal per Dettaglio Giorno Calendario -->
             <div id="calendar-modal" class="modal-overlay">
                 <div class="modal-content">
                     <span class="modal-close-btn">&times;</span>
@@ -372,9 +348,8 @@
                 </div>
             </div>
 
-            <!-- Modal per Inserimento Link -->
             <div id="link-modal" class="modal-overlay">
-                <div class="modal-content" style="max-width: 500px; padding: 30px; display: block;">
+                <div class="modal-content" style="max-width: 500px; padding: 30px;">
                     <span class="modal-close-btn" id="close-link-modal">&times;</span>
                     <h2 style="color: var(--accent-3); margin-bottom: 20px;">Cambia Vacanza</h2>
                     <p style="font-size: 0.9rem; margin-bottom: 15px; color: #ccc;">Inserisci il link Costa Crociere della nuova vacanza:</p>
@@ -385,6 +360,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="map-controls-top-right" id="map-overlays">
                 <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
                 <button id="center-ship-btn" class="map-control-btn" style="display: none;">Centra Nave</button>
@@ -393,12 +369,10 @@
     </header>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // CONFIGURAZIONE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBgAzFbZAU_OyEpTGCRqNpa7WXyTPeftbA",
             authDomain: "cruise-16a96.firebaseapp.com",
@@ -409,183 +383,142 @@
             appId: "1:930175030658:web:f84de0ef791ccc1cb2eb9b"
         };
 
-        // Inizializza Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function toggleExpand(el) {
-            el.classList.toggle('expanded');
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            const now = new Date();
-            let shipMarker;
+            const osmMap = L.map('osm-map').setView([40.0, 0.0], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
+
+            let shipMarker = null;
             let cruiseData = null;
+            let highwayPoly = null;
 
-            // Inizializzazione Mappa
-            const osmMap = L.map('osm-map', {
-                zoomControl: true,
-                attributionControl: true
-            }).setView([40.0, 0.0], 5);
+            const shipIcon = L.divIcon({
+                className: 'ship-marker-container',
+                html: `<svg viewBox=\"0 0 24 24\" width=\"30\" height=\"30\"><path fill=\"#ef4444\" d=\"M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z\"/></svg>`,
+                iconSize: [30, 30], iconAnchor: [15, 30]
+            });
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(osmMap);
-
-            // Caricamento Dati Crociera
-            const loadInitialData = () => {
-                if (database) {
-                    // Ascolta modifiche dal database (Condiviso per tutti)
-                    database.ref('current_cruise').on('value', (snapshot) => {
-                        const data = snapshot.val();
-                        if (data) {
-                            cruiseData = data;
-                            renderCruise(data);
-                        } else {
-                            fetchDefaultData();
-                        }
-                    });
-                } else {
-                    // Fallback su dati locali/JSON (Privato o predefinito)
-                    const localData = localStorage.getItem('custom_cruise_data');
-                    if (localData) {
-                        cruiseData = JSON.parse(localData);
-                        renderCruise(cruiseData);
-                    } else {
-                        fetchDefaultData();
-                    }
-                }
-            };
-
-            const fetchDefaultData = () => {
-                fetch('cruise_data.json')
-                    .then(r => r.json())
-                    .then(data => {
-                        cruiseData = data;
-                        renderCruise(data);
-                    })
-                    .catch(e => console.error("Errore caricamento dati:", e));
-            };
-
-            loadInitialData();
-
-            function renderCruise(data) {
-                // Pulisci mappa precedente dai marker e linee
+            const renderCruise = (data) => {
+                // Pulisci mappa precedente
                 osmMap.eachLayer((layer) => {
-                    if (layer instanceof L.Polyline && (typeof highwayPoly === 'undefined' || layer !== highwayPoly)) {
-                        osmMap.removeLayer(layer);
-                    }
-                    if (layer instanceof L.Marker && (typeof shipMarker === 'undefined' || layer !== shipMarker)) {
+                    if (layer instanceof L.Polyline || (layer instanceof L.Marker && layer !== shipMarker)) {
                         osmMap.removeLayer(layer);
                     }
                 });
 
-                const destinations = data.destinations;
-                const pathSegments = data.path_segments || [];
-
-                // Disegna Rotte
-                pathSegments.forEach((seg, i) => {
-                    L.polyline(getCurvedPath(seg), {
-                        color: '#06b6d4',
-                        weight: 4,
-                        opacity: 0.6,
-                        dashArray: '5, 10'
-                    }).addTo(osmMap);
-                });
-
-                // Disegna Tappe
-                const usedPositions = [];
+                const destinations = data.destinations || [];
                 destinations.forEach(dest => {
-                    let displayCoords = [...dest.coords];
-                    const popupHtml = `
-                        <div class="popup-card">
-                            <div class="popup-info">
-                                <h3>Giorno ${dest.dayNum}: ${dest.name}</h3>
-                                <p><strong>${dest.date}</strong></p>
-                                <p>${dest.info}</p>
-                            </div>
-                        </div>
-                    `;
-
-                    L.marker(displayCoords, {
+                    L.marker(dest.coords, {
                         icon: L.divIcon({
                             className: 'marker-label',
-                            html: `<span>${dest.date.split(' ')[0]}</span>`,
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 12]
+                            html: `<span>${dest.dayNum}</span>`,
+                            iconSize: [24, 24], iconAnchor: [12, 12]
                         })
-                    }).bindPopup(popupHtml).addTo(osmMap);
+                    }).bindPopup(`<h3>${dest.name}</h3><p>${dest.date}</p><p>${dest.info}</p>`).addTo(osmMap);
                 });
 
-                // Ricalcola bounds includendo le nuove destinazioni
+                (data.path_segments || []).forEach(seg => {
+                    L.polyline(getCurvedPath(seg), { color: '#06b6d4', weight: 4, opacity: 0.6, dashArray: '5, 10' }).addTo(osmMap);
+                });
+
                 if (destinations.length > 0) {
                     const bounds = L.latLngBounds(destinations.map(d => d.coords));
                     osmMap.fitBounds(bounds, { padding: [50, 50] });
-
-                    // Collega pulsante centra
-                    document.getElementById('center-map-btn').onclick = () => {
-                        osmMap.flyToBounds(bounds, { animate: true, duration: 1.5 });
-                    };
+                    document.getElementById('center-map-btn').onclick = () => osmMap.flyToBounds(bounds);
                 }
 
-                // Aggiorna calendario con i nuovi dati
                 renderCalendar(data);
-            }
 
-            function renderCalendar(data) {
-                const content = document.getElementById('calendar-content');
-                if (!content || !data) return;
-
-                const today = new Date();
-                const destinations = data.destinations;
-
-                let html = `
-                    <h1 style="text-align:center; color:var(--accent-3); margin-bottom:20px; font-weight:900; text-transform:uppercase; letter-spacing:3px;">${data.cruise_name || 'Itinerario'}</h1>
-                    <div class="calendar-banner-container">
-                        <img src="${destinations[0]?.image || '2026-09.jpg'}" alt="Mappa Itinerario" class="calendar-banner-img" onerror="this.src='1.jpg'">
-                    </div>
-                    <div class="calendar-grid">`;
-
-                destinations.forEach(dest => {
-                    const isToday = false; // Logica semplificata per ora
-                    const isPast = false;
-
-                    html += `
-                        <div class="calendar-day cruise ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}"
-                             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dest.image}'), url('1.jpg')"
-                             onclick="openDayDetail('${dest.image.replace('.jpg','')}', 'Giorno ${dest.dayNum}', ${dest.dayNum}, '${dest.name.replace(/'/g, "\\'")}', '${dest.description?.replace(/'/g, "\\'") || ''}', '${dest.date}')">
-                             <span class="day-num">Giorno ${dest.dayNum}</span>
-                             <div class="calendar-dest">${dest.name}</div>
-                        </div>`;
-                });
-                html += '</div>';
-                content.innerHTML = html;
-            }
-
-            window.openDayDetail = function(imgKey, dayName, dayNum, destName, description, dateText) {
-                const modal = document.getElementById('calendar-modal');
-                const modalImg = document.getElementById('modal-img');
-                const modalDayNum = document.getElementById('modal-day-num');
-                const modalTitle = document.getElementById('modal-title');
-                const modalDate = document.getElementById('modal-date');
-                const modalDesc = document.getElementById('modal-desc');
-
-                if (!modal) return;
-
-                modalImg.src = `${imgKey}.jpg`;
-                modalImg.onerror = function() { this.src = '1.jpg'; };
-
-                modalDayNum.textContent = dayName;
-                modalTitle.textContent = destName;
-                modalDate.textContent = dateText;
-                modalDesc.textContent = description || "Immergiti nella vita di bordo...";
-
-                modal.style.display = 'flex';
-                setTimeout(() => { modal.classList.add('open'); }, 10);
+                // Aggiorna posizione nave predefinita se non c'è live data
+                if (!shipMarker && destinations.length > 0) {
+                    shipMarker = L.marker(destinations[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
+                }
             };
 
-            // Funzione per curve rotte
+            const renderCalendar = (data) => {
+                const content = document.getElementById('calendar-content');
+                let html = `<h1 style=\"text-align:center; color:var(--accent-3);\">${data.cruise_name || 'Itinerario'}</h1><div class=\"calendar-grid\">`;
+                (data.destinations || []).forEach(dest => {
+                    html += `<div class=\"calendar-day cruise\" style=\"background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dest.image}'), url('1.jpg')\" onclick=\"openDayDetail('${dest.image.replace('.jpg','')}', 'Giorno ${dest.dayNum}', ${dest.dayNum}, '${dest.name.replace(/'/g, "\\'")}', '${(dest.description || '').replace(/'/g, "\\'")}', '${dest.date}')\"><span class=\"day-num\">Giorno ${dest.dayNum}</span><div class=\"calendar-dest\">${dest.name}</div></div>`;
+                });
+                content.innerHTML = html + '</div>';
+            };
+
+            window.openDayDetail = (imgKey, dayName, dayNum, title, desc, date) => {
+                const modal = document.getElementById('calendar-modal');
+                document.getElementById('modal-img').src = imgKey + '.jpg';
+                document.getElementById('modal-day-num').textContent = dayName;
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-date').textContent = date;
+                document.getElementById('modal-desc').textContent = desc;
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('open'), 10);
+            };
+
+            const closeModals = () => {
+                document.querySelectorAll('.modal-overlay').forEach(m => {
+                    m.classList.remove('open');
+                    setTimeout(() => m.style.display = 'none', 300);
+                });
+            };
+
+            document.querySelectorAll('.modal-close-btn').forEach(btn => btn.onclick = closeModals);
+            window.onclick = (e) => { if (e.target.classList.contains('modal-overlay')) closeModals(); };
+
+            const loadData = () => {
+                database.ref('current_cruise').on('value', (snap) => {
+                    const data = snap.val();
+                    if (data) { cruiseData = data; renderCruise(data); }
+                    else { fetch('cruise_data.json').then(r => r.json()).then(d => { cruiseData = d; renderCruise(d); }); }
+                });
+            };
+            loadData();
+
+            document.getElementById('open-calendar').onclick = () => {
+                hideAll(); document.getElementById('calendar-view').style.display = 'block';
+            };
+
+            document.getElementById('open-link-modal').onclick = () => {
+                document.getElementById('cruise-link-input').value = localStorage.getItem('custom_cruise_link') || '';
+                const modal = document.getElementById('link-modal');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('open'), 10);
+            };
+
+            document.getElementById('save-link-btn').onclick = () => {
+                const link = document.getElementById('cruise-link-input').value;
+                if (link) {
+                    localStorage.setItem('custom_cruise_link', link);
+                    const shipIMOs = { 'pacifica': '9378498', 'smeralda': '9781889', 'toscana': '9781891', 'fascinosa': '9476939' };
+                    let foundImo = '9378498';
+                    for (const [s, i] of Object.entries(shipIMOs)) { if (link.toLowerCase().includes(s)) foundImo = i; }
+                    localStorage.setItem('custom_cruise_imo', foundImo);
+                    database.ref('current_cruise').set({ ...cruiseData, cruise_link: link, imo: foundImo })
+                        .then(() => { alert("Vacanza aggiornata!"); closeModals(); });
+                }
+            };
+
+            document.getElementById('reset-link-btn').onclick = () => {
+                database.ref('current_cruise').remove().then(() => { alert("Reset completato!"); closeModals(); });
+            };
+
+            const hideAll = () => {
+                ['osm-map', 'vessel-map-container', 'marine-map-container', 'calendar-view', 'link-modal'].forEach(id => {
+                    const el = document.getElementById(id); if (el) el.style.display = 'none';
+                });
+                document.querySelectorAll('.map-switch-btn').forEach(b => b.classList.remove('active'));
+            };
+
+            document.getElementById('show-vessel').onclick = function() {
+                hideAll(); this.classList.add('active');
+                const container = document.getElementById('vessel-map-container');
+                container.style.display = 'block';
+                const imo = (cruiseData && cruiseData.imo) || localStorage.getItem('custom_cruise_imo') || '9378498';
+                container.innerHTML = `<iframe src=\"https://www.vesselfinder.com/aismap?imo=${imo}&zoom=10\" style=\"width:100%; height:100%; border:none;\"></iframe>`;
+            };
+
             function getCurvedPath(points, tension = 0.3, segments = 15) {
                 if (points.length < 3) return points;
                 const curvedPoints = [];
@@ -602,424 +535,11 @@
                         const f2 = (2 - tension) * t3 + (tension - 3) * t2 + 1;
                         const f3 = (tension - 2) * t3 + (3 - 2 * tension) * t2 + tension * t1;
                         const f4 = tension * t3 - tension * t2;
-                        curvedPoints.push([
-                            p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4,
-                            p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4
-                        ]);
+                        curvedPoints.push([p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4, p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4]);
                     }
                 }
                 curvedPoints.push(points[points.length - 1]);
                 return curvedPoints;
-            }
-
-            // Disegna l'icona della nave (segnalino rosso) sulla posizione corretta
-            const shipIcon = L.divIcon({
-                className: 'ship-marker-container',
-                html: `
-                    <svg viewBox="0 0 24 24" width="30" height="30" style="filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));">
-                        <path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/>
-                    </svg>
-                `,
-                iconSize: [30, 30],
-                iconAnchor: [15, 30]
-            });
-
-            // Inizializza il marker se abbiamo una posizione predefinita
-            if (shipFinalPos) {
-                shipMarker = L.marker(shipFinalPos, { icon: shipIcon, zIndexOffset: 5000 })
-                    .addTo(osmMap);
-            }
-
-            // --- INTEGRAZIONE POSIZIONE LIVE ---
-            function timeAgo(date) {
-                if (!date) return "N/D";
-                const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-                if (seconds < 60) return "Adesso";
-                const minutes = Math.floor(seconds / 60);
-                if (minutes < 60) return `${minutes} min fa`;
-                const hours = Math.floor(minutes / 60);
-                if (hours < 24) return `${hours} ore fa`;
-                return new Date(date).toLocaleDateString('it-IT');
-            }
-
-            function updateLivePosition() {
-                fetch('position.json', { cache: "no-store" })
-                    .then(response => {
-                        if (!response.ok) throw new Error("File non trovato");
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.lat && data.lon && data.lat !== 0 && data.lon !== 0) {
-                            const livePos = [data.lat, data.lon];
-                            
-                            // Formattazione popup con timestamp
-                            const updateTime = data.timestamp ? timeAgo(data.timestamp) : "Recentemente";
-                            const popupContent = `
-                                <div class="popup-card">
-                                    <div class="popup-info">
-                                        <h3>La mia posizione</h3>
-                                        <p>Aggiornato: <strong>${updateTime}</strong></p>
-                                        <p><small>${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}</small></p>
-                                    </div>
-                                </div>
-                            `;
-
-                            if (!shipMarker) {
-                                shipMarker = L.marker(livePos, { icon: shipIcon, zIndexOffset: 5000 })
-                                    .addTo(osmMap);
-                            } else {
-                                shipMarker.setLatLng(livePos);
-                            }
-                            
-                            shipMarker.bindPopup(popupContent, { maxWidth: 200 });
-
-                            // Mostra il pulsante per centrare sulla nave se esiste la posizione
-                            const centerShipBtn = document.getElementById('center-ship-btn');
-                            if (centerShipBtn) {
-                                centerShipBtn.style.display = 'block';
-                            }
-
-                            console.log("Posizione aggiornata da position.json:", livePos);
-                        }
-                    })
-                    .catch(err => console.warn("Errore caricamento posizione live:", err.message));
-            }
-
-            updateLivePosition();
-            setInterval(updateLivePosition, 60000); // Controlla ogni minuto
-
-            // --- PERCORSO AUTOSTRADALE FORLÌ -> SAVONA ---
-            // Waypoint che ricalcano il tracciato autostradale reale italiano:
-            // A14 Forlì-Bologna, A1 Bologna-Piacenza, A21 Piacenza-Alessandria, A26 Alessandria-Voltri, A10 Voltri-Savona.
-            const highwayRoute = [
-                [44.222, 12.041],  // Forlì
-                [44.494, 11.342],  // Bologna (A14)
-                [44.646, 10.925],  // Modena (A1)
-                [44.698, 10.631],  // Reggio Emilia (A1)
-                [44.801, 10.328],  // Parma (A1)
-                [44.866, 10.060],  // Fidenza (A1)
-                [45.052, 9.693],   // Piacenza (A1 -> innesto A21)
-                [44.996, 9.009],   // Voghera (A21)
-                [44.912, 8.615],   // Alessandria (A21 -> innesto A26)
-                [44.639, 8.667],   // Ovada (A26)
-                [44.428, 8.751],   // Voltri (A26 -> innesto A10)
-                [44.3079, 8.4811]  // Savona (A10)
-            ];
-
-            const highwayPoly = L.polyline(highwayRoute, {
-                color: '#f97316',
-                weight: 4,
-                opacity: 0.9
-            }).addTo(osmMap);
-
-            const highwayStartIcon = L.divIcon({
-                className: 'marker-label',
-                html: `<span>F</span>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-            });
-            const highwayWaypointIcon = L.divIcon({
-                className: 'marker-label',
-                html: `<span>P</span>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-            });
-
-            L.marker([44.222, 12.041], { icon: highwayStartIcon })
-                .bindPopup(`
-                    <div class="popup-card">
-                        <div class="popup-info">
-                            <h3>Forlì</h3>
-                            <p>Partenza del percorso in auto</p>
-                        </div>
-                    </div>
-                `, { maxWidth: 220, className: 'custom-cruise-popup' })
-                .addTo(osmMap);
-
-            L.marker([45.052, 9.693], { icon: highwayWaypointIcon })
-                .bindPopup(`
-                    <div class="popup-card">
-                        <div class="popup-info">
-                            <h3>Piacenza</h3>
-                            <p>Tappa di passaggio (A1 -> A21)</p>
-                        </div>
-                    </div>
-                `, { maxWidth: 220, className: 'custom-cruise-popup' })
-                .addTo(osmMap);
-
-            // Centra la mappa sull'itinerario all'avvio
-            const itineraryBounds = L.latLngBounds(cruiseDestinations.map(d => d.coords));
-            osmMap.fitBounds(itineraryBounds, { padding: [50, 50] });
-
-            // GESTIONE SWITCH MAPPE
-            const osmEl = document.getElementById('osm-map');
-            const vesselContainer = document.getElementById('vessel-map-container');
-            const marineContainer = document.getElementById('marine-map-container');
-            const centerBtn = document.getElementById('center-map-btn');
-            const mapOverlays = document.getElementById('map-overlays');
-
-            const switchBtns = document.querySelectorAll('.map-switch-btn');
-            const calendarView = document.getElementById('calendar-view');
-
-            const hideAll = () => {
-                [osmEl, vesselContainer, marineContainer, calendarView, linkModal].forEach(el => {
-                    if (el) el.style.display = 'none';
-                });
-                if (mapOverlays) mapOverlays.style.display = 'none';
-                switchBtns.forEach(btn => btn.classList.remove('active'));
-            };
-
-            // Gestione Link Modal
-            const linkModal = document.getElementById('link-modal');
-            const openLinkModalBtn = document.getElementById('open-link-modal');
-            const closeLinkModalBtn = document.getElementById('close-link-modal');
-            const saveLinkBtn = document.getElementById('save-link-btn');
-            const cruiseLinkInput = document.getElementById('cruise-link-input');
-
-            if (openLinkModalBtn) {
-                openLinkModalBtn.addEventListener('click', () => {
-                    cruiseLinkInput.value = localStorage.getItem('custom_cruise_link') || '';
-                    linkModal.style.display = 'flex';
-                    setTimeout(() => linkModal.classList.add('open'), 10);
-                });
-            }
-
-            const closeLinkModal = () => {
-                linkModal.classList.remove('open');
-                setTimeout(() => linkModal.style.display = 'none', 300);
-            };
-
-            if (closeLinkModalBtn) {
-                closeLinkModalBtn.addEventListener('click', closeLinkModal);
-            }
-            if (linkModal) {
-                linkModal.addEventListener('click', (e) => {
-                    if (e.target === linkModal) closeLinkModal();
-                });
-            }
-
-            if (saveLinkBtn) {
-                saveLinkBtn.addEventListener('click', () => {
-                    const link = cruiseLinkInput.value;
-                    if (link) {
-                        // 1. Salva il link
-                        localStorage.setItem('custom_cruise_link', link);
-
-                        // 2. Logica di Parsing Costa (Esempio semplificato)
-                        // In un'app reale, useresti una API o un proxy per leggere il link.
-                        // Qui prepariamo l'oggetto data che verrà inviato al database.
-                        const newCruiseData = {
-                            cruise_link: link,
-                            last_updated: new Date().toISOString(),
-                            // Questi campi dovrebbero essere popolati dal parsing del link
-                            ship_name: "Rilevata dal link",
-                            destinations: cruiseData.destinations, // Mantiene le attuali come template
-                            path_segments: cruiseData.path_segments
-                        };
-
-                        // Rilevamento Nave per tab Vessel
-                        const shipIMOs = {
-                            'pacifica': '9378498', 'smeralda': '9781889', 'toscana': '9781891',
-                            'diadema': '9601132', 'fascinosa': '9476939', 'favolosa': '9476927',
-                            'deliziosa': '9398917', 'fortuna': '9237113', 'serena': '9344411'
-                        };
-
-                        for (const [ship, imo] of Object.entries(shipIMOs)) {
-                            if (link.toLowerCase().includes(ship)) {
-                                newCruiseData.imo = imo;
-                                newCruiseData.ship_name = "Costa " + ship.charAt(0).toUpperCase() + ship.slice(1);
-                                localStorage.setItem('custom_cruise_imo', imo);
-                                break;
-                            }
-                        }
-
-                        // 3. AGGIORNAMENTO GLOBALE (Database)
-                        if (database) {
-                            database.ref('current_cruise').set(newCruiseData)
-                                .then(() => alert("Vacanza aggiornata per tutti gli utenti!"))
-                                .catch(e => alert("Errore database: " + e.message));
-                        } else {
-                            // Fallback locale se Firebase non è configurato
-                            localStorage.setItem('custom_cruise_data', JSON.stringify(newCruiseData));
-                            renderCruise(newCruiseData);
-                            alert("Vacanza salvata localmente (Database non configurato).");
-                        }
-
-                        closeLinkModal();
-                    }
-                });
-            }
-
-            const resetLinkBtn = document.getElementById('reset-link-btn');
-            if (resetLinkBtn) {
-                resetLinkBtn.addEventListener('click', () => {
-                    localStorage.removeItem('custom_cruise_link');
-                    localStorage.removeItem('custom_cruise_imo');
-                    localStorage.removeItem('custom_cruise_data');
-
-                    if (database) {
-                        database.ref('current_cruise').remove()
-                            .then(() => alert("Impostazioni resettate per tutti. Caricamento itinerario predefinito."))
-                            .catch(e => alert("Errore reset database: " + e.message));
-                    } else {
-                        fetchDefaultData();
-                        alert("Impostazioni locali resettate.");
-                    }
-                    closeLinkModal();
-                });
-            }
-
-            // Gestione Calendario
-            const openCalendarBtn = document.getElementById('open-calendar');
-            if (openCalendarBtn) {
-                openCalendarBtn.addEventListener('click', () => {
-                    hideAll();
-                    calendarView.style.display = 'block';
-                });
-            }
-
-            const cruiseDescriptions = {
-                "2026-09-06": "Savona è una città ricca di fascino, tra gli aperitivi al porticciolo, le passeggiate in borghi antichi e la celebre farinata. Partenza alle ore 16:30 per l'inizio dell'avventura a bordo di Costa Pacifica.",
-                "2026-09-07": "Porto di La Seyne-sur-Mer, porta d'accesso alla favolosa Costa Azzurra e a St. Tropez. Spiagge dorate, acque turchesi e l'atmosfera glamour della riviera francese vi attendono. Arrivo 07:30 / Partenza 15:30.",
-                "2026-09-08": "Palma di Maiorca vi accoglie con la sua imponente Cattedrale gotica. Più tardi, in serata, vivremo la straordinaria Sea Destination a Palma Bay dalle 23:00 alle 01:30, ballando sotto le stelle del golfo.",
-                "2026-09-09": "Valencia unisce storia, modernità della Città delle Scienze e la tipica paella. Nella notte, navigazione speciale verso il 'Balearic sea darkest spot' dalle 23:30 alle 00:30 per ammirare un cielo stellato incontaminato.",
-                "2026-09-10": "Giornata interamente dedicata alla navigazione. Goditi i comfort esclusivi di Costa Pacifica: piscine, teatro, spa e ristoranti gourmet mentre navighiamo verso la Sardegna.",
-                "2026-09-11": "Olbia vi accoglie tra la bellezza naturale della Costa Smeralda. In serata, vivremo l'esperienza nel Golfo degli Aranci dalle 19:15 alle 21:00 con uno spettacolo unico sul mare.",
-                "2026-09-12": "Civitavecchia, il porto di Roma. Scopri le meraviglie millenarie della Città Eterna, dal Colosseo a San Pietro, in una giornata ricca di storia e cultura. Arrivo 08:00 / Partenza 18:30.",
-                "2026-09-13": "Rientro a Savona, dove si conclude il nostro viaggio. Arrivo alle ore 08:30 per le procedure di sbarco. Un arrivederci alla prossima crociera!"
-            };
-
-            function formatItineraryDate(dateStr) {
-                const parts = dateStr.split('-');
-                if (parts.length !== 3) return dateStr;
-                const year = parts[0];
-                const monthIndex = parseInt(parts[1]) - 1;
-                const day = parseInt(parts[2]);
-                
-                const months = [
-                    "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
-                    "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
-                ];
-                
-                return `${day} ${months[monthIndex]} ${year}`;
-            }
-
-            window.openDayDetail = function(dateStr, dayName, dayNum, destName) {
-                const modal = document.getElementById('calendar-modal');
-                const modalImg = document.getElementById('modal-img');
-                const modalDayNum = document.getElementById('modal-day-num');
-                const modalTitle = document.getElementById('modal-title');
-                const modalDate = document.getElementById('modal-date');
-                const modalDesc = document.getElementById('modal-desc');
-
-                if (!modal) return;
-
-                modalImg.src = `${dateStr}.jpg`;
-                modalImg.onerror = function() {
-                    this.src = '1.jpg';
-                };
-
-                modalDayNum.textContent = dayName;
-                modalTitle.textContent = destName || "In Navigazione";
-                modalDate.textContent = formatItineraryDate(dateStr);
-                modalDesc.textContent = cruiseDescriptions[dateStr] || "Immergiti nella vita di bordo...";
-
-                modal.style.display = 'flex';
-                setTimeout(() => {
-                    modal.classList.add('open');
-                }, 10);
-            };
-
-            window.closeDayDetail = function() {
-                const modal = document.getElementById('calendar-modal');
-                if (!modal) return;
-                modal.classList.remove('open');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                }, 300);
-            };
-
-            const modal = document.getElementById('calendar-modal');
-            const closeBtn = document.querySelector('.modal-close-btn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', window.closeDayDetail);
-            }
-            if (modal) {
-                modal.addEventListener('click', () => {
-                    window.closeDayDetail();
-                });
-            }
-
-            function renderCalendar() {
-                const content = document.getElementById('calendar-content');
-                const today = new Date();
-                let html = `
-                    <h1 style="text-align:center; color:var(--accent-3); margin-bottom:20px; font-weight:900; text-transform:uppercase; letter-spacing:3px;">Itinerario 2026</h1>
-                    <div class="calendar-banner-container">
-                        <img src="2026-09.jpg" alt="Mappa Itinerario" class="calendar-banner-img">
-                    </div>
-                    <div class="calendar-grid">`;
-                
-                const start = new Date(2026, 8, 6);
-                const end = new Date(2026, 8, 13);
-                
-                for (let d = new Date(start); d.getTime() <= end.getTime(); d.setDate(d.getDate() + 1)) {
-                    const dateStr = d.getFullYear() + '-' + 
-                                     String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                                     String(d.getDate()).padStart(2, '0');
-                    const dateObj = new Date(d);
-                    const isCruise = cruiseSchedule[dateStr];
-                    const isToday = dateStr === todayKey;
-                    const isPast = dateObj < today && !isToday;
-                    
-                    const dayName = d.toLocaleDateString('it-IT', { weekday: 'short' }).toUpperCase().replace('.', '');
-                    const dayNum = d.getDate();
-
-                    let destName = '';
-                    let plainDestName = '';
-                    if (isCruise && isCruise.length > 0) {
-                        const dests = isCruise.map(id => cruiseDestinations.find(d => d.id === id)).filter(Boolean);
-                        if (dests.length > 0) {
-                            destName = dests.map(dest => `<div class="calendar-dest">${dest.name}</div>`).join('');
-                            plainDestName = dests.map(dest => dest.name).join(' / ');
-                        }
-                    }
-                    
-                    html += `
-                        <div class="calendar-day ${isCruise ? 'cruise' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}" 
-                             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dateStr}.jpg'), url('1.jpg')" 
-                             onclick="openDayDetail('${dateStr}', '${dayName} ${dayNum}', ${dayNum}, '${plainDestName.replace(/'/g, "\\'")}')">
-                             <span class="day-num">${dayName} ${dayNum}</span>
-                            ${destName}
-                        </div>`;
-                }
-                html += '</div>';
-                content.innerHTML = html;
-            }
-
-            document.getElementById('show-vessel').addEventListener('click', function() {
-                hideAll();
-                this.classList.add('active');
-                vesselContainer.style.display = 'block';
-                const currentImo = localStorage.getItem('custom_cruise_imo') || '9378498';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=${currentImo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
-            });
-
-            document.getElementById('show-marine').addEventListener('click', function() {
-                window.open('https://www.marinetraffic.com/en/ais/home/shipid:279923/zoom:14', '_blank');
-            });
-
-            centerBtn.addEventListener('click', () => {
-                osmMap.flyToBounds(itineraryBounds, { animate: true, duration: 1.5, padding: [50, 50] });
-            });
-
-            const centerShipBtn = document.getElementById('center-ship-btn');
-            if (centerShipBtn) {
-                centerShipBtn.addEventListener('click', () => {
-                    if (shipMarker) {
-                        osmMap.flyTo(shipMarker.getLatLng(), 10, { animate: true, duration: 1.5 });
-                    }
-                });
             }
         });
     </script>
