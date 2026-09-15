@@ -336,6 +336,9 @@
             <button class="map-switch-btn" id="open-calendar" title="Calendario" style="display: flex; align-items: center; padding: 8px 12px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             </button>
+            <button class="map-switch-btn" id="open-link-modal" title="Cambia Vacanza" style="display: flex; align-items: center; padding: 8px 12px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            </button>
             <button class="map-switch-btn" id="show-vessel">Vessel</button>
             <button class="map-switch-btn" id="show-marine">Marine</button>
         </div>
@@ -368,6 +371,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal per Inserimento Link -->
+            <div id="link-modal" class="modal-overlay">
+                <div class="modal-content" style="max-width: 500px; padding: 30px; display: block;">
+                    <span class="modal-close-btn" id="close-link-modal">&times;</span>
+                    <h2 style="color: var(--accent-3); margin-bottom: 20px;">Cambia Vacanza</h2>
+                    <p style="font-size: 0.9rem; margin-bottom: 15px; color: #ccc;">Inserisci il link Costa Crociere della nuova vacanza:</p>
+                    <input type="text" id="cruise-link-input" placeholder="https://www.costacrociere.it/..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px;">
+                        <button id="save-link-btn" class="map-control-btn" style="flex: 1; padding: 12px; font-size: 0.9rem;">Salva</button>
+                        <button id="reset-link-btn" class="map-control-btn" style="flex: 1; padding: 12px; font-size: 0.9rem; background: #222; border-color: #444;">Reset</button>
+                    </div>
+                </div>
+            </div>
             <div class="map-controls-top-right" id="map-overlays">
                 <button id="center-map-btn" class="map-control-btn">Centra Mappa</button>
                 <button id="center-ship-btn" class="map-control-btn" style="display: none;">Centra Nave</button>
@@ -376,21 +393,36 @@
     </header>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <script>
+        // CONFIGURAZIONE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgAzFbZAU_OyEpTGCRqNpa7WXyTPeftbA",
+            authDomain: "cruise-16a96.firebaseapp.com",
+            databaseURL: "https://cruise-16a96-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cruise-16a96",
+            storageBucket: "cruise-16a96.firebasestorage.app",
+            messagingSenderId: "930175030658",
+            appId: "1:930175030658:web:f84de0ef791ccc1cb2eb9b"
+        };
+
+        // Inizializza Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function toggleExpand(el) {
             el.classList.toggle('expanded');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
-
-            // --- CONFIGURAZIONE POSIZIONE REALE ---
-            // Se vuoi forzare la posizione della nave (es. presa da MarineTraffic), 
-            // inserisci le coordinate qui [lat, lon]. Se null, usa l'itinerario.
-            const manualAISPosition = null;
             let shipMarker;
+            let cruiseData = null;
 
-            // Configurazione Mappa Interattiva (OpenStreetMap)
+            // Inizializzazione Mappa
             const osmMap = L.map('osm-map', {
                 zoomControl: true,
                 attributionControl: true
@@ -398,48 +430,163 @@
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(osmMap);
 
-            // Forza il ricalcolo delle dimensioni per evitare che la mappa appaia grigia o invisibile
-            setTimeout(() => { osmMap.invalidateSize(); }, 100);
-
-            const cruiseDestinations = [
-                { id: "savona-1", name: "Savona", coords: [44.3079, 8.4811], date: "06 Settembre 2026", info: "Giorno d'imbarco, Partenza 16:30", dayNum: 1 },
-                { id: "laseyne", name: "La Seyne | St. Tropez", coords: [43.100, 5.900], date: "07 Settembre 2026", info: "Arrivo 07:30 / Partenza 15:30", dayNum: 2 },
-                { id: "palma", name: "Palma", coords: [39.5696, 2.6502], date: "08 Settembre 2026", info: "Arrivo 10:00 / Partenza 21:30", dayNum: 3 },
-                { id: "palma-bay", name: "Palma Bay (Sea Destination)", coords: [39.43, 2.68], date: "08 Settembre 2026", info: "Dalle 23:00 alle 01:30", dayNum: 3 },
-                { id: "valencia", name: "Valencia", coords: [39.450, -0.315], date: "09 Settembre 2026", info: "Arrivo 09:00 / Partenza 17:00", dayNum: 4 },
-                { id: "balearic-dark", name: "Balearic Sea (Sea Destination)", coords: [39.500, 1.000], date: "09 Settembre 2026", info: "Balearic sea darkest spot, dalle 23:30 alle 00:30", dayNum: 4 },
-                { id: "navigazione-1", name: "In Navigazione", coords: [40.0, 5.0], date: "10 Settembre 2026", info: "Giornata a bordo", dayNum: 5 },
-                { id: "olbia", name: "Olbia | Costa Smeralda", coords: [40.925, 9.518], date: "11 Settembre 2026", info: "Arrivo 06:30 / Partenza 18:00", dayNum: 6 },
-                { id: "aranci-gulf", name: "Golfo Aranci (Sea Destination)", coords: [40.998, 9.627], date: "11 Settembre 2026", info: "Aranci Gulf, dalle 19:15 alle 21:00", dayNum: 6 },
-                { id: "civitavecchia", name: "Civitavecchia | Roma", coords: [42.092, 11.790], date: "12 Settembre 2026", info: "Arrivo 08:00 / Partenza 18:30", dayNum: 7 },
-                { id: "savona-2", name: "Savona", coords: [44.3079, 8.4811], date: "13 Settembre 2026", info: "Giorno di sbarco, Arrivo 08:30", dayNum: 8 }
-            ];
-
-            // Mapping date -> ID per animazione pulsante
-            const cruiseSchedule = {
-                "2026-09-06": ["savona-1"],
-                "2026-09-07": ["laseyne"],
-                "2026-09-08": ["palma", "palma-bay"],
-                "2026-09-09": ["valencia", "balearic-dark"],
-                "2026-09-10": ["navigazione-1"],
-                "2026-09-11": ["olbia", "aranci-gulf"],
-                "2026-09-12": ["civitavecchia"],
-                "2026-09-13": ["savona-2"]
+            // Caricamento Dati Crociera
+            const loadInitialData = () => {
+                if (database) {
+                    // Ascolta modifiche dal database (Condiviso per tutti)
+                    database.ref('current_cruise').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            cruiseData = data;
+                            renderCruise(data);
+                        } else {
+                            fetchDefaultData();
+                        }
+                    });
+                } else {
+                    // Fallback su dati locali/JSON (Privato o predefinito)
+                    const localData = localStorage.getItem('custom_cruise_data');
+                    if (localData) {
+                        cruiseData = JSON.parse(localData);
+                        renderCruise(cruiseData);
+                    } else {
+                        fetchDefaultData();
+                    }
+                }
             };
-            
-            const todayKey = now.getFullYear() + '-' + 
-                             String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                             String(now.getDate()).padStart(2, '0');
-            const activeIds = cruiseSchedule[todayKey] || [];
-            const activeId = activeIds[0];
-            const scheduleKeys = Object.keys(cruiseSchedule);
-            const activeIndex = scheduleKeys.indexOf(todayKey);
-            
-            // Funzione per generare una curva fluida tra punti (Catmull-Rom Spline)
-            const getCurvedPath = (points, tension = 0.3, segments = 15) => {
+
+            const fetchDefaultData = () => {
+                fetch('cruise_data.json')
+                    .then(r => r.json())
+                    .then(data => {
+                        cruiseData = data;
+                        renderCruise(data);
+                    })
+                    .catch(e => console.error("Errore caricamento dati:", e));
+            };
+
+            loadInitialData();
+
+            function renderCruise(data) {
+                // Pulisci mappa precedente dai marker e linee
+                osmMap.eachLayer((layer) => {
+                    if (layer instanceof L.Polyline && (typeof highwayPoly === 'undefined' || layer !== highwayPoly)) {
+                        osmMap.removeLayer(layer);
+                    }
+                    if (layer instanceof L.Marker && (typeof shipMarker === 'undefined' || layer !== shipMarker)) {
+                        osmMap.removeLayer(layer);
+                    }
+                });
+
+                const destinations = data.destinations;
+                const pathSegments = data.path_segments || [];
+
+                // Disegna Rotte
+                pathSegments.forEach((seg, i) => {
+                    L.polyline(getCurvedPath(seg), {
+                        color: '#06b6d4',
+                        weight: 4,
+                        opacity: 0.6,
+                        dashArray: '5, 10'
+                    }).addTo(osmMap);
+                });
+
+                // Disegna Tappe
+                const usedPositions = [];
+                destinations.forEach(dest => {
+                    let displayCoords = [...dest.coords];
+                    const popupHtml = `
+                        <div class="popup-card">
+                            <div class="popup-info">
+                                <h3>Giorno ${dest.dayNum}: ${dest.name}</h3>
+                                <p><strong>${dest.date}</strong></p>
+                                <p>${dest.info}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    L.marker(displayCoords, {
+                        icon: L.divIcon({
+                            className: 'marker-label',
+                            html: `<span>${dest.date.split(' ')[0]}</span>`,
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        })
+                    }).bindPopup(popupHtml).addTo(osmMap);
+                });
+
+                // Ricalcola bounds includendo le nuove destinazioni
+                if (destinations.length > 0) {
+                    const bounds = L.latLngBounds(destinations.map(d => d.coords));
+                    osmMap.fitBounds(bounds, { padding: [50, 50] });
+
+                    // Collega pulsante centra
+                    document.getElementById('center-map-btn').onclick = () => {
+                        osmMap.flyToBounds(bounds, { animate: true, duration: 1.5 });
+                    };
+                }
+
+                // Aggiorna calendario con i nuovi dati
+                renderCalendar(data);
+            }
+
+            function renderCalendar(data) {
+                const content = document.getElementById('calendar-content');
+                if (!content || !data) return;
+
+                const today = new Date();
+                const destinations = data.destinations;
+
+                let html = `
+                    <h1 style="text-align:center; color:var(--accent-3); margin-bottom:20px; font-weight:900; text-transform:uppercase; letter-spacing:3px;">${data.cruise_name || 'Itinerario'}</h1>
+                    <div class="calendar-banner-container">
+                        <img src="${destinations[0]?.image || '2026-09.jpg'}" alt="Mappa Itinerario" class="calendar-banner-img" onerror="this.src='1.jpg'">
+                    </div>
+                    <div class="calendar-grid">`;
+
+                destinations.forEach(dest => {
+                    const isToday = false; // Logica semplificata per ora
+                    const isPast = false;
+
+                    html += `
+                        <div class="calendar-day cruise ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}"
+                             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${dest.image}'), url('1.jpg')"
+                             onclick="openDayDetail('${dest.image.replace('.jpg','')}', 'Giorno ${dest.dayNum}', ${dest.dayNum}, '${dest.name.replace(/'/g, "\\'")}', '${dest.description?.replace(/'/g, "\\'") || ''}', '${dest.date}')">
+                             <span class="day-num">Giorno ${dest.dayNum}</span>
+                             <div class="calendar-dest">${dest.name}</div>
+                        </div>`;
+                });
+                html += '</div>';
+                content.innerHTML = html;
+            }
+
+            window.openDayDetail = function(imgKey, dayName, dayNum, destName, description, dateText) {
+                const modal = document.getElementById('calendar-modal');
+                const modalImg = document.getElementById('modal-img');
+                const modalDayNum = document.getElementById('modal-day-num');
+                const modalTitle = document.getElementById('modal-title');
+                const modalDate = document.getElementById('modal-date');
+                const modalDesc = document.getElementById('modal-desc');
+
+                if (!modal) return;
+
+                modalImg.src = `${imgKey}.jpg`;
+                modalImg.onerror = function() { this.src = '1.jpg'; };
+
+                modalDayNum.textContent = dayName;
+                modalTitle.textContent = destName;
+                modalDate.textContent = dateText;
+                modalDesc.textContent = description || "Immergiti nella vita di bordo...";
+
+                modal.style.display = 'flex';
+                setTimeout(() => { modal.classList.add('open'); }, 10);
+            };
+
+            // Funzione per curve rotte
+            function getCurvedPath(points, tension = 0.3, segments = 15) {
                 if (points.length < 3) return points;
                 const curvedPoints = [];
                 for (let i = 0; i < points.length - 1; i++) {
@@ -463,89 +610,7 @@
                 }
                 curvedPoints.push(points[points.length - 1]);
                 return curvedPoints;
-            };
-
-            let activeCoords = null;
-            const todayDest = cruiseDestinations.find(d => d.id === activeId);
-            if (todayDest) activeCoords = todayDest.coords;
-
-            const shipFinalPos = manualAISPosition || activeCoords;
-
-            // Definizione dei segmenti della rotta con waypoint nautici per evitare la terraferma
-            // Nuovi segmenti di percorso per la crociera nel Mediterraneo
-            const cruisePathSegments = [
-                // Giorno 1 -> Giorno 2: Savona -> La Seyne (percorso al largo)
-                [[44.3079, 8.4811], [44.00, 7.50], [43.50, 6.50], [43.100, 5.900]],
-                // Giorno 2 -> Giorno 3: La Seyne -> Palma (Golfo del Leone, al largo)
-                [[43.100, 5.900], [42.50, 4.80], [41.00, 3.50], [39.5696, 2.6502], [39.43, 2.68]],
-                // Giorno 3 -> Giorno 4: Palma Bay -> Valencia (rotta a ovest, al largo delle Baleari)
-                [[39.43, 2.68], [38.80, 1.20], [38.50, 0.00], [39.00, -0.80], [39.450, -0.315], [39.500, 1.000]],
-                // Giorno 4 -> Giorno 5: Balearic Sea -> Navigazione (verso est)
-                [[39.500, 1.000], [39.80, 3.00], [40.00, 5.00]],
-                // Giorno 5 -> Giorno 6: Navigazione -> Olbia (al largo delle coste italiane)
-                [[40.00, 5.00], [40.30, 6.50], [40.60, 8.00], [40.925, 9.518], [40.998, 9.627]],
-                // Giorno 6 -> Giorno 7: Golfo Aranci -> Civitavecchia (al largo della Sardegna)
-                [[40.998, 9.627], [40.80, 10.50], [41.20, 11.20], [42.092, 11.790]],
-                // Giorno 7 -> Giorno 8: Civitavecchia -> Savona (lungo la costa, mare aperto)
-                [[42.092, 11.790], [42.50, 11.00], [42.80, 10.00], [43.30, 9.20], [43.80, 8.80], [44.3079, 8.4811]]
-            ];
-
-            for (let i = 0; i < cruisePathSegments.length; i++) {
-                const isPast = activeIndex !== -1 && i < activeIndex;
-                const segmentColor = isPast ? '#4f46e5' : '#06b6d4';
-                const segmentOpacity = isPast ? 0.8 : 0.4;
-                const segmentDash = isPast ? '' : '5, 10';
-                
-                const poly = L.polyline(getCurvedPath(cruisePathSegments[i]), {
-                    color: segmentColor,
-                    weight: 4,
-                    opacity: segmentOpacity,
-                    dashArray: segmentDash
-                }).addTo(osmMap);
             }
-
-            const usedPositions = [];
-
-            cruiseDestinations.forEach((dest) => {                
-                const dayNum = dest.dayNum;
-                // Gestione sovrapposizioni: calcola offset se la posizione è già occupata
-                let displayCoords = [dest.coords[0], dest.coords[1]];
-                let foundCollision = true;
-                while (foundCollision) {
-                    foundCollision = usedPositions.some(pos => 
-                        Math.abs(pos[0] - displayCoords[0]) < 0.03 && 
-                        Math.abs(pos[1] - displayCoords[1]) < 0.03
-                    );
-                    if (foundCollision) {
-                        displayCoords[0] += 0.04; // Offset ridotto per rendere i punti vicinissimi
-                        displayCoords[1] += 0.04;
-                    }
-                }
-                usedPositions.push([...displayCoords]);
-
-                const popupHtml = `
-                    <div class="popup-card">
-                        <div class="popup-info">
-                            <h3>Giorno ${dayNum}: ${dest.name}</h3>
-                            <p><strong>${dest.date}</strong></p>
-                            <p>${dest.info}</p>
-                        </div>
-                    </div>
-                `;
-
-                // Il numero cerchiato diventa il marker principale e cliccabile
-                const marker = L.marker(displayCoords, {
-                    icon: L.divIcon({
-                        className: 'marker-label',
-                        html: `<span>${dest.date.split(' ')[0]}</span>`,
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 12]
-                    })
-                }).bindPopup(popupHtml, {
-                    maxWidth: 220,
-                    className: 'custom-cruise-popup'
-                }).addTo(osmMap);
-            });
 
             // Disegna l'icona della nave (segnalino rosso) sulla posizione corretta
             const shipIcon = L.divIcon({
@@ -697,17 +762,121 @@
             const calendarView = document.getElementById('calendar-view');
 
             const hideAll = () => {
-                [osmEl, vesselContainer, marineContainer, calendarView].forEach(el => el.style.display = 'none');
-                mapOverlays.style.display = 'none';
+                [osmEl, vesselContainer, marineContainer, calendarView, linkModal].forEach(el => {
+                    if (el) el.style.display = 'none';
+                });
+                if (mapOverlays) mapOverlays.style.display = 'none';
                 switchBtns.forEach(btn => btn.classList.remove('active'));
             };
 
+            // Gestione Link Modal
+            const linkModal = document.getElementById('link-modal');
+            const openLinkModalBtn = document.getElementById('open-link-modal');
+            const closeLinkModalBtn = document.getElementById('close-link-modal');
+            const saveLinkBtn = document.getElementById('save-link-btn');
+            const cruiseLinkInput = document.getElementById('cruise-link-input');
+
+            if (openLinkModalBtn) {
+                openLinkModalBtn.addEventListener('click', () => {
+                    cruiseLinkInput.value = localStorage.getItem('custom_cruise_link') || '';
+                    linkModal.style.display = 'flex';
+                    setTimeout(() => linkModal.classList.add('open'), 10);
+                });
+            }
+
+            const closeLinkModal = () => {
+                linkModal.classList.remove('open');
+                setTimeout(() => linkModal.style.display = 'none', 300);
+            };
+
+            if (closeLinkModalBtn) {
+                closeLinkModalBtn.addEventListener('click', closeLinkModal);
+            }
+            if (linkModal) {
+                linkModal.addEventListener('click', (e) => {
+                    if (e.target === linkModal) closeLinkModal();
+                });
+            }
+
+            if (saveLinkBtn) {
+                saveLinkBtn.addEventListener('click', () => {
+                    const link = cruiseLinkInput.value;
+                    if (link) {
+                        // 1. Salva il link
+                        localStorage.setItem('custom_cruise_link', link);
+
+                        // 2. Logica di Parsing Costa (Esempio semplificato)
+                        // In un'app reale, useresti una API o un proxy per leggere il link.
+                        // Qui prepariamo l'oggetto data che verrà inviato al database.
+                        const newCruiseData = {
+                            cruise_link: link,
+                            last_updated: new Date().toISOString(),
+                            // Questi campi dovrebbero essere popolati dal parsing del link
+                            ship_name: "Rilevata dal link",
+                            destinations: cruiseData.destinations, // Mantiene le attuali come template
+                            path_segments: cruiseData.path_segments
+                        };
+
+                        // Rilevamento Nave per tab Vessel
+                        const shipIMOs = {
+                            'pacifica': '9378498', 'smeralda': '9781889', 'toscana': '9781891',
+                            'diadema': '9601132', 'fascinosa': '9476939', 'favolosa': '9476927',
+                            'deliziosa': '9398917', 'fortuna': '9237113', 'serena': '9344411'
+                        };
+
+                        for (const [ship, imo] of Object.entries(shipIMOs)) {
+                            if (link.toLowerCase().includes(ship)) {
+                                newCruiseData.imo = imo;
+                                newCruiseData.ship_name = "Costa " + ship.charAt(0).toUpperCase() + ship.slice(1);
+                                localStorage.setItem('custom_cruise_imo', imo);
+                                break;
+                            }
+                        }
+
+                        // 3. AGGIORNAMENTO GLOBALE (Database)
+                        if (database) {
+                            database.ref('current_cruise').set(newCruiseData)
+                                .then(() => alert("Vacanza aggiornata per tutti gli utenti!"))
+                                .catch(e => alert("Errore database: " + e.message));
+                        } else {
+                            // Fallback locale se Firebase non è configurato
+                            localStorage.setItem('custom_cruise_data', JSON.stringify(newCruiseData));
+                            renderCruise(newCruiseData);
+                            alert("Vacanza salvata localmente (Database non configurato).");
+                        }
+
+                        closeLinkModal();
+                    }
+                });
+            }
+
+            const resetLinkBtn = document.getElementById('reset-link-btn');
+            if (resetLinkBtn) {
+                resetLinkBtn.addEventListener('click', () => {
+                    localStorage.removeItem('custom_cruise_link');
+                    localStorage.removeItem('custom_cruise_imo');
+                    localStorage.removeItem('custom_cruise_data');
+
+                    if (database) {
+                        database.ref('current_cruise').remove()
+                            .then(() => alert("Impostazioni resettate per tutti. Caricamento itinerario predefinito."))
+                            .catch(e => alert("Errore reset database: " + e.message));
+                    } else {
+                        fetchDefaultData();
+                        alert("Impostazioni locali resettate.");
+                    }
+                    closeLinkModal();
+                });
+            }
+
             // Gestione Calendario
-            document.getElementById('open-calendar').addEventListener('click', () => {
-                hideAll();
-                renderCalendar();
-                calendarView.style.display = 'block';
-            });
+            const openCalendarBtn = document.getElementById('open-calendar');
+            if (openCalendarBtn) {
+                openCalendarBtn.addEventListener('click', () => {
+                    hideAll();
+                    calendarView.style.display = 'block';
+                });
+            }
 
             const cruiseDescriptions = {
                 "2026-09-06": "Savona è una città ricca di fascino, tra gli aperitivi al porticciolo, le passeggiate in borghi antichi e la celebre farinata. Partenza alle ore 16:30 per l'inizio dell'avventura a bordo di Costa Pacifica.",
@@ -832,7 +1001,8 @@
                 hideAll();
                 this.classList.add('active');
                 vesselContainer.style.display = 'block';
-                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=9378498&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
+                const currentImo = localStorage.getItem('custom_cruise_imo') || '9378498';
+                vesselContainer.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=${currentImo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
             });
 
             document.getElementById('show-marine').addEventListener('click', function() {
