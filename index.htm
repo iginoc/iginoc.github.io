@@ -128,8 +128,21 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // DATABASE NAVI COSTA (IMO e MarineTraffic ID)
+        const shipDatabase = {
+            'pacifica': { imo: '9378498', mid: '279923' },
+            'smeralda': { imo: '9781889', mid: '5883230' },
+            'toscana': { imo: '9781891', mid: '6867332' },
+            'fascinosa': { imo: '9476939', mid: '422119' },
+            'diadema': { imo: '9601132', mid: '712952' },
+            'favolosa': { imo: '9476927', mid: '422108' },
+            'deliziosa': { imo: '9398917', mid: '371746' },
+            'fortuna': { imo: '9237113', mid: '280031' },
+            'serena': { imo: '9344411', mid: '371727' }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
-            const osmMap = L.map('osm-map').setView([16, -61], 6);
+            const osmMap = L.map('osm-map').setView([40, 10], 5);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
 
             let shipMarker = null;
@@ -199,27 +212,55 @@
             document.getElementById('save-link-btn').onclick = () => {
                 const link = document.getElementById('cruise-link-input').value;
                 if (link) {
+                    // Rileva Nave
+                    let shipKey = 'pacifica';
+                    for (const key in shipDatabase) { if (link.toLowerCase().includes(key)) shipKey = key; }
+                    const ship = shipDatabase[shipKey];
+
+                    // Rileva Itinerario
                     const isCaraibi = link.includes('PTP07A2L');
+
                     fetch('cruise_data.json').then(r => r.json()).then(defaultData => {
-                        const newCruise = isCaraibi ? defaultData : { ...defaultData, cruise_link: link, cruise_name: "Vacanza Personalizzata (Solo Vessel Live)" };
-                        database.ref('current_cruise').set(newCruise).then(() => { alert("Aggiornato!"); closeModals(); });
+                        let newCruise;
+                        if (isCaraibi) {
+                            newCruise = { ...defaultData, cruise_link: link, ...ship };
+                        } else {
+                            // Se non è Caraibi, carica il Mediterraneo come fallback ma aggiorna la nave
+                            newCruise = {
+                                cruise_name: "Crociera nel Mediterraneo",
+                                ship_name: "Costa " + shipKey.charAt(0).toUpperCase() + shipKey.slice(1),
+                                ...ship,
+                                destinations: [
+                                    { "id": "savona", "name": "Savona", "coords": [44.3, 8.4], "date": "Settembre 2026", "info": "Imbarco", "dayNum": 1, "image": "2026-09-06.jpg", "description": "Partenza da Savona." },
+                                    { "id": "nav", "name": "Navigazione", "coords": [40, 5], "date": "-", "info": "Mare", "dayNum": 2, "image": "1.jpg", "description": "In viaggio." }
+                                ],
+                                path_segments: [[[44.3, 8.4], [40, 5]]]
+                            };
+                        }
+                        database.ref('current_cruise').set(newCruise).then(() => { alert("Vacanza aggiornata!"); closeModals(); });
                     });
                 }
             };
 
             document.getElementById('reset-link-btn').onclick = () => {
-                database.ref('current_cruise').remove().then(() => { alert("Reset globale effettuato!"); closeModals(); });
+                database.ref('current_cruise').remove().then(() => { alert("Reset effettuato!"); closeModals(); });
             };
 
             document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display = 'block'; };
             document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display = 'flex'; setTimeout(() => document.getElementById('link-modal').classList.add('open'), 10); };
+
             document.getElementById('show-vessel').onclick = function() {
                 hideAll(); this.classList.add('active');
                 const v = document.getElementById('vessel-map-container'); v.style.display = 'block';
                 v.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
             };
-            document.getElementById('show-marine').onclick = () => window.open('https://www.marinetraffic.com/en/ais/home/shipid:279923', '_blank');
-            document.getElementById('center-map-btn').onclick = () => { const b = L.latLngBounds(currentData.destinations.map(d => d.coords)); osmMap.flyToBounds(b); };
+
+            document.getElementById('show-marine').onclick = function() {
+                const mid = currentData.mid || '279923';
+                window.open(`https://www.marinetraffic.com/en/ais/home/shipid:${mid}`, '_blank');
+            };
+
+            document.getElementById('center-map-btn').onclick = () => { if(currentData) { const b = L.latLngBounds(currentData.destinations.map(d => d.coords)); osmMap.flyToBounds(b); } };
 
             function hideAll() {
                 ['osm-map', 'vessel-map-container', 'marine-map-container', 'calendar-view'].forEach(id => document.getElementById(id).style.display = 'none');
