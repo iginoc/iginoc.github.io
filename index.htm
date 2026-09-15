@@ -39,8 +39,6 @@
         .calendar-day.cruise { border-color: var(--accent-3); border-width: 2px; }
         .calendar-day .day-num { font-size: 1.5rem; font-weight: 900; color: white; white-space: nowrap; }
         .calendar-dest { font-size: 0.75rem; color: var(--accent-3); font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-        .calendar-banner-container { text-align: center; margin-bottom: 30px; }
-        .calendar-banner-img { max-width: 100%; width: 600px; height: auto; border-radius: 15px; border: 2px solid #333; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.open { display: flex; opacity: 1; }
         .modal-content { background: #111; border: 1px solid #333; border-radius: 20px; width: 90%; max-width: 900px; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
@@ -75,11 +73,7 @@
             <div id="osm-map"></div>
             <div id="vessel-map-container"></div>
             <div id="marine-map-container"></div>
-            <div id="calendar-view">
-                <div class="calendar-container">
-                    <div id="calendar-content"></div>
-                </div>
-            </div>
+            <div id="calendar-view"><div class="calendar-container"><div id="calendar-content"></div></div></div>
             <div id="calendar-modal" class="modal-overlay">
                 <div class="modal-content">
                     <span class="modal-close-btn" onclick="closeModals()">&times;</span>
@@ -105,9 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="map-controls-top-right">
-                <button id="center-map-btn" class="map-control-btn">Centra</button>
-            </div>
+            <div class="map-controls-top-right"><button id="center-map-btn" class="map-control-btn">Centra</button></div>
         </div>
     </header>
 
@@ -128,159 +120,91 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // DATABASE NAVI COSTA (IMO e MarineTraffic ID)
         const shipDatabase = {
-            'pacifica': { imo: '9378498', mid: '279923' },
-            'smeralda': { imo: '9781889', mid: '5883230' },
-            'toscana': { imo: '9781891', mid: '6867332' },
-            'fascinosa': { imo: '9476939', mid: '422119' },
-            'diadema': { imo: '9601132', mid: '712952' },
-            'favolosa': { imo: '9476927', mid: '422108' },
-            'deliziosa': { imo: '9398917', mid: '371746' },
-            'fortuna': { imo: '9237113', mid: '280031' },
-            'serena': { imo: '9344411', mid: '371727' }
+            'FS': { name: 'Costa Fascinosa', imo: '9476939', mid: '422119' },
+            'SM': { name: 'Costa Smeralda', imo: '9781889', mid: '5883230' },
+            'TS': { name: 'Costa Toscana', imo: '9781891', mid: '6867332' },
+            'PC': { name: 'Costa Pacifica', imo: '9378498', mid: '279923' },
+            'DI': { name: 'Costa Diadema', imo: '9601132', mid: '712952' },
+            'FA': { name: 'Costa Favolosa', imo: '9476927', mid: '422108' },
+            'DE': { name: 'Costa Deliziosa', imo: '9398917', mid: '371746' },
+            'FO': { name: 'Costa Fortuna', imo: '9237113', mid: '280031' },
+            'SE': { name: 'Costa Serena', imo: '9344411', mid: '371727' }
+        };
+
+        const itineraries = {
+            'PTP07A2L': 'cruise_data.json', // Caraibi
+            'SAV': 'savona_data.json' // Placeholder per Savona
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            const osmMap = L.map('osm-map').setView([40, 10], 5);
+            const osmMap = L.map('osm-map').setView([0,0], 2);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
+            let shipMarker = null, currentData = null;
 
-            let shipMarker = null;
-            let currentData = null;
-
-            const shipIcon = L.divIcon({
-                className: 'ship-marker-container',
-                html: '<svg viewBox="0 0 24 24" width="30" height="30"><path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>',
-                iconSize: [30, 30], iconAnchor: [15, 30]
-            });
-
-            const renderCruise = (data) => {
+            const render = (data) => {
                 currentData = data;
-                osmMap.eachLayer(l => { if (l instanceof L.Polyline || (l instanceof L.Marker && l !== shipMarker)) osmMap.removeLayer(l); });
-
+                osmMap.eachLayer(l => { if(l instanceof L.Polyline || (l instanceof L.Marker && l !== shipMarker)) osmMap.removeLayer(l); });
                 const dests = data.destinations || [];
                 dests.forEach(d => {
-                    L.marker(d.coords, {
-                        icon: L.divIcon({ className: 'marker-label', html: `<span>${d.dayNum}</span>`, iconSize: [24, 24] })
-                    }).bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
+                    L.marker(d.coords, { icon: L.divIcon({ className:'marker-label', html:`<span>${d.dayNum}</span>`, iconSize:[24,24]}) })
+                     .bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
                 });
-
-                (data.path_segments || []).forEach(seg => {
-                    L.polyline(getCurvedPath(seg), { color: '#06b6d4', weight: 4, opacity: 0.6, dashArray: '5, 10' }).addTo(osmMap);
-                });
-
-                if (dests.length > 0) {
-                    const bounds = L.latLngBounds(dests.map(d => d.coords));
-                    osmMap.fitBounds(bounds, { padding: [50, 50] });
-                    if (!shipMarker) shipMarker = L.marker(dests[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
-                }
+                (data.path_segments || []).forEach(s => L.polyline(getCurvedPath(s), {color:'#06b6d4', weight:4, opacity:0.6, dashArray:'5,10'}).addTo(osmMap));
+                if(dests.length > 0) osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
                 renderCalendar(data);
             };
 
             const renderCalendar = (data) => {
-                const content = document.getElementById('calendar-content');
                 let html = `<h1 style="text-align:center; color:var(--accent-3);">${data.cruise_name}</h1><div class="calendar-grid">`;
-                data.destinations.forEach(d => {
-                    html += `<div class="calendar-day cruise" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${d.image}'), url('1.jpg')" onclick="openDayDetail('${d.image}', 'Giorno ${d.dayNum}', '${d.name}', '${d.description}', '${d.date}')"><span class="day-num">${d.dayNum}</span><div class="calendar-dest">${d.name}</div></div>`;
+                (data.destinations || []).forEach(d => {
+                    html += `<div class="calendar-day cruise" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${d.image}'), url('1.jpg')" onclick="openDayDetail('${d.image}','Giorno ${d.dayNum}','${d.name}','${d.description}','${d.date}')"><span class="day-num">${d.dayNum}</span><div class="calendar-dest">${d.name}</div></div>`;
                 });
-                content.innerHTML = html + '</div>';
+                document.getElementById('calendar-content').innerHTML = html + '</div>';
             };
 
-            window.openDayDetail = (img, day, title, desc, date) => {
-                document.getElementById('modal-img').src = img;
-                document.getElementById('modal-day-num').textContent = day;
-                document.getElementById('modal-title').textContent = title;
-                document.getElementById('modal-date').textContent = date;
-                document.getElementById('modal-desc').textContent = desc;
-                const m = document.getElementById('calendar-modal');
-                m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
+            window.openDayDetail = (i,h,t,d,z) => {
+                document.getElementById('modal-img').src = i;
+                document.getElementById('modal-day-num').textContent = h;
+                document.getElementById('modal-title').textContent = t;
+                document.getElementById('modal-desc').textContent = d;
+                document.getElementById('modal-date').textContent = z;
+                const m = document.getElementById('calendar-modal'); m.style.display='flex'; setTimeout(()=>m.classList.add('open'),10);
             };
 
-            window.closeModals = () => {
-                document.querySelectorAll('.modal-overlay').forEach(m => { m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); });
-            };
+            window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m=>{m.classList.remove('open'); setTimeout(()=>m.style.display='none',300);}); };
 
-            const load = () => {
-                database.ref('current_cruise').on('value', snap => {
-                    const val = snap.val();
-                    if (val && val.destinations) renderCruise(val);
-                    else fetch('cruise_data.json').then(r => r.json()).then(renderCruise);
-                });
-            };
-            load();
+            database.ref('current_cruise').on('value', snap => {
+                const val = snap.val();
+                if(val && val.destinations) render(val);
+                else fetch('cruise_data.json').then(r=>r.json()).then(render);
+            });
 
             document.getElementById('save-link-btn').onclick = () => {
                 const link = document.getElementById('cruise-link-input').value;
-                if (link) {
-                    // Rileva Nave
-                    let shipKey = 'pacifica';
-                    for (const key in shipDatabase) { if (link.toLowerCase().includes(key)) shipKey = key; }
-                    const ship = shipDatabase[shipKey];
+                if(!link) return;
+                let shipKey = 'PC';
+                for(const k in shipDatabase) { if(link.includes('/'+k)) shipKey = k; }
+                const ship = shipDatabase[shipKey];
 
-                    // Rileva Itinerario
-                    const isCaraibi = link.includes('PTP07A2L');
+                let itKey = 'DEFAULT';
+                for(const k in itineraries) { if(link.includes(k)) itKey = k; }
 
-                    fetch('cruise_data.json').then(r => r.json()).then(defaultData => {
-                        let newCruise;
-                        if (isCaraibi) {
-                            newCruise = { ...defaultData, cruise_link: link, ...ship };
-                        } else {
-                            // Se non è Caraibi, carica il Mediterraneo come fallback ma aggiorna la nave
-                            newCruise = {
-                                cruise_name: "Crociera nel Mediterraneo",
-                                ship_name: "Costa " + shipKey.charAt(0).toUpperCase() + shipKey.slice(1),
-                                ...ship,
-                                destinations: [
-                                    { "id": "savona", "name": "Savona", "coords": [44.3, 8.4], "date": "Settembre 2026", "info": "Imbarco", "dayNum": 1, "image": "2026-09-06.jpg", "description": "Partenza da Savona." },
-                                    { "id": "nav", "name": "Navigazione", "coords": [40, 5], "date": "-", "info": "Mare", "dayNum": 2, "image": "1.jpg", "description": "In viaggio." }
-                                ],
-                                path_segments: [[[44.3, 8.4], [40, 5]]]
-                            };
-                        }
-                        database.ref('current_cruise').set(newCruise).then(() => { alert("Vacanza aggiornata!"); closeModals(); });
-                    });
-                }
+                fetch(itineraries[itKey] || 'cruise_data.json').then(r=>r.json()).then(data => {
+                    const finalData = { ...data, cruise_link: link, ...ship, cruise_name: data.cruise_name.replace('Costa Fascinosa', ship.name) };
+                    database.ref('current_cruise').set(finalData).then(() => { alert("Vacanza aggiornata!"); closeModals(); });
+                });
             };
 
-            document.getElementById('reset-link-btn').onclick = () => {
-                database.ref('current_cruise').remove().then(() => { alert("Reset effettuato!"); closeModals(); });
-            };
+            document.getElementById('reset-link-btn').onclick = () => { database.ref('current_cruise').remove().then(()=> { alert("Reset effettuato!"); location.reload(); }); };
+            document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display='block'; };
+            document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display='flex'; setTimeout(()=>document.getElementById('link-modal').classList.add('open'),10); };
+            document.getElementById('show-vessel').onclick = function() { hideAll(); this.classList.add('active'); const v=document.getElementById('vessel-map-container'); v.style.display='block'; v.innerHTML=`<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`; };
+            document.getElementById('show-marine').onclick = () => window.open(`https://www.marinetraffic.com/en/ais/home/shipid:${currentData.mid}`, '_blank');
+            document.getElementById('center-map-btn').onclick = () => { if(currentData) osmMap.fitBounds(L.latLngBounds(currentData.destinations.map(d=>d.coords))); };
 
-            document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display = 'block'; };
-            document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display = 'flex'; setTimeout(() => document.getElementById('link-modal').classList.add('open'), 10); };
-
-            document.getElementById('show-vessel').onclick = function() {
-                hideAll(); this.classList.add('active');
-                const v = document.getElementById('vessel-map-container'); v.style.display = 'block';
-                v.innerHTML = `<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`;
-            };
-
-            document.getElementById('show-marine').onclick = function() {
-                const mid = currentData.mid || '279923';
-                window.open(`https://www.marinetraffic.com/en/ais/home/shipid:${mid}`, '_blank');
-            };
-
-            document.getElementById('center-map-btn').onclick = () => { if(currentData) { const b = L.latLngBounds(currentData.destinations.map(d => d.coords)); osmMap.flyToBounds(b); } };
-
-            function hideAll() {
-                ['osm-map', 'vessel-map-container', 'marine-map-container', 'calendar-view'].forEach(id => document.getElementById(id).style.display = 'none');
-                document.querySelectorAll('.map-switch-btn').forEach(b => b.classList.remove('active'));
-            }
-
-            function getCurvedPath(p, tension = 0.3, segments = 15) {
-                if (p.length < 3) return p;
-                const res = [];
-                for (let i = 0; i < p.length - 1; i++) {
-                    const p0 = (i === 0) ? p[i] : p[i - 1], p1 = p[i], p2 = p[i + 1], p3 = (i + 2 >= p.length) ? p2 : p[i + 2];
-                    for (let t = 0; t < segments; t++) {
-                        const t1 = t / segments, t2 = t1 * t1, t3 = t2 * t1;
-                        const f1 = -tension * t3 + 2 * tension * t2 - tension * t1, f2 = (2 - tension) * t3 + (tension - 3) * t2 + 1, f3 = (tension - 2) * t3 + (3 - 2 * tension) * t2 + tension * t1, f4 = tension * t3 - tension * t2;
-                        res.push([p0[0] * f1 + p1[0] * f2 + p2[0] * f3 + p3[0] * f4, p0[1] * f1 + p1[1] * f2 + p2[1] * f3 + p3[1] * f4]);
-                    }
-                }
-                res.push(p[p.length - 1]);
-                return res;
-            }
+            function hideAll() { ['osm-map','vessel-map-container','marine-map-container','calendar-view'].forEach(id=>document.getElementById(id).style.display='none'); document.querySelectorAll('.map-switch-btn').forEach(b=>b.classList.remove('active')); }
+            function getCurvedPath(p,t=0.3,s=15) { if(p.length<3) return p; const res=[]; for(let i=0;i<p.length-1;i++){ const p0=i==0?p[i]:p[i-1],p1=p[i],p2=p[i+1],p3=i+2>=p.length?p2:p[i+2]; for(let j=0;j<s;j++){ const k=j/s,k2=k*k,k3=k2*k; const f1=-t*k3+2*t*k2-t*k,f2=(2-t)*k3+(t-3)*k2+1,f3=(t-2)*k3+(3-2*t)*k2+t*k,f4=t*k3-t*k2; res.push([p0[0]*f1+p1[0]*f2+p2[0]*f3+p3[0]*f4,p0[1]*f1+p1[1]*f2+p2[1]*f3+p3[1]*f4]);}} res.push(p[p.length-1]); return res; }
         });
     </script>
 </body>
