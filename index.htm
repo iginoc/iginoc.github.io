@@ -12,10 +12,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         header { height: 100vh; display: flex; flex-direction: column; }
-        .map-wrapper { flex: 1; position: relative; width: 100%; }
-        #osm-map { width: 100%; height: 100%; }
+        .map-wrapper { flex: 1; position: relative; width: 100%; background: #050505; }
+        #osm-map { width: 100%; height: 100%; display: none; }
         #vessel-map-container, #marine-map-container { display: none; width: 100%; height: 100%; }
-        .map-controls-top-right { position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        #empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center; padding: 20px; }
+        .map-controls-top-right { position: absolute; top: 20px; right: 20px; z-index: 1000; display: none; flex-direction: column; align-items: flex-end; gap: 10px; }
         .map-control-btn { background: #111; border: 1px solid #333; color: var(--accent-3); padding: 8px 16px; border-radius: 30px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
         .map-control-btn:hover { background: var(--accent-3); color: white; }
         .header-controls { background: #000; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; border-bottom: 1px solid #222; }
@@ -23,35 +24,20 @@
         .map-switch-btn:hover, .home-btn:hover { background: #222; }
         .map-switch-btn.active { background: var(--accent-3); border-color: var(--accent-3); }
         .home-btn { text-decoration: none; }
-        .leaflet-popup-content-wrapper { background: #111 !important; color: white !important; border-radius: 1rem !important; border: 1px solid #333; padding: 0; }
-        .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
-        .leaflet-popup-tip { background: #111 !important; }
-        .popup-card { display: flex; flex-direction: column; }
-        .popup-info { padding: 15px; }
-        .popup-info h3 { margin: 0 0 5px; font-size: 1.1rem; color: var(--accent-3); }
-        .popup-info p { margin: 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4; }
-        .ship-marker-container { display: flex; justify-content: center; align-items: center; }
-        .marker-label { background: #111; border: 1px solid var(--accent-3); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; transition: transform 0.2s; }
-        .marker-label:hover { transform: scale(1.2); background: var(--accent-3); }
+        .marker-label { background: #111; border: 1px solid var(--accent-3); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; }
         #calendar-view { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 30px; overflow-y: auto; box-sizing: border-box; }
         .calendar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
-        .calendar-day { background-size: cover; background-position: center; border: 1px solid #333; border-radius: 15px; padding: 25px 10px; text-align: center; display: flex; flex-direction: column; gap: 10px; min-height: 100px; transition: all 0.3s ease; cursor: pointer; }
+        .calendar-day { background-size: cover; background-position: center; border: 1px solid #333; border-radius: 15px; padding: 25px 10px; text-align: center; display: flex; flex-direction: column; gap: 10px; min-height: 100px; cursor: pointer; }
         .calendar-day.cruise { border-color: var(--accent-3); border-width: 2px; }
-        .calendar-day .day-num { font-size: 1.5rem; font-weight: 900; color: white; white-space: nowrap; }
-        .calendar-dest { font-size: 0.75rem; color: var(--accent-3); font-weight: 700; text-transform: uppercase; line-height: 1.2; }
+        .calendar-dest { font-size: 0.75rem; color: var(--accent-3); font-weight: 700; text-transform: uppercase; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.open { display: flex; opacity: 1; }
-        .modal-content { background: #111; border: 1px solid #333; border-radius: 20px; width: 90%; max-width: 900px; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
+        .modal-content { background: #111; border: 1px solid #333; border-radius: 20px; width: 90%; max-width: 900px; position: relative; }
         .modal-close-btn { position: absolute; top: 15px; right: 20px; color: #aaa; font-size: 2rem; font-weight: bold; cursor: pointer; z-index: 10; }
-        .modal-body { display: flex; flex-direction: row; }
+        .modal-body { display: flex; }
         .modal-image-container { flex: 1.2; background: #000; overflow: hidden; min-height: 350px; border-radius: 20px 0 0 20px; }
         .modal-image-container img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-info-container { flex: 1; padding: 40px 30px; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
-        .modal-day-badge { background: var(--accent-3); color: #000; font-weight: 900; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; font-size: 0.8rem; }
-        .modal-title { font-size: 1.8rem; font-weight: 900; color: white; }
-        .modal-date-text { color: var(--accent-3); font-weight: 700; }
-        .modal-desc-text { line-height: 1.6; color: #ccc; }
-        @media (max-width: 768px) { .modal-body { flex-direction: column; } .modal-image-container { border-radius: 20px 20px 0 0; min-height: 250px; } }
+        .modal-info-container { flex: 1; padding: 40px 30px; display: flex; flex-direction: column; gap: 15px; }
     </style>
 </head>
 <body>
@@ -70,6 +56,11 @@
             <button class="map-switch-btn" id="show-marine">Marine</button>
         </div>
         <div class="map-wrapper">
+            <div id="empty-state">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <h2 style="margin-top:20px;">Nessuna vacanza caricata</h2>
+                <p>Clicca sul pulsante "Link" in alto per inserire una crociera Costa.</p>
+            </div>
             <div id="osm-map"></div>
             <div id="vessel-map-container"></div>
             <div id="marine-map-container"></div>
@@ -80,10 +71,10 @@
                     <div class="modal-body">
                         <div class="modal-image-container"><img id="modal-img" src="" alt=""></div>
                         <div class="modal-info-container">
-                            <span id="modal-day-num" class="modal-day-badge"></span>
-                            <h2 id="modal-title" class="modal-title"></h2>
-                            <div id="modal-date" class="modal-date-text"></div>
-                            <p id="modal-desc" class="modal-desc-text"></p>
+                            <span id="modal-day-num" style="color:var(--accent-3); font-weight:900;"></span>
+                            <h2 id="modal-title" style="color:white; font-size:1.8rem;"></h2>
+                            <div id="modal-date" style="color:#666;"></div>
+                            <p id="modal-desc" style="color:#ccc; line-height:1.6;"></p>
                         </div>
                     </div>
                 </div>
@@ -91,11 +82,11 @@
             <div id="link-modal" class="modal-overlay">
                 <div class="modal-content" style="max-width: 500px; padding: 30px;">
                     <span class="modal-close-btn" onclick="closeModals()">&times;</span>
-                    <h2 style="color: var(--accent-3); margin-bottom: 20px;">Cambia Vacanza</h2>
-                    <input type="text" id="cruise-link-input" placeholder="Incolla link Costa..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 10px;">
-                        <button id="save-link-btn" class="map-control-btn" style="flex: 1;">Salva</button>
-                        <button id="reset-link-btn" class="map-control-btn" style="flex: 1; background: #222;">Reset</button>
+                    <h2 style="color:var(--accent-3); margin-bottom:20px;">Inserisci Link Costa</h2>
+                    <input type="text" id="cruise-link-input" placeholder="https://www.costacrociere.it/..." style="width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; margin-bottom:20px;">
+                    <div style="display:flex; gap:10px;">
+                        <button id="save-link-btn" class="map-control-btn" style="flex:1;">Salva ed Elabora</button>
+                        <button id="reset-link-btn" class="map-control-btn" style="flex:1; background:#222;">Reset</button>
                     </div>
                 </div>
             </div>
@@ -126,17 +117,13 @@
             'TS': { name: 'Costa Toscana', imo: '9781891', mid: '6867332' },
             'PC': { name: 'Costa Pacifica', imo: '9378498', mid: '279923' },
             'DI': { name: 'Costa Diadema', imo: '9601132', mid: '712952' },
-            'FA': { name: 'Costa Favolosa', imo: '9476927', mid: '422108' },
-            'DE': { name: 'Costa Deliziosa', imo: '9398917', mid: '371746' },
-            'FO': { name: 'Costa Fortuna', imo: '9237113', mid: '280031' },
             'SE': { name: 'Costa Serena', imo: '9344411', mid: '371727' }
         };
 
         const itineraries = {
             'PTP07A2L': 'cruise_data.json',
             'TCI07A51': 'canarie_data.json',
-            'BUE09A0I': 'serena_sudamerica.json',
-            'SAV': 'savona_data.json'
+            'BUE09A0I': 'serena_sudamerica.json'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -144,27 +131,21 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(osmMap);
             let shipMarker = null, currentData = null;
 
-            const shipIcon = L.divIcon({
-                className: 'ship-marker-container',
-                html: '<svg viewBox="0 0 24 24" width="30" height="30"><path fill="#ef4444" d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>',
-                iconSize: [30, 30], iconAnchor: [15, 30]
-            });
-
             const render = (data) => {
                 currentData = data;
-                osmMap.eachLayer(l => { if(l instanceof L.Polyline || l instanceof L.Marker) osmMap.removeLayer(l); });
-                shipMarker = null;
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('osm-map').style.display = 'block';
+                document.querySelector('.map-controls-top-right').style.display = 'flex';
 
+                osmMap.eachLayer(l => { if(l instanceof L.Polyline || l instanceof L.Marker) osmMap.removeLayer(l); });
                 const dests = data.destinations || [];
                 dests.forEach(d => {
                     L.marker(d.coords, { icon: L.divIcon({ className:'marker-label', html:`<span>${d.dayNum}</span>`, iconSize:[24,24]}) })
                      .bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
                 });
-                (data.path_segments || []).forEach(s => L.polyline(getCurvedPath(s), {color:'#06b6d4', weight:4, opacity:0.6, dashArray:'5,10'}).addTo(osmMap));
-                if(dests.length > 0) {
-                    osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
-                    shipMarker = L.marker(dests[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
-                }
+                (data.path_segments || []).forEach(s => L.polyline(s, {color:'#06b6d4', weight:4, opacity:0.6, dashArray:'5,10'}).addTo(osmMap));
+                if(dests.length > 0) osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
+
                 renderCalendar(data);
             };
 
@@ -190,7 +171,10 @@
             database.ref('current_cruise').on('value', snap => {
                 const val = snap.val();
                 if(val && val.destinations) render(val);
-                else fetch('serena_sudamerica.json').then(r=>r.json()).then(render);
+                else {
+                    document.getElementById('empty-state').style.display = 'flex';
+                    document.getElementById('osm-map').style.display = 'none';
+                }
             });
 
             document.getElementById('save-link-btn').onclick = () => {
@@ -200,26 +184,29 @@
                 let ship = shipDatabase['PC'];
                 for (const k in shipDatabase) { if (link.toUpperCase().includes('/' + k) || link.toUpperCase().includes(shipDatabase[k].name.toUpperCase().replace('COSTA ', ''))) { ship = shipDatabase[k]; break; } }
 
-                let itKey = 'DEFAULT';
+                let itKey = 'NONE';
                 for (const k in itineraries) { if (link.toUpperCase().includes(k.toUpperCase())) { itKey = k; break; } }
 
-                const dataUrl = itineraries[itKey] || 'serena_sudamerica.json';
+                if (itKey === 'NONE') {
+                    alert("Rilevata nave: " + ship.name + ", ma l'itinerario non è ancora mappato nel sistema.");
+                    return;
+                }
 
-                fetch(dataUrl).then(r => r.json()).then(data => {
+                fetch(itineraries[itKey]).then(r => r.json()).then(data => {
                     const finalData = Object.assign({}, data, {
                         cruise_link: link,
                         ship_name: ship.name,
                         name: ship.name,
                         imo: ship.imo,
                         mid: ship.mid,
-                        cruise_name: (itKey === 'DEFAULT') ? (ship.name + " - Nuova Vacanza") : data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name),
+                        cruise_name: data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name),
                         updated_at: Date.now()
                     });
-                    database.ref('current_cruise').set(finalData).then(() => { alert("Aggiornata a: " + finalData.cruise_name); closeModals(); });
+                    database.ref('current_cruise').set(finalData).then(() => { closeModals(); });
                 });
             };
 
-            document.getElementById('reset-link-btn').onclick = () => { database.ref('current_cruise').remove().then(()=> { alert("Reset globale!"); location.reload(); }); };
+            document.getElementById('reset-link-btn').onclick = () => { database.ref('current_cruise').remove().then(()=> { location.reload(); }); };
             document.getElementById('open-calendar').onclick = () => { hideAll(); document.getElementById('calendar-view').style.display='block'; };
             document.getElementById('open-link-modal').onclick = () => { document.getElementById('link-modal').style.display='flex'; setTimeout(()=>document.getElementById('link-modal').classList.add('open'),10); };
             document.getElementById('show-vessel').onclick = function() { hideAll(); this.classList.add('active'); const v=document.getElementById('vessel-map-container'); v.style.display='block'; v.innerHTML=`<iframe src="https://www.vesselfinder.com/aismap?imo=${currentData.imo}&zoom=10" style="width:100%; height:100%; border:none;"></iframe>`; };
@@ -227,7 +214,6 @@
             document.getElementById('center-map-btn').onclick = () => { if(currentData) osmMap.fitBounds(L.latLngBounds(currentData.destinations.map(d=>d.coords))); };
 
             function hideAll() { ['osm-map','vessel-map-container','marine-map-container','calendar-view'].forEach(id=>document.getElementById(id).style.display='none'); document.querySelectorAll('.map-switch-btn').forEach(b=>b.classList.remove('active')); }
-            function getCurvedPath(p,t=0.3,s=15) { if(p.length<3) return p; const res=[]; for(let i=0;i<p.length-1;i++){ const p0=i==0?p[i]:p[i-1],p1=p[i],p2=p[i+1],p3=i+2>=p.length?p2:p[i+2]; for(let j=0;j<s;j++){ const k=j/s,k2=k*k,k3=k2*k; const f1=-t*k3+2*t*k2-t*k,f2=(2-t)*k3+(t-3)*k2+1,f3=(t-2)*k3+(3-2*t)*k2+t*k,f4=t*k3-t*k2; res.push([p0[0]*f1+p1[0]*f2+p2[0]*f3+p3[0]*f4,p0[1]*f1+p1[1]*f2+p2[1]*f3+p3[1]*f4]);}} res.push(p[p.length-1]); return res; }
         });
     </script>
 </body>
