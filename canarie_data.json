@@ -1,0 +1,22 @@
+{
+  "cruise_name": "Costa Smeralda - Canarie e Madeira",
+  "ship_name": "Costa Smeralda",
+  "imo": "9781889",
+  "mid": "5883230",
+  "cruise_link": "https://www.costacrociere.it/cruises/TCI07A51/SM07261214.html",
+  "destinations": [
+    { "id": "tenerife-1", "name": "Santa Cruz de Tenerife", "coords": [28.4682, -16.2477], "date": "14 Dicembre 2026", "info": "Imbarco, Partenza 22:00", "dayNum": 1, "image": "2026-07-27.jpg", "description": "Tenerife ci accoglie per l'inizio di questa avventura tra le Canarie e Madeira." },
+    { "id": "nav-1", "name": "In Navigazione", "coords": [28.3, -15.8], "date": "15 Dicembre 2026", "info": "Giornata a bordo", "dayNum": 2, "image": "1.jpg", "description": "Relax a bordo di Costa Smeralda navigando verso Gran Canaria." },
+    { "id": "laspalmas-1", "name": "Las Palmas", "coords": [28.1235, -15.4363], "date": "16 Dicembre 2026", "info": "Arrivo 08:00", "dayNum": 3, "image": "2026-07-28.jpg", "description": "Gran Canaria. Arrivo al mattino per una lunga sosta a Las Palmas." },
+    { "id": "laspalmas-2", "name": "Las Palmas", "coords": [28.1235, -15.4363], "date": "17 Dicembre 2026", "info": "Partenza 20:00", "dayNum": 4, "image": "2026-07-28.jpg", "description": "Seconda giornata a Gran Canaria prima di salpare verso Madeira." },
+    { "id": "funchal", "name": "Funchal", "coords": [32.6445, -16.9077], "date": "18 Dicembre 2026", "info": "Arrivo 14:00 / Partenza 22:00", "dayNum": 5, "image": "2026-07-30.jpg", "description": "Madeira. La perla dell'Atlantico ci attende con i suoi paesaggi mozzafiato." },
+    { "id": "nav-2", "name": "In Navigazione", "coords": [30.5, -16.5], "date": "19 Dicembre 2026", "info": "Giornata a bordo", "dayNum": 6, "image": "1.jpg", "description": "Navigazione di rientro verso l'arcipelago delle Canarie." },
+    { "id": "tenerife-2", "name": "Santa Cruz de Tenerife", "coords": [28.4682, -16.2477], "date": "20 Dicembre 2026", "info": "Arrivo 08:00", "dayNum": 7, "image": "2026-07-27.jpg", "description": "Rientro a Tenerife per l'ultima notte a bordo." },
+    { "id": "tenerife-3", "name": "Santa Cruz de Tenerife", "coords": [28.4682, -16.2477], "date": "21 Dicembre 2026", "info": "Sbarco", "dayNum": 8, "image": "2026-07-27.jpg", "description": "Fine della crociera alle Canarie." }
+  ],
+  "path_segments": [
+    [[28.4682, -16.2477], [28.3, -15.8], [28.1235, -15.4363]],
+    [[28.1235, -15.4363], [30.0, -16.0], [32.6445, -16.9077]],
+    [[32.6445, -16.9077], [30.5, -16.5], [28.4682, -16.2477]]
+  ]
+}

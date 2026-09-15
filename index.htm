@@ -134,6 +134,7 @@
 
         const itineraries = {
             'PTP07A2L': 'cruise_data.json', // Caraibi
+            'TCI07A51': 'canarie_data.json', // Canarie Smeralda
             'SAV': 'savona_data.json' // Placeholder per Savona
         };
 
@@ -183,6 +184,7 @@
             document.getElementById('save-link-btn').onclick = () => {
                 const link = document.getElementById('cruise-link-input').value;
                 if(!link) return;
+
                 let shipKey = 'PC';
                 for(const k in shipDatabase) { if(link.includes('/'+k)) shipKey = k; }
                 const ship = shipDatabase[shipKey];
@@ -191,16 +193,23 @@
                 for(const k in itineraries) { if(link.includes(k)) itKey = k; }
 
                 fetch(itineraries[itKey] || 'cruise_data.json').then(r=>r.json()).then(data => {
-                    const finalData = {
-                        ...data,
+                    const finalData = Object.assign({}, data, {
                         cruise_link: link,
                         ship_name: ship.name,
                         name: ship.name,
                         imo: ship.imo,
                         mid: ship.mid,
-                        cruise_name: data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name)
-                    };
-                    database.ref('current_cruise').set(finalData).then(() => { alert("Vacanza aggiornata a " + ship.name + "!"); closeModals(); });
+                        cruise_name: (itKey === 'DEFAULT') ?
+                            (ship.name + " - Nuova Vacanza") :
+                            data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name)
+                    });
+                    database.ref('current_cruise').set(finalData).then(() => {
+                        alert("Vacanza aggiornata a " + ship.name + "!");
+                        closeModals();
+                    });
+                }).catch(err => {
+                    alert("Errore nel caricamento dei dati itinerario.");
+                    console.error(err);
                 });
             };
 
