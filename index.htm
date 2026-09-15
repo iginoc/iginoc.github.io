@@ -182,18 +182,34 @@
             });
 
             document.getElementById('save-link-btn').onclick = () => {
-                const link = document.getElementById('cruise-link-input').value;
+                const link = document.getElementById('cruise-link-input').value.trim();
                 if(!link) return;
 
-                let shipKey = 'PC';
-                for(const k in shipDatabase) { if(link.includes('/'+k)) shipKey = k; }
-                const ship = shipDatabase[shipKey];
+                // 1. Rileva Nave (cerca codici come /SM, /FS, /PC o il nome nel testo)
+                let ship = shipDatabase['PC']; // Default Pacifica
+                for (const k in shipDatabase) {
+                    if (link.toUpperCase().includes('/' + k) || link.toUpperCase().includes(shipDatabase[k].name.toUpperCase().replace('COSTA ', ''))) {
+                        ship = shipDatabase[k];
+                        break;
+                    }
+                }
 
+                // 2. Rileva Itinerario (cerca codici come TCI07A51, PTP07A2L)
                 let itKey = 'DEFAULT';
-                for(const k in itineraries) { if(link.includes(k)) itKey = k; }
+                for (const k in itineraries) {
+                    if (link.toUpperCase().includes(k.toUpperCase())) {
+                        itKey = k;
+                        break;
+                    }
+                }
 
-                fetch(itineraries[itKey] || 'cruise_data.json').then(r=>r.json()).then(data => {
-                    const finalData = Object.assign({}, data, {
+                const dataUrl = itineraries[itKey] || 'cruise_data.json';
+                console.log("Link inserito:", link);
+                console.log("Nave rilevata:", ship.name, "Codice Itinerario:", itKey, "File dati:", dataUrl);
+
+                fetch(dataUrl).then(r => r.json()).then(data => {
+                    const finalData = {
+                        ...data,
                         cruise_link: link,
                         ship_name: ship.name,
                         name: ship.name,
@@ -201,14 +217,16 @@
                         mid: ship.mid,
                         cruise_name: (itKey === 'DEFAULT') ?
                             (ship.name + " - Nuova Vacanza") :
-                            data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name)
-                    });
+                            data.cruise_name.replace(/Costa [a-zA-Z]+/i, ship.name),
+                        updated_at: Date.now()
+                    };
+
                     database.ref('current_cruise').set(finalData).then(() => {
-                        alert("Vacanza aggiornata a " + ship.name + "!");
+                        alert("Vacanza aggiornata: " + ship.name + "\nItinerario: " + finalData.cruise_name);
                         closeModals();
                     });
                 }).catch(err => {
-                    alert("Errore nel caricamento dei dati itinerario.");
+                    alert("Errore caricamento dati itinerario: " + dataUrl);
                     console.error(err);
                 });
             };
