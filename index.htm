@@ -145,14 +145,22 @@
 
             const render = (data) => {
                 currentData = data;
-                osmMap.eachLayer(l => { if(l instanceof L.Polyline || (l instanceof L.Marker && l !== shipMarker)) osmMap.removeLayer(l); });
+                // Pulisce mappa, rotte e vecchia posizione nave
+                osmMap.eachLayer(l => { if(l instanceof L.Polyline || l instanceof L.Marker) osmMap.removeLayer(l); });
+                shipMarker = null;
+
                 const dests = data.destinations || [];
                 dests.forEach(d => {
                     L.marker(d.coords, { icon: L.divIcon({ className:'marker-label', html:`<span>${d.dayNum}</span>`, iconSize:[24,24]}) })
                      .bindPopup(`<h3>${d.name}</h3><p>${d.date}</p>`).addTo(osmMap);
                 });
                 (data.path_segments || []).forEach(s => L.polyline(getCurvedPath(s), {color:'#06b6d4', weight:4, opacity:0.6, dashArray:'5,10'}).addTo(osmMap));
-                if(dests.length > 0) osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
+
+                if(dests.length > 0) {
+                    osmMap.fitBounds(L.latLngBounds(dests.map(d => d.coords)), {padding:[50,50]});
+                    // Posiziona la nave sulla prima tappa del nuovo itinerario
+                    shipMarker = L.marker(dests[0].coords, { icon: shipIcon, zIndexOffset: 5000 }).addTo(osmMap);
+                }
                 renderCalendar(data);
             };
 
