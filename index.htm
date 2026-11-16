@@ -406,11 +406,11 @@
 
             const cruiseDestinations = [
                 { id: "savona-1", name: "Savona", coords: [44.3079, 8.4811], date: "05 Dicembre 2026", info: "Giorno d'imbarco, Partenza 17:30", dayNum: 1 },
-                { id: "marsiglia", name: "Marsiglia", coords: [43.2965, 5.3698], date: "06 Dicembre 2026", info: "Arrivo 09:00 / Partenza 18:00", dayNum: 2 },
+                { id: "marsiglia", name: "Marsiglia", coords: [43.34, 5.34], date: "06 Dicembre 2026", info: "Arrivo 09:00 / Partenza 18:00", dayNum: 2 },
                 { id: "barcellona", name: "Barcellona", coords: [41.35, 2.17], date: "07 Dicembre 2026", info: "Arrivo 09:00 / Partenza 19:00", dayNum: 3 },
-                { id: "palma", name: "Palma", coords: [39.5696, 2.6502], date: "08 Dicembre 2026", info: "Arrivo 07:30 / Partenza 17:00", dayNum: 4 },
+                { id: "palma", name: "Palma", coords: [39.553, 2.633], date: "08 Dicembre 2026", info: "Arrivo 07:30 / Partenza 17:00", dayNum: 4 },
                 { id: "navigazione-1", name: "In Navigazione", coords: [37.9, 8.2], date: "09 Dicembre 2026", info: "Giornata a bordo", dayNum: 5 },
-                { id: "palermo", name: "Palermo", coords: [38.121, 13.365], date: "10 Dicembre 2026", info: "Arrivo 08:00 / Partenza 16:30", dayNum: 6 },
+                { id: "palermo", name: "Palermo", coords: [38.132, 13.365], date: "10 Dicembre 2026", info: "Arrivo 08:00 / Partenza 16:30", dayNum: 6 },
                 { id: "civitavecchia", name: "Civitavecchia | Roma", coords: [42.092, 11.790], date: "11 Dicembre 2026", info: "Arrivo 08:30 / Partenza 19:00", dayNum: 7 },
                 { id: "savona-2", name: "Savona", coords: [44.3079, 8.4811], date: "12 Dicembre 2026", info: "Giorno di sbarco, Arrivo 08:30", dayNum: 8 }
             ];
@@ -471,20 +471,20 @@
             // Definizione dei segmenti della rotta con waypoint nautici per evitare la terraferma
             // Rotta della crociera nel Mediterraneo occidentale
             const cruisePathSegments = [
-                // Giorno 1 -> Giorno 2: Savona -> Marsiglia
-                [[44.3079, 8.4811], [44.00, 7.50], [43.60, 6.50], [43.2965, 5.3698]],
+                // Giorno 1 -> Giorno 2: Savona -> Marsiglia, lungo la costa ligure e provenzale
+                [[44.3079, 8.4811], [44.0, 8.0], [43.6, 7.7], [43.4, 7.0], [43.3, 6.3], [43.34, 5.34]],
                 // Giorno 2 -> Giorno 3: Marsiglia -> Barcellona
-                [[43.2965, 5.3698], [42.90, 4.40], [42.20, 3.30], [41.70, 2.80], [41.35, 2.17]],
+                [[43.34, 5.34], [43.15, 4.8], [42.85, 4.3], [42.5, 3.8], [42.15, 3.5], [41.8, 3.25], [41.55, 2.8], [41.35, 2.17]],
                 // Giorno 3 -> Giorno 4: Barcellona -> Palma
-                [[41.35, 2.17], [40.70, 2.30], [39.5696, 2.6502]],
+                [[41.35, 2.17], [40.7, 2.3], [39.553, 2.633]],
                 // Giorno 4 -> Giorno 5: Palma -> navigazione a sud della Sardegna
-                [[39.5696, 2.6502], [39.20, 4.20], [38.70, 5.80], [38.10, 7.20], [37.9, 8.2]],
+                [[39.553, 2.633], [39.2, 4.2], [38.7, 5.8], [38.1, 7.2], [37.9, 8.2]],
                 // Giorno 5 -> Giorno 6: navigazione -> Palermo
-                [[37.9, 8.2], [38.00, 10.00], [38.10, 11.50], [38.121, 13.365]],
+                [[37.9, 8.2], [38.0, 10.0], [38.1, 11.5], [38.132, 13.365]],
                 // Giorno 6 -> Giorno 7: Palermo -> Civitavecchia
-                [[38.121, 13.365], [39.20, 12.70], [40.40, 12.10], [42.092, 11.790]],
+                [[38.132, 13.365], [39.2, 12.7], [40.4, 12.1], [42.092, 11.79]],
                 // Giorno 7 -> Giorno 8: Civitavecchia -> Savona
-                [[42.092, 11.790], [42.70, 10.70], [43.30, 9.50], [43.80, 8.80], [44.3079, 8.4811]]
+                [[42.092, 11.79], [42.45, 11.15], [42.75, 10.75], [43.05, 10.1], [43.25, 9.85], [43.55, 9.65], [43.85, 9.35], [44.1, 8.95], [44.3079, 8.4811]]
             ];
 
             for (let i = 0; i < cruisePathSegments.length; i++) {
@@ -534,7 +534,7 @@
                 const marker = L.marker(displayCoords, {
                     icon: L.divIcon({
                         className: 'marker-label',
-                        html: `<span>${dest.date.split(' ')[0]}</span>`,
+                        html: `<span>${dayNum}</span>`,
                         iconSize: [24, 24],
                         iconAnchor: [12, 12]
                     })
