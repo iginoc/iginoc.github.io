@@ -1,0 +1,98 @@
+{
+  "cruise_name": "Costa Toscana - Mediterraneo Occidentale",
+  "ship_name": "Costa Toscana",
+  "imo": "9781891",
+  "mid": "6867332",
+  "cruise_link": "https://www.costacrociere.it/cruises/SVN07AA2/TO07261205.html",
+  "destinations": [
+    {
+      "id": "savona-1",
+      "name": "Savona",
+      "coords": [44.3079, 8.4811],
+      "date": "05 Dicembre 2026",
+      "info": "Imbarco, partenza 17:30",
+      "dayNum": 1,
+      "image": "1.jpg",
+      "description": "Imbarco a Savona e partenza alle 17:30 per una settimana nel Mediterraneo occidentale a bordo di Costa Toscana."
+    },
+    {
+      "id": "marsiglia",
+      "name": "Marsiglia",
+      "coords": [43.2965, 5.3698],
+      "date": "06 Dicembre 2026",
+      "info": "Arrivo 09:00 / Partenza 18:00",
+      "dayNum": 2,
+      "image": "1.jpg",
+      "description": "Arrivo a Marsiglia alle 09:00. Esplora il Porto Vecchio, il quartiere del Panier e la costa provenzale prima della partenza alle 18:00."
+    },
+    {
+      "id": "barcellona",
+      "name": "Barcellona",
+      "coords": [41.35, 2.17],
+      "date": "07 Dicembre 2026",
+      "info": "Arrivo 09:00 / Partenza 19:00",
+      "dayNum": 3,
+      "image": "1.jpg",
+      "description": "Barcellona ti aspetta dalle 09:00 alle 19:00: passeggia sulla Rambla, visita la Sagrada Familia o scopri il vivace quartiere gotico."
+    },
+    {
+      "id": "palma",
+      "name": "Palma",
+      "coords": [39.5696, 2.6502],
+      "date": "08 Dicembre 2026",
+      "info": "Arrivo 07:30 / Partenza 17:00",
+      "dayNum": 4,
+      "image": "1.jpg",
+      "description": "Arrivo a Palma alle 07:30 e partenza alle 17:00. Scopri il centro storico, la cattedrale sul mare e le spiagge di Maiorca."
+    },
+    {
+      "id": "navigazione-1",
+      "name": "In Navigazione",
+      "coords": [37.9, 8.2],
+      "date": "09 Dicembre 2026",
+      "info": "Giornata a bordo",
+      "dayNum": 5,
+      "image": "1.jpg",
+      "description": "Giornata interamente dedicata alla navigazione. Goditi piscine, teatro, spa e ristoranti a bordo di Costa Toscana mentre navighiamo verso la Sicilia."
+    },
+    {
+      "id": "palermo",
+      "name": "Palermo",
+      "coords": [38.121, 13.365],
+      "date": "10 Dicembre 2026",
+      "info": "Arrivo 08:00 / Partenza 16:30",
+      "dayNum": 6,
+      "image": "1.jpg",
+      "description": "Palermo ti accoglie dalle 08:00 alle 16:30. Tra mercati storici, palazzi e sapori siciliani, scopri il fascino del capoluogo."
+    },
+    {
+      "id": "civitavecchia",
+      "name": "Civitavecchia | Roma",
+      "coords": [42.092, 11.790],
+      "date": "11 Dicembre 2026",
+      "info": "Arrivo 08:30 / Partenza 19:00",
+      "dayNum": 7,
+      "image": "1.jpg",
+      "description": "Arrivo a Civitavecchia alle 08:30 e partenza alle 19:00. Dal porto puoi raggiungere Roma e i suoi monumenti, dal Colosseo a San Pietro."
+    },
+    {
+      "id": "savona-2",
+      "name": "Savona",
+      "coords": [44.3079, 8.4811],
+      "date": "12 Dicembre 2026",
+      "info": "Sbarco, arrivo 08:30",
+      "dayNum": 8,
+      "image": "1.jpg",
+      "description": "Rientro a Savona alle 08:30 e conclusione della crociera a bordo di Costa Toscana."
+    }
+  ],
+  "path_segments": [
+    [[44.3079, 8.4811], [44.0, 7.5], [43.6, 6.5], [43.2965, 5.3698]],
+    [[43.2965, 5.3698], [42.9, 4.4], [42.2, 3.3], [41.7, 2.8], [41.35, 2.17]],
+    [[41.35, 2.17], [40.7, 2.3], [39.5696, 2.6502]],
+    [[39.5696, 2.6502], [39.2, 4.2], [38.7, 5.8], [38.1, 7.2], [37.9, 8.2]],
+    [[37.9, 8.2], [38.0, 10.0], [38.1, 11.5], [38.121, 13.365]],
+    [[38.121, 13.365], [39.2, 12.7], [40.4, 12.1], [42.092, 11.79]],
+    [[42.092, 11.79], [42.7, 10.7], [43.3, 9.5], [43.8, 8.8], [44.3079, 8.4811]]
+  ]
+}
